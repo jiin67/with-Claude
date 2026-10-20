@@ -49,6 +49,8 @@ button:disabled{cursor:not-allowed}
 #loadout span{padding:3px 8px;border:1px solid var(--line);border-radius:4px;background:rgba(20,16,51,.55);color:var(--dim)}
 #loadout span.w{border-color:rgba(126,240,255,.35);color:var(--ink)}
 #loadout span b{color:var(--ice);font-family:var(--f-num);margin-left:5px}
+#loadout span.e,.build span.e{border-color:rgba(255,138,240,.6);color:#ffd6fa}
+#loadout span.e b,.build span.e b{color:#ff8af0}
 @media (max-width:560px){.hp .lbl{display:none}.hpbar{width:22vw;min-width:64px}.right{gap:8px}.hud-top{gap:8px}#loadout{font-size:11px}.stat b{font-size:13px}.stat-kills{display:none!important}}
 
 #banner{position:fixed;left:0;right:0;top:30%;text-align:center;pointer-events:none;font-family:var(--f-display);font-size:clamp(26px,6vw,46px);letter-spacing:.04em;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));animation:pulse .5s ease-in-out infinite alternate}
@@ -156,6 +158,8 @@ h3.section{margin:6px 0 -6px;font-size:13px;font-weight:700;letter-spacing:.2em;
 .card p{margin:0;font-size:14px;line-height:1.6;color:var(--dim)}
 .card .lv{font-family:var(--f-num);font-size:12px;color:var(--c,var(--ice));letter-spacing:.06em}
 .card .pips i.on{background:var(--c);box-shadow:0 0 6px var(--c)}
+.card.evo{border-color:var(--c);box-shadow:0 0 0 1px var(--c),0 0 40px -10px var(--c);background:linear-gradient(180deg,rgba(74,26,78,.94),rgba(30,13,44,.94))}
+.card .evo-hint{font-size:12px;line-height:1.5;color:#ff8af0;border-top:1px dashed rgba(255,138,240,.35);padding-top:8px}
 
 /* results + stats */
 #over h2.win{color:var(--amber);text-shadow:0 0 28px rgba(255,194,74,.45)}
@@ -192,6 +196,7 @@ h3.section{margin:6px 0 -6px;font-size:13px;font-weight:700;letter-spacing:.2em;
 .codex b{font-size:14px;display:block}
 .codex span{font-size:12px;color:var(--dim);line-height:1.45;display:block}
 .codex .unseen b,.codex .unseen span{color:#5c5785}
+.codex span.recipe{color:#ff8af0}
 .codex h4{grid-column:1/-1;margin:8px 0 0;font-size:13px;letter-spacing:.2em;color:var(--dim)}
 
 /* settings */

@@ -183,6 +183,14 @@ function renderRecords() {
     const t = el('div'); t.append(el('b', null, seen ? BOSSES[k].name : '???'), el('span', null, seen ? BOSSES[k].info : '아직 만나지 못했다.'));
     d.append(c2, t); cl.appendChild(d);
   }
+  cl.appendChild(el('h4', null, '무기 진화'));
+  for (const v of EVOLUTIONS) {
+    const seen = !!SAVE.seen['evo:' + v.id], d = el('div', 'ent' + (seen ? '' : ' unseen'));
+    const c2 = document.createElement('canvas'); c2.width = c2.height = 112; drawPortrait(c2, 'evo', v.id, !seen);
+    const recipe = WEAPONS[v.weapon].name + ' 최대 + ' + UP_BY_ID[v.needs].name;
+    const t = el('div'); t.append(el('b', null, seen ? v.name : '???'), el('span', 'recipe', recipe), el('span', null, seen ? v.desc : '보물 상자에서 진화시키면 기록된다.'));
+    d.append(c2, t); cl.appendChild(d);
+  }
   const s = SAVE.stats, sl = $('statsList'); sl.innerHTML = '';
   [['출격', fmtN(s.runs)], ['총 처치', fmtN(s.kills)], ['보스 격파', fmtN(s.bosses)], ['클리어', fmtN(s.clears)],
    ['총 비행 시간', fmtT(s.time)], ['최고 레벨', fmtN(s.bestLevel)], ['누적 별가루', fmtN(SAVE.totalDust)], ['격추', fmtN(s.deaths)]].forEach(([k, v]) => {
@@ -292,7 +300,9 @@ function openLevelUp() {
   keys.clear(); joy.on = false;
 }
 function drawCards() {
-  $('luEyebrow').textContent = 'LEVEL ' + P.level + (G.pending > 1 ? '  ·  선택 ' + G.pending + '회 남음' : '');
+  const evoOffer = G.choices.some(u => u.isEvo);
+  $('luEyebrow').textContent = (G.fromChest ? 'TREASURE' : 'LEVEL ' + P.level) + (G.pending > 1 ? '  ·  선택 ' + G.pending + '회 남음' : '');
+  $('luTitle').textContent = evoOffer ? '무기가 진화합니다' : G.fromChest ? '보물 상자' : '강화를 고르세요';
   $('luHint').hidden = !(G.tutorial && G.tutorial.step <= 2);
   $('weaponSlots').textContent = `무기 ${weaponCount()} / ${MAX_WEAPONS}`;
   const box = $('cards'); box.innerHTML = '';
@@ -300,7 +310,8 @@ function drawCards() {
     const cur = G.ups[u.id] || 0, next = cur + 1, [catName, catCol] = CAT[u.cat];
     const b = el('button', 'card'); b.id = 'card' + i; b.type = 'button'; b.style.setProperty('--c', catCol);
     const top = el('div', 'top'); top.append(el('span', 'chip', catName), el('span', 'key', '[' + (i + 1) + ']'));
-    const lv = el('div', 'lv', u.max > 20 ? '즉시 효과' : cur === 0 ? (u.isWeapon ? '새 무기' : '새 강화') : 'LV ' + cur + ' → ' + next);
+    const lv = el('div', 'lv', u.isEvo ? WEAPONS[u.evo.weapon].name + ' 진화' : u.max > 20 ? '즉시 효과' : cur === 0 ? (u.isWeapon ? '새 무기' : '새 강화') : 'LV ' + cur + ' → ' + next);
+    if (u.isEvo) b.classList.add('evo');
     b.append(top, el('h3', null, u.name), lv);
     if (u.max > 1 && u.max <= 20) {
       const pips = el('div', 'pips');
@@ -308,12 +319,26 @@ function drawCards() {
       b.appendChild(pips);
     }
     b.appendChild(el('p', null, u.desc(next)));
+    const hint = evoHint(u, next);
+    if (hint) b.appendChild(el('p', 'evo-hint', hint));
     b.addEventListener('click', () => pickUpgrade(i));
     box.appendChild(b);
   });
   const rr = $('btnReroll'); rr.textContent = '다시 뽑기 (' + G.rerolls + '회)'; rr.appendChild(el('kbd', null, 'R'));
   rr.disabled = G.rerolls <= 0;
   setTimeout(() => { const c = $('card0'); if (c && matchMedia('(hover:hover)').matches) c.focus({ preventScroll: true }); }, 30);
+}
+/* recipe line under a weapon or passive card that is part of an evolution */
+function evoHint(u, next) {
+  const v = u.isWeapon ? EVO_BY_WEAPON[u.id] : EVO_BY_PASSIVE[u.id];
+  if (!v || G.evo[v.weapon]) return '';
+  const wName = WEAPONS[v.weapon].name, pName = UP_BY_ID[v.needs].name;
+  if (u.isWeapon) {
+    if (next < u.max) return '';
+    return '진화 ' + v.name + ' · ' + (G.ups[v.needs] ? '다음 보물 상자에서 진화' : pName + '을(를) 얻으면 보물 상자에서 진화');
+  }
+  if (!W[v.weapon]) return '';
+  return '진화 ' + v.name + ' · ' + wName + (W[v.weapon] >= WEAPONS[v.weapon].max ? ' 최대 레벨, 다음 보물 상자에서 진화' : '을(를) 최대 레벨로 올리면 보물 상자에서 진화');
 }
 function pickUpgrade(i) {
   if (!G || G.state !== 'levelup') return;
@@ -353,7 +378,10 @@ function updateHud() {
 function buildChips(box, weaponsOnly) {
   box.innerHTML = '';
   const add = (name, l, w) => { const s = el('span', w ? 'w' : '', name); s.appendChild(el('b', null, String(l))); box.appendChild(s); };
-  for (const k of Object.keys(WEAPONS)) if (W[k]) add(WEAPONS[k].name, k === 'blaster' ? '×' + S.proj : W[k], true);
+  for (const k of Object.keys(WEAPONS)) if (W[k]) {
+    if (G.evo[k]) { add(EVO_BY_WEAPON[k].name, 'EVO', true); box.lastChild.classList.add('e'); }
+    else add(WEAPONS[k].name, k === 'blaster' ? '×' + S.proj : W[k], true);
+  }
   if (!weaponsOnly) for (const p of PASSIVES) if (G.ups[p.id] && p.id !== 'multi') add(p.name, G.ups[p.id]);
 }
 function renderLoadout() { buildChips($('loadout'), true); }
@@ -526,6 +554,7 @@ function autopilotDir() {
 function smartPick() {
   const score = u => {
     const l = G.ups[u.id] || 0;
+    if (u.isEvo) return 20;
     if (u.isWeapon) return l ? 6 + l : (weaponCount() < 5 ? 5 : 2);
     return { dmg: 5, area: 4, cool: 4, multi: 4.5, rate: 4, hp: 3.5, crit: 3, pierce: 3, regen: 3, magnet: 2.5, speed: 2.5, armor: 3, growth: 2, dur: 2 }[u.id] || 1;
   };
@@ -542,7 +571,7 @@ window.__stardrift = {
       this.setMeta(meta); this.start(stage, ship); this.autopilot(true);
       const r = this.sim(seconds);
       const top = Object.entries(G.dmgBy || {}).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([k, v]) => k + ':' + Math.round(v)).join(',');
-      out.push({ ship, state: G.state, t: Math.round(G.t), lv: P.level, bosses: G.bossKills, top });
+      out.push({ ship, state: G.state, t: Math.round(G.t), lv: P.level, bosses: G.bossKills, evo: Object.keys(G.evo).join('+'), top });
     }
     return out;
   },
