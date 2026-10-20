@@ -199,6 +199,14 @@ function renderRecords() {
     const t = el('div'); t.append(el('b', null, seen ? BOSSES[k].name : '???'), el('span', null, seen ? BOSSES[k].info : tr('unseen')));
     d.append(c2, t); cl.appendChild(d);
   }
+  cl.appendChild(el('h4', null, tr('evoHead')));
+  for (const v of EVOLUTIONS) {
+    const seen = !!SAVE.seen['evo:' + v.id], d = el('div', 'ent' + (seen ? '' : ' unseen'));
+    const c2 = document.createElement('canvas'); c2.width = c2.height = 112; drawPortrait(c2, 'evo', v.id, !seen);
+    const recipe = tr('evoRecipe', WEAPONS[v.weapon].name, UP_BY_ID[v.needs].name);
+    const t = el('div'); t.append(el('b', null, seen ? v.name : '???'), el('span', 'recipe', recipe), el('span', null, seen ? v.desc : tr('evoUnseen')));
+    d.append(c2, t); cl.appendChild(d);
+  }
   const s = SAVE.stats, sl = $('statsList'); sl.innerHTML = '';
   [[tr('stRuns'), fmtN(s.runs)], [tr('stKills'), fmtN(s.kills)], [tr('stBosses'), fmtN(s.bosses)], [tr('stClears'), fmtN(s.clears)],
    [tr('stTime'), fmtT(s.time)], [tr('stLevel'), fmtN(s.bestLevel)], [tr('stDust'), fmtN(SAVE.totalDust)], [tr('stDeaths'), fmtN(s.deaths)]].forEach(([k, v]) => {
@@ -346,7 +354,9 @@ function openLevelUp() {
   keys.clear(); joy.on = false;
 }
 function drawCards() {
-  $('luEyebrow').textContent = 'LEVEL ' + P.level + (G.pending > 1 ? tr('picksLeft', G.pending) : '');
+  const evoOffer = G.choices.some(u => u.isEvo);
+  $('luEyebrow').textContent = (G.fromChest ? 'TREASURE' : 'LEVEL ' + P.level) + (G.pending > 1 ? tr('picksLeft', G.pending) : '');
+  $('luTitle').textContent = evoOffer ? tr('evoTitle') : G.fromChest ? tr('chestTitle') : tr('pickTitle');
   $('luHint').hidden = !(G.tutorial && G.tutorial.step <= 2);
   $('weaponSlots').textContent = tr('slots', weaponCount(), MAX_WEAPONS);
   const box = $('cards'); box.innerHTML = '';
@@ -354,7 +364,8 @@ function drawCards() {
     const cur = G.ups[u.id] || 0, next = cur + 1, [catName, catCol] = CAT[u.cat];
     const b = el('button', 'card'); b.id = 'card' + i; b.type = 'button'; b.style.setProperty('--c', catCol);
     const top = el('div', 'top'); top.append(el('span', 'chip', catName), el('span', 'key', '[' + (i + 1) + ']'));
-    const lv = el('div', 'lv', u.max > 20 ? tr('instant') : cur === 0 ? (u.isWeapon ? tr('newWeapon') : tr('newUp')) : 'LV ' + cur + ' → ' + next);
+    const lv = el('div', 'lv', u.isEvo ? tr('evoOf', WEAPONS[u.evo.weapon].name) : u.max > 20 ? tr('instant') : cur === 0 ? (u.isWeapon ? tr('newWeapon') : tr('newUp')) : 'LV ' + cur + ' → ' + next);
+    if (u.isEvo) b.classList.add('evo');
     b.append(top, el('h3', null, u.name), lv);
     if (u.max > 1 && u.max <= 20) {
       const pips = el('div', 'pips');
@@ -362,12 +373,26 @@ function drawCards() {
       b.appendChild(pips);
     }
     b.appendChild(el('p', null, u.desc(next)));
+    const hint = evoHint(u, next);
+    if (hint) b.appendChild(el('p', 'evo-hint', hint));
     b.addEventListener('click', () => pickUpgrade(i));
     box.appendChild(b);
   });
   const rr = $('btnReroll'); rr.textContent = tr('reroll', G.rerolls) + ' '; rr.appendChild(el('kbd', null, 'R'));
   rr.disabled = G.rerolls <= 0;
   setTimeout(() => { const c = $('card0'); if (c && matchMedia('(hover:hover)').matches) c.focus({ preventScroll: true }); }, 30);
+}
+/* recipe line under a weapon or passive card that is part of an evolution */
+function evoHint(u, next) {
+  const v = u.isWeapon ? EVO_BY_WEAPON[u.id] : EVO_BY_PASSIVE[u.id];
+  if (!v || G.evo[v.weapon]) return '';
+  const wName = WEAPONS[v.weapon].name, pName = UP_BY_ID[v.needs].name;
+  if (u.isWeapon) {
+    if (next < u.max) return '';
+    return tr('evoPrefix', v.name) + (G.ups[v.needs] ? tr('evoNext') : tr('evoNeedPassive', pName));
+  }
+  if (!W[v.weapon]) return '';
+  return tr('evoPrefix', v.name) + (W[v.weapon] >= WEAPONS[v.weapon].max ? tr('evoMaxed', wName) : tr('evoNeedWeapon', wName));
 }
 function pickUpgrade(i) {
   if (!G || G.state !== 'levelup') return;
@@ -407,7 +432,10 @@ function updateHud() {
 function buildChips(box, weaponsOnly) {
   box.innerHTML = '';
   const add = (name, l, w) => { const s = el('span', w ? 'w' : '', name); s.appendChild(el('b', null, String(l))); box.appendChild(s); };
-  for (const k of Object.keys(WEAPONS)) if (W[k]) add(WEAPONS[k].name, k === 'blaster' ? '×' + S.proj : W[k], true);
+  for (const k of Object.keys(WEAPONS)) if (W[k]) {
+    if (G.evo[k]) { add(EVO_BY_WEAPON[k].name, 'EVO', true); box.lastChild.classList.add('e'); }
+    else add(WEAPONS[k].name, k === 'blaster' ? '×' + S.proj : W[k], true);
+  }
   if (!weaponsOnly) for (const p of PASSIVES) if (G.ups[p.id] && p.id !== 'multi') add(p.name, G.ups[p.id]);
 }
 function renderLoadout() { buildChips($('loadout'), true); }
@@ -588,6 +616,7 @@ function autopilotDir() {
 function smartPick() {
   const score = u => {
     const l = G.ups[u.id] || 0;
+    if (u.isEvo) return 20;
     if (u.isWeapon) return l ? 6 + l : (weaponCount() < 5 ? 5 : 2);
     return { dmg: 5, area: 4, cool: 4, multi: 4.5, rate: 4, hp: 3.5, crit: 3, pierce: 3, regen: 3, magnet: 2.5, speed: 2.5, armor: 3, growth: 2, dur: 2 }[u.id] || 1;
   };
@@ -604,7 +633,7 @@ window.__stardrift = {
       this.setMeta(meta); this.start(stage, ship); this.autopilot(true);
       const r = this.sim(seconds);
       const top = Object.entries(G.dmgBy || {}).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([k, v]) => k + ':' + Math.round(v)).join(',');
-      out.push({ ship, state: G.state, t: Math.round(G.t), lv: P.level, bosses: G.bossKills, top });
+      out.push({ ship, state: G.state, t: Math.round(G.t), lv: P.level, bosses: G.bossKills, evo: Object.keys(G.evo).join('+'), top });
     }
     return out;
   },

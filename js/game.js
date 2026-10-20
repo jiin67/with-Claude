@@ -25,7 +25,15 @@ const ALL_UPS = [
   })),
   ...PASSIVES
 ];
-const UP_BY_ID = Object.fromEntries(ALL_UPS.map(u => [u.id, u]));
+/* evolution cards are never rolled from the pool; a treasure chest offers them */
+const EVO_UPS = EVOLUTIONS.map(v => ({
+  id: 'evo_' + v.weapon, evo: v, cat: 'evo', name: v.name, max: 1, isEvo: true,
+  desc: () => v.desc,
+  apply: () => { G.evo[v.weapon] = true; markSeen('evo:' + v.id); }
+}));
+const EVO_BY_WEAPON = Object.fromEntries(EVOLUTIONS.map(v => [v.weapon, v]));
+const EVO_BY_PASSIVE = Object.fromEntries(EVOLUTIONS.map(v => [v.needs, v]));
+const UP_BY_ID = Object.fromEntries([...ALL_UPS, ...EVO_UPS].map(u => [u.id, u]));
 
 /* --------------------------------------------------------------------------
    state
@@ -42,7 +50,7 @@ function newGame(stageIdx, shipId, save) {
     bosses: [], queue: st.bosses.map(b => ({ ...b })), endlessT: 150, endlessIdx: 0,
     swarmT: 55, spawnT: 0, cleared: false, clearT: 0, rerolls: 2, revives: 0, pending: 0,
     ups: {}, choices: [], shake: 0, flash: 0, hurt: 0, combo: 0, comboT: 0, maxCombo: 0,
-    orbitA: 0, laserA: 0, shieldOn: false, shieldT: 0,
+    orbitA: 0, laserA: 0, shieldOn: false, shieldT: 0, evo: {}, chests: 0, fromChest: false,
     cd: { chain: 1.2, nova: 2.5, missile: 1.5, rail: .6, mines: .8, sing: 2.5, disc: 1 },
     lastHit: 0, bossKills: 0, elites: 0, boomKills: 0, warderKills: 0, pickT: 0, pickCombo: 0, tutorial: null
   };
@@ -60,6 +68,8 @@ function newGame(stageIdx, shipId, save) {
 }
 const xpNeed = l => Math.floor(5 + l * 4.2 + Math.pow(l, 1.6));
 const weaponCount = () => Object.keys(WEAPONS).filter(k => W[k] > 0).length;
+/* evolutions whose weapon is maxed and whose paired passive is owned */
+const evoReady = () => EVO_UPS.filter(u => { const v = u.evo; return !G.evo[v.weapon] && W[v.weapon] >= WEAPONS[v.weapon].max && G.ups[v.needs]; });
 
 /* --------------------------------------------------------------------------
    spatial grid
@@ -344,7 +354,10 @@ function fireBlaster(dt) {
   for (let i = 0; i < n; i++) { const a = base + (i - (n - 1) / 2) * .15; shootBullet(P.x + Math.cos(a) * 14, P.y + Math.sin(a) * 14, a, 600, 10 * S.dmg, S.pierce); }
   A.shoot();
 }
-function orbitInfo() { const l = W.orbit; return { n: l + 1, R: (64 + l * 7) * S.area, dmg: (9 + l * 4) * S.dmg, sz: 10 * Math.sqrt(S.area) }; }
+function orbitInfo() {
+  const l = W.orbit, e = G.evo.orbit;
+  return { n: e ? 7 : l + 1, R: (64 + l * 7) * S.area * (e ? 1.3 : 1), dmg: (9 + l * 4) * S.dmg * (e ? 1.35 : 1), sz: 10 * Math.sqrt(S.area) * (e ? 1.4 : 1), cd: e ? .3 : .38, color: e ? COL.evo : COL.blade };
+}
 function updateOrbit(dt) {
   if (!W.orbit) return;
   const o = orbitInfo();
@@ -353,9 +366,9 @@ function updateOrbit(dt) {
     const a = G.orbitA + i / o.n * TAU, bx = P.x + Math.cos(a) * o.R, by = P.y + Math.sin(a) * o.R;
     forNear(bx, by, o.sz, e => {
       if (e.orbCd > 0) return;
-      e.orbCd = .38;
+      e.orbCd = o.cd;
       hurtEnemy(e, o.dmg, Math.cos(a) * 160, Math.sin(a) * 160);
-      burst(bx, by, COL.blade, 3, 120, 1.8, .25);
+      burst(bx, by, o.color, 3, 120, 1.8, .25);
     });
   }
 }
@@ -363,18 +376,23 @@ function updateChain(dt) {
   if (!W.chain) return;
   G.cd.chain -= dt;
   if (G.cd.chain > 0) return;
-  const l = W.chain, first = focusBoss(nearest(P.x, P.y, 460 * S.area), 460 * S.area);
+  const l = W.chain, evo = G.evo.chain, R0 = 460 * S.area, first = focusBoss(nearest(P.x, P.y, R0), R0);
   if (!first) { G.cd.chain = .2; return; }
-  G.cd.chain = (2.5 - l * .25) * S.cool;
-  const jumps = 2 + l, range = 175 * S.area, dmg = (16 + l * 8) * S.dmg, seen = new Set();
-  let cur = first; const pts = [[P.x, P.y]];
-  for (let j = 0; j <= jumps && cur; j++) {
-    seen.add(cur); pts.push([cur.x, cur.y]);
-    hurtEnemy(cur, dmg);
-    burst(cur.x, cur.y, COL.bolt, 5, 140, 2, .3);
-    cur = nearest(cur.x, cur.y, range, seen);
+  G.cd.chain = (2.5 - l * .25) * S.cool * (evo ? .75 : 1);
+  const jumps = 2 + l + (evo ? 4 : 0), range = 175 * S.area * (evo ? 1.3 : 1), dmg = (16 + l * 8) * S.dmg * (evo ? 1.3 : 1), color = evo ? COL.evo : COL.bolt;
+  const starts = [first];
+  if (evo) { const second = nearest(P.x, P.y, R0, new Set([first])); if (second) starts.push(second); }
+  for (const start of starts) {
+    const seen = new Set(), pts = [[P.x, P.y]];
+    let cur = start;
+    for (let j = 0; j <= jumps && cur; j++) {
+      seen.add(cur); pts.push([cur.x, cur.y]);
+      hurtEnemy(cur, dmg);
+      burst(cur.x, cur.y, color, 5, 140, 2, .3);
+      cur = nearest(cur.x, cur.y, range, seen);
+    }
+    fx.push({ k: 'bolt', pts: jag(pts), life: .2, max: .2, color });
   }
-  fx.push({ k: 'bolt', pts: jag(pts), life: .2, max: .2, color: COL.bolt });
   A.zap();
 }
 function jag(pts) {
@@ -405,11 +423,12 @@ function updateMissiles(dt) {
       const l = W.missile, t = focusBoss(nearest(P.x, P.y, 700), 700);
       if (!t) G.cd.missile = .3;
       else {
-        G.cd.missile = (2.4 - l * .2) * S.cool;
-        const n = 1 + Math.floor(l / 2);
+        const evo = G.evo.missile;
+        G.cd.missile = (2.4 - l * .2) * S.cool * (evo ? .7 : 1);
+        const n = evo ? 6 : 1 + Math.floor(l / 2), spread = evo ? TAU / n : .7;
         for (let i = 0; i < n; i++) {
-          const a = P.ang + Math.PI + (i - (n - 1) / 2) * .7 + rnd(-.2, .2);
-          missiles.push({ x: P.x, y: P.y, a, sp: 160, tgt: t, life: 3, dmg: (26 + l * 10) * S.dmg, aoe: 58 * S.area, trail: 0 });
+          const a = P.ang + Math.PI + (i - (n - 1) / 2) * spread + rnd(-.2, .2);
+          missiles.push({ x: P.x, y: P.y, a, sp: 160, tgt: t, life: 3, dmg: (26 + l * 10) * S.dmg, aoe: 58 * S.area * (evo ? 1.5 : 1), trail: 0, color: evo ? COL.evo : COL.missile });
         }
         A.launch();
       }
@@ -421,8 +440,8 @@ function updateMissiles(dt) {
     m.sp = Math.min(520, m.sp + 700 * dt);
     m.x += Math.cos(m.a) * m.sp * dt; m.y += Math.sin(m.a) * m.sp * dt;
     m.life -= dt; m.trail -= dt;
-    if (m.trail <= 0 && parts.length < 1400) { m.trail = .02; parts.push({ x: m.x, y: m.y, vx: rnd(-20, 20), vy: rnd(-20, 20), life: .35, max: .35, color: COL.missile, size: 2.2 }); }
-    if (m.life <= 0 || forNear(m.x, m.y, 6, () => true)) { m.dead = true; explode(m.x, m.y, m.aoe, m.dmg, COL.missile); }
+    if (m.trail <= 0 && parts.length < 1400) { m.trail = .02; parts.push({ x: m.x, y: m.y, vx: rnd(-20, 20), vy: rnd(-20, 20), life: .35, max: .35, color: m.color, size: 2.2 }); }
+    if (m.life <= 0 || forNear(m.x, m.y, 6, () => true)) { m.dead = true; explode(m.x, m.y, m.aoe, m.dmg, m.color); }
   }
   missiles = missiles.filter(m => !m.dead);
 }
@@ -443,17 +462,18 @@ function updateRail(dt) {
   if (G.cd.rail > 0) return;
   const l = W.rail, t = focusBoss(nearest(P.x, P.y, 700), 700);
   if (!t) { G.cd.rail = .1; return; }
-  G.cd.rail = (1.55 - l * .13) * S.cool;
+  const evo = G.evo.rail;
+  G.cd.rail = (1.55 - l * .13) * S.cool * (evo ? .85 : 1);
   const base = Math.atan2(t.y - P.y, t.x - P.x); P.ang = base;
-  const beams = l >= 4 ? [base - .09, base + .09] : [base];
-  const len = 900, w = 9 * S.area, dmg = (30 + l * 14) * S.dmg;
+  const beams = evo ? [-2, -1, 0, 1, 2].map(i => base + i * .12) : l >= 4 ? [base - .09, base + .09] : [base];
+  const len = 900, w = 9 * S.area * (evo ? 1.8 : 1), dmg = (30 + l * 14) * S.dmg * (evo ? 1.2 : 1);
   for (const a of beams) {
     const ex = P.x + Math.cos(a) * len, ey = P.y + Math.sin(a) * len;
     for (const e of enemies) {
       if (e.dead) continue;
       if (segDist(e.x, e.y, P.x, P.y, ex, ey) < w + e.r) hurtEnemy(e, dmg, Math.cos(a) * 120, Math.sin(a) * 120);
     }
-    fx.push({ k: 'beam', x: P.x, y: P.y, x2: ex, y2: ey, w: w * 1.6, life: .2, max: .2, color: COL.rail });
+    fx.push({ k: 'beam', x: P.x, y: P.y, x2: ex, y2: ey, w: w * 1.6, life: .2, max: .2, color: evo ? COL.evo : COL.rail });
   }
   G.shake = Math.max(G.shake, 2); A.rail();
 }
@@ -480,9 +500,12 @@ function updateSing(dt) {
       const t = nearest(P.x, P.y, 480);
       if (!t) G.cd.sing = .4;
       else {
-        const l = W.sing;
-        G.cd.sing = (8.5 - l * .8) * S.cool;
-        holes.push({ x: t.x, y: t.y, R: (90 + l * 14) * S.area, life: (2.4 + l * .3) * S.dur, max: (2.4 + l * .3) * S.dur, dmg: (7 + l * 4) * S.dmg, tick: 0 });
+        const l = W.sing, evo = G.evo.sing, R = (90 + l * 14) * S.area * (evo ? 1.4 : 1), life = (2.4 + l * .3) * S.dur;
+        G.cd.sing = (8.5 - l * .8) * S.cool * (evo ? .8 : 1);
+        const at = [t];
+        /* the evolved second hole opens on the nearest enemy outside the first one */
+        if (evo) { const far = new Set(enemies.filter(e => Math.hypot(e.x - t.x, e.y - t.y) < R * 1.5)); const t2 = nearest(P.x, P.y, 640, far); if (t2) at.push(t2); }
+        for (const h of at) holes.push({ x: h.x, y: h.y, R, life, max: life, dmg: (7 + l * 4) * S.dmg * (evo ? 1.5 : 1), pull: evo ? 260 : 170, evo, tick: 0 });
         A.warp();
       }
     }
@@ -491,7 +514,7 @@ function updateSing(dt) {
     h.life -= dt; h.tick -= dt;
     const doTick = h.tick <= 0; if (doTick) h.tick = .25;
     forNear(h.x, h.y, h.R, e => {
-      const dx = h.x - e.x, dy = h.y - e.y, d = Math.hypot(dx, dy) || 1, f = (1 - e.kb) * 170 * dt;
+      const dx = h.x - e.x, dy = h.y - e.y, d = Math.hypot(dx, dy) || 1, f = (1 - e.kb) * h.pull * dt;
       e.x += dx / d * Math.min(d, f); e.y += dy / d * Math.min(d, f);
       if (doTick) hurtEnemy(e, h.dmg, 0, 0, true);
     });
@@ -536,11 +559,11 @@ function updateDiscs(dt) {
       const t = nearest(P.x, P.y, 520);
       if (!t) G.cd.disc = .2;
       else {
-        const l = W.disc, n = 1 + Math.floor(l / 3), base = Math.atan2(t.y - P.y, t.x - P.x);
-        G.cd.disc = (1.9 - l * .15) * S.cool;
+        const l = W.disc, evo = G.evo.disc, n = evo ? 4 : 1 + Math.floor(l / 3), base = Math.atan2(t.y - P.y, t.x - P.x);
+        G.cd.disc = (1.9 - l * .15) * S.cool * (evo ? .8 : 1);
         for (let i = 0; i < n; i++) {
-          const a = base + (i - (n - 1) / 2) * .5;
-          discs.push({ x: P.x, y: P.y, vx: Math.cos(a) * 520, vy: Math.sin(a) * 520, out: true, travel: 0, max: 300 * S.area, dmg: (14 + l * 7) * S.dmg, r: 13 * Math.sqrt(S.area), hit: new Set(), spin: 0 });
+          const a = evo ? base + i / n * TAU : base + (i - (n - 1) / 2) * .5;
+          discs.push({ x: P.x, y: P.y, vx: Math.cos(a) * 520, vy: Math.sin(a) * 520, out: true, travel: 0, max: 300 * S.area * (evo ? 1.4 : 1), dmg: (14 + l * 7) * S.dmg * (evo ? 1.25 : 1), r: 13 * Math.sqrt(S.area) * (evo ? 1.3 : 1), hit: new Set(), spin: 0, color: evo ? COL.evo : COL.disc });
         }
         A.launch();
       }
@@ -911,7 +934,7 @@ function update(dt) {
       p.got = true;
       if (p.k === 'heal') { P.hp = Math.min(P.maxHp, P.hp + 30); A.heal(); texts.push({ x: P.x, y: P.y - 24, v: -40, life: 1, max: 1, txt: '+30', heal: true }); }
       if (p.k === 'magnet') { for (const g of gems) { g.pull = true; g.boost = 400; } A.heal(); }
-      if (p.k === 'chest') { G.pending++; A.level(); burst(p.x, p.y, COL.chest, 30, 220, 3, .7); }
+      if (p.k === 'chest') { G.pending++; G.chests++; A.level(); burst(p.x, p.y, COL.chest, 30, 220, 3, .7); }
     }
   }
   pickups = pickups.filter(p => !p.got);
@@ -949,6 +972,11 @@ function runAchievements() {
    level-up choices
    -------------------------------------------------------------------------- */
 function rollChoices() {
+  /* a chest offers every evolution that is ready; with none ready it waits until the
+     ordinary level-ups are spent, since one of them may complete a recipe */
+  const ready = G.chests > 0 ? evoReady() : [];
+  G.fromChest = G.chests > 0 && (ready.length > 0 || G.pending <= G.chests);
+  const evos = G.fromChest ? ready.slice(0, 3) : [];
   const full = weaponCount() >= MAX_WEAPONS;
   const pool = ALL_UPS.filter(u => {
     const l = G.ups[u.id] || 0;
@@ -958,7 +986,7 @@ function rollChoices() {
     return true;
   });
   const weight = u => (u.w || 1) * (u.isWeapon && !G.ups[u.id] ? (P.level < 8 ? 1.8 : 1.1) : 1) * (u.isWeapon && G.ups[u.id] ? 1.25 : 1);
-  const out = [];
+  const out = evos;
   while (out.length < 3 && pool.length) {
     let tot = 0; for (const u of pool) tot += weight(u);
     let r = rnd(tot), i = 0;
@@ -972,6 +1000,7 @@ function applyUpgrade(u) {
   const l = (G.ups[u.id] || 0) + 1;
   if (u.max <= 20) G.ups[u.id] = l;
   u.apply(l);
+  if (G.fromChest) { G.chests--; G.fromChest = false; }
   if (u.isWeapon && l >= u.max && u.max > 1) achieve('maxweapon');
   if (weaponCount() >= 6) achieve('sixguns');
 }

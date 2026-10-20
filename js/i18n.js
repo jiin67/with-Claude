@@ -25,6 +25,10 @@ function setLang(l) {
 
 const STR = {
   ko: {
+    evoTitle: '무기가 진화합니다', chestTitle: '보물 상자', evoOf: w => w + ' 진화', evoHead: '무기 진화',
+    evoRecipe: (w, p) => w + ' 최대 + ' + p, evoUnseen: '보물 상자에서 진화시키면 기록된다.', evoPrefix: n => '진화 ' + n + ' · ',
+    evoNext: '다음 보물 상자에서 진화', evoNeedPassive: p => p + '을(를) 얻으면 보물 상자에서 진화',
+    evoMaxed: w => w + ' 최대 레벨, 다음 보물 상자에서 진화', evoNeedWeapon: w => w + '을(를) 최대 레벨로 올리면 보물 상자에서 진화',
     /* static page (index.html) */
     title: '별표류 STARDRIFT', logo: '별표류', logoSub: 'STARDRIFT', canvas: '게임 화면', kills: '처치', mute: '소리 켜고 끄기', pause: '일시정지',
     lede: '항로를 잃은 편대. 무리는 끝없이 몰려온다. 무기는 알아서 쏜다. 너는 <em>피하고, 모으고, 고르기만</em> 하면 된다. 별가루를 모아 기체를 늘리고, 사건의 지평선 너머까지 가 보자.',
@@ -73,6 +77,10 @@ const STR = {
     adPlaying: '광고 재생 중…', support: '개발자 후원하기'
   },
   en: {
+    evoTitle: 'Weapon Evolution', chestTitle: 'Treasure Chest', evoOf: w => 'Evolves ' + w, evoHead: 'Weapon Evolutions',
+    evoRecipe: (w, p) => w + ' (max) + ' + p, evoUnseen: 'Recorded once you evolve it from a treasure chest.', evoPrefix: n => 'Evolves into ' + n + ' · ',
+    evoNext: 'at the next treasure chest', evoNeedPassive: p => 'get ' + p + ', then open a treasure chest',
+    evoMaxed: w => w + ' is maxed, evolves at the next treasure chest', evoNeedWeapon: w => 'max ' + w + ', then open a treasure chest',
     title: 'STARDRIFT — Neon Survival Shooter', logo: 'STARDRIFT', logoSub: 'NEON SURVIVAL SHOOTER', canvas: 'Game screen', kills: 'KILLS', mute: 'Toggle sound', pause: 'Pause',
     lede: 'Your squadron is lost and the swarm never stops coming. Your guns fire on their own. All you do is <em>dodge, collect and choose</em>. Gather stardust, build a fleet, and push past the event horizon.',
     play: 'Launch Prep', hangar: 'Hangar', records: 'Archive', settings: 'Settings',
@@ -181,6 +189,17 @@ if (LANG === 'en') (() => {
   };
   for (const u of [...PASSIVES, ...FILLERS]) [u.name, u.desc] = p[u.id];
   CAT.weapon[0] = 'Weapon'; CAT.power[0] = 'Power'; CAT.hull[0] = 'Hull';
+
+  const ev = {
+    galaxy: ['Galaxy Ring', '7 bigger blades circle wider. Damage +35% and they hit the same enemy more often.'],
+    judge: ['Thunder Judgement', 'Lightning forks into two bolts, each chaining up to 11 enemies. Damage +30%, cooldown -25%.'],
+    meteor: ['Meteor Shower', 'Unleashes 6 missiles in every direction. Blast area +50%, cooldown -30%.'],
+    stellar: ['Stellar Lance', 'Fires a fan of 5 thicker beams. Damage +20%, cooldown -15%.'],
+    collapse: ['Collapsing Star', 'Opens two black holes. Radius +40%, damage +50%, stronger pull, cooldown -20%.'],
+    warp: ['Warp Disc', 'Throws 4 discs in every direction. Range +40%, damage +25%, cooldown -20%.']
+  };
+  for (const v of EVOLUTIONS) [v.name, v.desc] = ev[v.id];
+  CAT.evo[0] = 'Evolve';
 
   const e = {
     drone: ['Drone', 'Charges straight at you. The most common enemy.'],

@@ -11,7 +11,7 @@ const COL = {
   drone: '#ff4fa3', dasher: '#ff7a45', spitter: '#b77bff', splitter: '#3dffb0', mite: '#3dffb0', brute: '#ff3355',
   sniper: '#9fb4ff', bomber: '#ffe66b', warder: '#d8d4ff', phaser: '#8a6bff', brood: '#c23dff', orbiter: '#ff6b9a',
   boss: '#ff4fa3', ebullet: '#ff9ccf', xp1: '#ffc24a', xp2: '#ff8d3a', xp3: '#d4ff5a',
-  heal: '#5affb4', chest: '#ffe27a', magnet: '#7ef0ff', elite: '#ffe27a', hazard: '#ff3366'
+  heal: '#5affb4', chest: '#ffe27a', magnet: '#7ef0ff', elite: '#ffe27a', hazard: '#ff3366', evo: '#ff8af0'
 };
 
 /* --------------------------------------------------------------------------
@@ -75,7 +75,26 @@ const FILLERS = [
   { id: 'patch',  cat: 'hull',  name: '응급 수리', max: 99, desc: () => '내구도를 최대치의 40%만큼 회복.', apply: () => { P.hp = Math.min(P.maxHp, P.hp + P.maxHp * .4); } },
   { id: 'bounty', cat: 'power', name: '현상금', max: 99, desc: () => '점수 +2,000, 별가루 +15.', apply: () => { G.score += 2000; G.bonusDust += 15; } }
 ];
-const CAT = { weapon: ['무기', '#7ef0ff'], power: ['강화', '#ffc24a'], hull: ['생존', '#5affb4'] };
+const CAT = { weapon: ['무기', '#7ef0ff'], power: ['강화', '#ffc24a'], hull: ['생존', '#5affb4'], evo: ['진화', '#ff8af0'] };
+
+/* --------------------------------------------------------------------------
+   Weapon evolutions — a maxed weapon plus its paired passive turns the next
+   treasure chest into an evolution. Numbers are applied in game.js.
+   -------------------------------------------------------------------------- */
+const EVOLUTIONS = [
+  { id: 'galaxy',  weapon: 'orbit',   needs: 'area',  name: '은하 고리',
+    desc: '칼날 7개가 더 넓게 돈다. 칼날이 커지고 피해 +35%, 같은 적을 더 자주 벤다.' },
+  { id: 'judge',   weapon: 'chain',   needs: 'crit',  name: '뇌신의 심판',
+    desc: '번개가 두 갈래로 갈라져 각각 11마리까지 튄다. 피해 +30%, 재사용 시간 -25%.' },
+  { id: 'meteor',  weapon: 'missile', needs: 'cool',  name: '유성우',
+    desc: '사방으로 미사일 6발을 쏟아낸다. 폭발 범위 +50%, 재사용 시간 -30%.' },
+  { id: 'stellar', weapon: 'rail',    needs: 'dmg',   name: '항성 관통포',
+    desc: '부채꼴로 빔 5줄을 쏜다. 빔이 굵어지고 피해 +20%, 재사용 시간 -15%.' },
+  { id: 'collapse', weapon: 'sing',   needs: 'dur',   name: '붕괴 항성',
+    desc: '블랙홀을 두 곳에 연다. 반경 +40%, 피해 +50%, 끌어당기는 힘 강화, 재사용 시간 -20%.' },
+  { id: 'warp',    weapon: 'disc',    needs: 'speed', name: '초공간 원반',
+    desc: '원반 4개를 사방으로 던진다. 사거리 +40%, 피해 +25%, 재사용 시간 -20%.' }
+];
 
 /* --------------------------------------------------------------------------
    Enemies
