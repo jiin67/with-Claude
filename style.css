@@ -163,7 +163,7 @@ h3.section{margin:6px 0 -6px;font-size:13px;font-weight:700;letter-spacing:.2em;
 
 /* results + stats */
 #over h2.win{color:var(--amber);text-shadow:0 0 28px rgba(255,194,74,.45)}
-#over h2.lose{color:var(--rose);text-shadow:0 0 28px rgba(255,79,163,.45)}
+#over h2.lose,h2.lose-title{color:var(--rose);text-shadow:0 0 28px rgba(255,79,163,.45)}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
 @media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .stats div{background:rgba(16,13,40,.94);padding:14px 14px 12px;display:flex;flex-direction:column;gap:4px;min-width:0}

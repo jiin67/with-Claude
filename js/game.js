@@ -319,13 +319,15 @@ function hurtPlayer(dmg, sx, sy, tag = '?') {
   A.hurt(); burst(P.x, P.y, '#ff3355', 18, 220, 2.6, .5);
   if (sx !== undefined) { const dx = P.x - sx, dy = P.y - sy, d = Math.hypot(dx, dy) || 1; P.vx += dx / d * 260; P.vy += dy / d * 260; }
   if (P.hp <= 0) {
-    if (G.revives > 0) {
-      G.revives--; P.hp = P.maxHp * .5; P.inv = 2.2; G.flash = .6; pushAway(320, 700);
-      ebullets.length = 0;
-      fx.push({ k: 'ring', x: P.x, y: P.y, r0: 20, r1: 320, life: .6, max: .6, color: COL.heal, w: 6 });
-      showBanner('비상 재가동', '한 번 더 싸울 수 있다', 'info', 2); A.level();
-    } else { P.hp = 0; endRun(false); }
+    if (G.revives > 0) { G.revives--; reviveShip('비상 재가동'); }
+    else { P.hp = 0; if (!offerRevive()) endRun(false); }
   }
+}
+function reviveShip(title) {
+  P.hp = P.maxHp * .5; P.inv = 2.2; G.flash = .6; pushAway(320, 700);
+  ebullets.length = 0;
+  fx.push({ k: 'ring', x: P.x, y: P.y, r0: 20, r1: 320, life: .6, max: .6, color: COL.heal, w: 6 });
+  showBanner(title, '한 번 더 싸울 수 있다', 'info', 2); A.level();
 }
 function pushAway(R, f) {
   for (const e of enemies) { const dx = e.x - P.x, dy = e.y - P.y, d = Math.hypot(dx, dy); if (d < R && d > 0) { e.kx += dx / d * f * (1 - e.kb); e.ky += dy / d * f * (1 - e.kb); } }

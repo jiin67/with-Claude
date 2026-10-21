@@ -61,16 +61,17 @@ function toast(kind, title, sub) {
 /* --------------------------------------------------------------------------
    screens
    -------------------------------------------------------------------------- */
-const SCREENS = ['title', 'prep', 'hangar', 'records', 'settings', 'levelup', 'pause', 'over'];
+const SCREENS = ['title', 'prep', 'hangar', 'records', 'settings', 'levelup', 'pause', 'revive', 'over'];
+const IN_RUN = ['levelup', 'pause', 'revive'];
 let screen = 'title';
-function show(id) { if (id && id !== 'levelup' && id !== 'pause' && id !== 'over') $('toasts').innerHTML = ''; screen = id; for (const s of SCREENS) $(s).hidden = s !== id; $('toasts').hidden = id === 'levelup' || id === 'pause'; }
+function show(id) { if (id && !IN_RUN.includes(id) && id !== 'over') $('toasts').innerHTML = ''; screen = id; for (const s of SCREENS) $(s).hidden = s !== id; $('toasts').hidden = IN_RUN.includes(id); }
 function dustAll() { for (const id of ['dustTitle', 'dustPrep', 'dustHangar']) $(id).textContent = fmtN(SAVE.dust); }
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
 
 function stageUnlocked(i) { return i === 0 || (i === 3 ? !!SAVE.cleared[1] : !!SAVE.cleared[i]); }
 function stageLockText(i) { return i === 3 ? '잔해 지대 클리어 시 열림' : STAGES[i - 1].name + ' 클리어 시 열림'; }
 
-function goTitle() { G = null; $('hud').hidden = true; hideTip(); A.stopMusic(); dustAll(); show('title'); }
+function goTitle() { Ads.gameplay(false); G = null; $('hud').hidden = true; hideTip(); A.stopMusic(); dustAll(); show('title'); }
 
 /* ---- prep ---- */
 function goPrep() {
@@ -207,8 +208,15 @@ function goSettings() {
 /* --------------------------------------------------------------------------
    run flow
    -------------------------------------------------------------------------- */
+let runsThisSession = 0;
+/* from the second run of a visit on, a midgame ad may play first; the portal rate-limits it */
 function startRun() {
+  if (Ads.busy) return;
   A.init();
+  if (runsThisSession > 0) Ads.midgame(beginRun); else beginRun();
+}
+function beginRun() {
+  A.init(); runsThisSession++;
   if (!stageUnlocked(SAVE.stage)) SAVE.stage = 0;
   if (!SAVE.ships[SAVE.ship]) SAVE.ship = 'scout';
   newGame(SAVE.stage, SAVE.ship, SAVE);
@@ -217,21 +225,43 @@ function startRun() {
   SAVE.stats.runs++; persist();
   show(null); $('hud').hidden = false; $('bossbar').hidden = true; $('banner').hidden = true;
   for (const k in hudCache) delete hudCache[k];
-  renderLoadout(); A.startMusic(SAVE.stage); updateHud();
+  renderLoadout(); A.startMusic(SAVE.stage); updateHud(); Ads.gameplay(true);
   showBanner(G.stage.name, G.stage.endless ? '끝까지 버텨라' : '최종 보스를 쓰러뜨리면 클리어', 'info', 2.4);
 }
 function pauseRun() {
   if (!G || G.state !== 'play') return;
-  G.state = 'paused'; keys.clear(); joy.on = false; A.stopMusic();
+  G.state = 'paused'; keys.clear(); joy.on = false; A.stopMusic(); Ads.gameplay(false);
   $('pauseEyebrow').textContent = G.stage.name + ' · ' + fmtT(G.t);
   $('btnQuitConfirm').hidden = true;
   buildChips($('pauseBuild')); show('pause');
 }
-function resumeRun() { if (!G || G.state !== 'paused') return; G.state = 'play'; show(null); A.startMusic(); }
+function resumeRun() { if (!G || G.state !== 'paused') return; G.state = 'play'; show(null); A.startMusic(); Ads.gameplay(true); }
+
+/* ---- rewarded revive: offered once per run after the hangar's own revive is spent ---- */
+function offerRevive() {
+  if (!Ads.ready || AUTO || G.adReviveOffered) return false;
+  G.adReviveOffered = true; G.state = 'revive'; keys.clear(); joy.on = false; A.stopMusic(); hideTip(); Ads.gameplay(false);
+  $('reviveHint').textContent = ''; $('btnReviveAd').disabled = false;
+  show('revive');
+  return true;
+}
+function watchRevive() {
+  if (!G || G.state !== 'revive' || Ads.busy) return;
+  $('btnReviveAd').disabled = true; $('reviveHint').textContent = '';
+  Ads.rewarded(() => {
+    if (!G || G.state !== 'revive') return;
+    G.state = 'play'; show(null); reviveShip('긴급 수리 완료'); A.startMusic(); Ads.gameplay(true);
+  }, () => {
+    $('btnReviveAd').disabled = false;
+    $('reviveHint').textContent = '광고를 불러오지 못했습니다. 다시 시도하거나 귀환하세요.';
+  });
+}
+function declineRevive() { if (G && G.state === 'revive' && !Ads.busy) endRun(false); }
 
 function endRun(win, quit) {
   if (G.state === 'over' || G.state === 'win') return;
-  G.state = win ? 'win' : 'over'; A.stopMusic(); keys.clear(); joy.on = false; hideTip();
+  G.state = win ? 'win' : 'over'; A.stopMusic(); keys.clear(); joy.on = false; hideTip(); Ads.gameplay(false);
+  if (win) Ads.happy();
   if (!win && !quit) { A.big(); burst(P.x, P.y, P.color, 80, 300, 3, 1.2); G.shake = 14; }
   const st = G.stage;
   if (win) G.score += 10000 * st.id;
@@ -242,7 +272,7 @@ function endRun(win, quit) {
   if (win) parts_.push(['클리어', 150 * st.id]);
   if (G.bonusDust) parts_.push(['현상금', G.bonusDust]);
   const base = parts_.reduce((s, p) => s + p[1], 0), gained = Math.round(base * (quit ? .5 : 1) * mining);
-  earn(gained);
+  earn(gained); G.gained = gained;
 
   /* records */
   const S_ = SAVE.stats;
@@ -289,14 +319,33 @@ function endRun(win, quit) {
   const na = $('overAch'); na.innerHTML = '';
   for (const id of G.newAch) { const a = ACH.find(x => x.id === id); const s = el('span'); s.append('업적 '); s.appendChild(el('b', null, a.name)); s.append(' ◆ ' + a.reward); na.appendChild(s); }
   buildChips($('overBuild'));
+  /* rewarded: watch an ad to collect this run's stardust a second time */
+  $('adDustRow').hidden = !(Ads.ready && !quit && gained > 0);
+  $('btnDoubleDust').disabled = false; $('btnDoubleDust').textContent = '광고 보고 별가루 +' + fmtN(gained) + ' 더 받기'; $('adDustHint').textContent = '';
   $('hud').hidden = true; $('bossbar').hidden = true;
   dustAll();
   setTimeout(() => show('over'), win || quit ? 300 : 900);
 }
 
+function doubleDust() {
+  if (!G || G.dustDoubled || Ads.busy) return;
+  $('btnDoubleDust').disabled = true; $('adDustHint').textContent = '';
+  Ads.rewarded(() => {
+    if (!G || G.dustDoubled) return;
+    G.dustDoubled = true; earn(G.gained);
+    if (SAVE.totalDust >= 5000) achieve('dust5000');
+    persist(); dustAll();
+    const s = el('span'); s.append('광고 보너스 '); s.appendChild(el('b', null, '+' + fmtN(G.gained))); $('overEarn').appendChild(s);
+    $('adDustRow').hidden = true;
+  }, () => {
+    $('btnDoubleDust').disabled = false;
+    $('adDustHint').textContent = '광고를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
+  });
+}
+
 /* ---- level up ---- */
 function openLevelUp() {
-  G.state = 'levelup'; A.level(); rollChoices(); drawCards(); show('levelup');
+  G.state = 'levelup'; A.level(); rollChoices(); drawCards(); show('levelup'); Ads.gameplay(false);
   keys.clear(); joy.on = false;
 }
 function drawCards() {
@@ -348,7 +397,7 @@ function pickUpgrade(i) {
   if (G.tutorial && G.tutorial.step === 2) { G.tutorial.step = 3; G.tutorial.t = 0; }
   renderLoadout();
   if (G.pending > 0) { rollChoices(); drawCards(); A.level(); }
-  else { G.state = 'play'; show(null); P.inv = Math.max(P.inv, .6); }
+  else { G.state = 'play'; show(null); P.inv = Math.max(P.inv, .6); Ads.gameplay(true); }
 }
 function reroll() { if (!G || G.state !== 'levelup' || G.rerolls <= 0) return; G.rerolls--; rollChoices(); drawCards(); }
 
@@ -429,6 +478,7 @@ addEventListener('keydown', e => {
   if (c === 'KeyM') { toggleMute(); return; }
   if (inRun) { if (c === 'Escape' || c === 'KeyP') pauseRun(); return; }
   if (G && G.state === 'paused') { if (c === 'Escape' || c === 'KeyP') resumeRun(); return; }
+  if (G && G.state === 'revive') return;
   if (G && G.state === 'levelup') {
     const n = { Digit1: 0, Digit2: 1, Digit3: 2, Numpad1: 0, Numpad2: 1, Numpad3: 2 }[c];
     if (n !== undefined) pickUpgrade(n);
@@ -495,6 +545,7 @@ on('btnQuit', () => { $('btnQuitConfirm').hidden = false; });
 on('btnQuitConfirm', () => { if (!G || G.state !== 'paused') return; $('btnQuitConfirm').hidden = true; endRun(false, true); });
 on('btnPause', pauseRun);
 on('btnMute', toggleMute);
+on('btnReviveAd', watchRevive); on('btnReviveNo', declineRevive); on('btnDoubleDust', doubleDust);
 on('btnAgain', startRun); on('btnToPrep', goPrep); on('btnToHangar', () => goHangar('meta'));
 $('btnMute').setAttribute('aria-pressed', String(A.muted));
 dustAll();
@@ -577,7 +628,7 @@ window.__stardrift = {
   },
   get G() { return G; }, get P() { return P; }, get W() { return W; }, get S() { return S; }, get save() { return SAVE; },
   get counts() { return { enemies: enemies.length, bullets: bullets.length, ebullets: ebullets.length, gems: gems.length, parts: parts.length, hazards: hazards.length }; },
-  start(stage, ship) { if (stage !== undefined) { SAVE.stage = stage; for (let i = 1; i <= Math.max(stage, 1); i++) SAVE.cleared[i] = SAVE.cleared[i] || stage > 0; } if (ship) { SAVE.ship = ship; SAVE.ships[ship] = true; } SAVE.tutorialDone = true; startRun(); },
+  start(stage, ship) { if (stage !== undefined) { SAVE.stage = stage; for (let i = 1; i <= Math.max(stage, 1); i++) SAVE.cleared[i] = SAVE.cleared[i] || stage > 0; } if (ship) { SAVE.ship = ship; SAVE.ships[ship] = true; } SAVE.tutorialDone = true; beginRun(); },
   autopilot(on) { AUTO = on ? autopilotDir : null; },
   sim(seconds, step = 1 / 60) {
     const n = Math.round(seconds / step);
