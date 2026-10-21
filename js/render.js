@@ -131,7 +131,7 @@ function render(dt) {
     const gr = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, h.R);
     gr.addColorStop(0, `rgba(0,0,0,${.9 * k})`); gr.addColorStop(.35, `rgba(60,20,120,${.5 * k})`); gr.addColorStop(1, 'rgba(120,60,255,0)');
     ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(h.x, h.y, h.R, 0, TAU); ctx.fill();
-    ctx.strokeStyle = hexA(COL.sing, .6 * k); ctx.lineWidth = 2;
+    ctx.strokeStyle = hexA(h.evo ? COL.evo : COL.sing, .6 * k); ctx.lineWidth = 2;
     for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(h.x, h.y, h.R * (.3 + .22 * i), now * (2 + i) + i, now * (2 + i) + i + 2.2); ctx.stroke(); }
   }
   /* hazards */
@@ -164,8 +164,8 @@ function render(dt) {
   for (const e of enemies) if (vis(e.x, e.y) && !(e.fade > 0) && !(lite && e.r < 14 && !e.elite)) drawGlow(e.elite ? COL.elite : e.color, e.x, e.y, e.r * 2.6, e.type === 'boss' ? .55 : .42);
   for (const b of ebullets) if (vis(b.x, b.y)) drawGlow(b.snipe ? COL.sniper : b.missile ? '#ff5577' : COL.ebullet, b.x, b.y, b.r * 3.2, .7);
   for (const b of bullets) drawGlow(b.kind === 'wing' ? COL.wing : P.color, b.x, b.y, 14, .6);
-  for (const m of missiles) drawGlow(COL.missile, m.x, m.y, 18, .7);
-  for (const d of discs) drawGlow(COL.disc, d.x, d.y, d.r * 2.6, .6);
+  for (const m of missiles) drawGlow(m.color, m.x, m.y, 18, .7);
+  for (const d of discs) drawGlow(d.color, d.x, d.y, d.r * 2.6, .6);
   for (const w of wings) drawGlow(COL.wing, w.x, w.y, 22, .5);
   drawGlow(P.color, P.x, P.y, 46, .45);
   ctx.globalCompositeOperation = 'source-over';
@@ -278,12 +278,12 @@ function render(dt) {
   ctx.stroke();
   for (const m of missiles) {
     ctx.save(); ctx.translate(m.x, m.y); ctx.rotate(m.a);
-    ctx.fillStyle = COL.missile; ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(-5, 4); ctx.lineTo(-5, -4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = m.color; ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(-5, 4); ctx.lineTo(-5, -4); ctx.closePath(); ctx.fill();
     ctx.restore();
   }
   for (const d of discs) {
     ctx.save(); ctx.translate(d.x, d.y); ctx.rotate(d.spin);
-    ctx.strokeStyle = COL.disc; ctx.lineWidth = 2.5; ctx.fillStyle = hexA(COL.disc, .25);
+    ctx.strokeStyle = d.color; ctx.lineWidth = 2.5; ctx.fillStyle = hexA(d.color, .25);
     ctx.beginPath(); for (let i = 0; i < 3; i++) { const a = i / 3 * TAU; ctx.moveTo(0, 0); ctx.arc(0, 0, d.r, a, a + 1.2); ctx.closePath(); } ctx.fill(); ctx.stroke();
     ctx.restore();
   }
@@ -301,10 +301,10 @@ function render(dt) {
   /* orbit blades */
   if (W.orbit) {
     const o = orbitInfo();
-    ctx.strokeStyle = hexA(COL.blade, .12); ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(P.x, P.y, o.R, 0, TAU); ctx.stroke();
+    ctx.strokeStyle = hexA(o.color, .12); ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(P.x, P.y, o.R, 0, TAU); ctx.stroke();
     for (let i = 0; i < o.n; i++) {
       const a = G.orbitA + i / o.n * TAU, bx = P.x + Math.cos(a) * o.R, by = P.y + Math.sin(a) * o.R;
-      ctx.globalCompositeOperation = 'lighter'; drawGlow(COL.blade, bx, by, o.sz * 2.6, .55); ctx.globalCompositeOperation = 'source-over';
+      ctx.globalCompositeOperation = 'lighter'; drawGlow(o.color, bx, by, o.sz * 2.6, .55); ctx.globalCompositeOperation = 'source-over';
       ctx.save(); ctx.translate(bx, by); ctx.rotate(a + Math.PI / 2);
       ctx.fillStyle = '#e8fdff'; ctx.beginPath(); ctx.moveTo(o.sz * 1.3, 0); ctx.lineTo(0, o.sz * .38); ctx.lineTo(-o.sz * 1.3, 0); ctx.lineTo(0, -o.sz * .38); ctx.closePath(); ctx.fill();
       ctx.restore();
@@ -398,11 +398,15 @@ function drawPortrait(canvas, kind, id, unseen) {
   const c = canvas.getContext('2d'), s = canvas.width;
   c.clearRect(0, 0, s, s);
   c.save(); c.translate(s / 2, s / 2);
-  const color = unseen ? '#3a3560' : kind === 'ship' ? SHIPS.find(x => x.id === id).color : kind === 'boss' ? BOSSES[id].color : COL[id];
+  const color = unseen ? '#3a3560' : kind === 'ship' ? SHIPS.find(x => x.id === id).color : kind === 'boss' ? BOSSES[id].color : kind === 'evo' ? COL.evo : COL[id];
   const gs = glow(color, s * .45, .5);
   c.globalCompositeOperation = 'lighter'; c.drawImage(gs, -gs.width / 2, -gs.height / 2); c.globalCompositeOperation = 'source-over';
   c.lineWidth = s / 28; c.strokeStyle = color; c.fillStyle = hexA(color, .22); c.lineJoin = 'round';
   if (kind === 'ship') { c.rotate(-Math.PI / 2); shipPath(s * .26, c); c.fillStyle = '#0d1a2e'; c.fill(); c.stroke(); }
+  else if (kind === 'evo') {
+    c.beginPath(); for (let i = 0; i < 8; i++) { const a = i / 8 * TAU - Math.PI / 2, rr = i % 2 ? s * .1 : s * .3; c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } c.closePath(); c.fill(); c.stroke();
+    c.beginPath(); c.arc(0, 0, s * .36, 0, TAU); c.lineWidth = s / 56; c.stroke();
+  }
   else { shapePath(kind === 'boss' ? BOSSES[id].shape : ED[id].shape, kind === 'boss' ? s * .3 : s * .26, 0, c); c.fill('evenodd'); c.stroke(); }
   c.restore();
 }
