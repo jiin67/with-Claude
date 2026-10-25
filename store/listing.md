@@ -15,6 +15,7 @@ STARDRIFT is a fast, neon survivors-style roguelite you can play in seconds. You
 
 **Features**
 - 12 weapons and 14 passive upgrades: mix up to 6 weapons per run
+- 6 weapon evolutions: max out a weapon, pair it with the right upgrade, and open a treasure chest
 - 5 ships with different play styles: speed, tank, area, drones
 - 6 bosses with readable bullet patterns: twin splits, laser walls, gravity wells
 - 4 routes, from an 8-minute starter stage to an Endless Void
@@ -33,6 +34,7 @@ STARDRIFT is a fast, neon survivors-style roguelite you can play in seconds. You
 
 **특징**
 - 무기 12종과 강화 14종: 한 판에 무기 최대 6개 조합
+- 무기 진화 6종: 무기를 최대 레벨로 올리고 짝이 되는 강화를 갖추면 보물 상자에서 진화
 - 플레이 스타일이 다른 기체 5종: 기동, 탱커, 범위, 드론
 - 패턴을 읽고 피하는 보스 6종: 분열, 레이저 벽, 중력장
 - 8분짜리 입문 항로부터 무한 공허까지 항로 4개
@@ -55,4 +57,4 @@ STARDRIFT is a fast, neon survivors-style roguelite you can play in seconds. You
 | `thumb-628x628.png` | Poki 같은 정사각 썸네일 |
 | `icon-512.png` | 아이콘 |
 | `cover-1280x720.png` | 유튜브 썸네일, SNS 홍보 |
-| `screens/*.png` | 1920×1080 게임 화면 5장 |
+| `screens/*.png` | 1920×1080 게임 화면 6장 (6번은 무기 진화 카드) |
