@@ -3,7 +3,7 @@
    Menus, saves, achievements, tutorial, HUD, input and the main loop.
    ========================================================================== */
 const $ = id => document.getElementById(id);
-const fmtN = n => Math.floor(n).toLocaleString(L('ko-KR', 'en-US'));
+const fmtN = n => Math.floor(n).toLocaleString(LANG === 'ko' ? 'ko-KR' : 'en-US');
 
 /* --------------------------------------------------------------------------
    save data (browser storage; the game still works when it is unavailable)
@@ -11,12 +11,12 @@ const fmtN = n => Math.floor(n).toLocaleString(L('ko-KR', 'en-US'));
 const SAVE_KEY = 'stardrift.save.v2';
 function freshSave() {
   return { v: 2, dust: 0, totalDust: 0, ships: { scout: true }, ship: 'scout', stage: 0, meta: {}, cleared: {}, best: {},
-    ach: {}, seen: {}, clearsBy: {}, tutorialDone: false, settings: { sound: true, shake: true, lang: '' },
+    ach: {}, seen: {}, clearsBy: {}, tutorialDone: false, settings: { sound: true, shake: true },
     stats: { runs: 0, kills: 0, bosses: 0, time: 0, clears: 0, boom: 0, warders: 0, bestLevel: 0, deaths: 0 } };
 }
-function loadSave() {
+function loadSave(raw) {
   try {
-    const raw = localStorage.getItem(SAVE_KEY);
+    if (raw === undefined) raw = localStorage.getItem(SAVE_KEY);
     if (raw) {
       const s = JSON.parse(raw), f = freshSave();
       if (!s || typeof s !== 'object') return f;
@@ -35,7 +35,23 @@ function loadSave() {
 }
 let SAVE = loadSave();
 const SETTINGS = SAVE.settings;
-function persist() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(SAVE)); } catch (e) {} }
+function persist() {
+  const raw = JSON.stringify(SAVE);
+  try { localStorage.setItem(SAVE_KEY, raw); } catch (e) {}
+  try { if (PORTAL.store) PORTAL.store.setItem(SAVE_KEY, raw); } catch (e) {}
+}
+/* portals with account saves (CrazyGames): their copy wins, so progress follows the player across devices */
+PORTAL.ready.then(() => {
+  if (!PORTAL.store) return;
+  let raw = null;
+  try { raw = PORTAL.store.getItem(SAVE_KEY); } catch (e) {}
+  if (!raw) { persist(); return; }
+  if (G) return;
+  SAVE = loadSave(raw); Object.assign(SETTINGS, SAVE.settings); SAVE.settings = SETTINGS;
+  A.setMuted(!SETTINGS.sound); $('btnMute').setAttribute('aria-pressed', String(A.muted));
+  try { localStorage.setItem(SAVE_KEY, raw); } catch (e) {}
+  if (screen === 'title') dustAll();
+});
 A.muted = !SETTINGS.sound;
 
 function markSeen(k) { if (!SAVE.seen[k]) SAVE.seen[k] = true; }
@@ -45,7 +61,7 @@ function achieve(id) {
   const a = ACH.find(x => x.id === id); if (!a) return;
   SAVE.ach[id] = Date.now(); earn(a.reward);
   if (G && G.newAch) G.newAch.push(id);
-  toast(L('업적 달성', 'Achievement'), a.name, `${a.desc} · ${L('별가루', 'Stardust')} +${a.reward}`);
+  toast(tr('achGot'), a.name, `${a.desc} · ${tr('dust')} +${a.reward}`);
   A.ach(); persist();
 }
 function toast(kind, title, sub) {
@@ -62,16 +78,15 @@ function toast(kind, title, sub) {
    screens
    -------------------------------------------------------------------------- */
 const SCREENS = ['title', 'prep', 'hangar', 'records', 'settings', 'levelup', 'pause', 'revive', 'over'];
-const IN_RUN = ['levelup', 'pause', 'revive'];
 let screen = 'title';
-function show(id) { if (id && !IN_RUN.includes(id) && id !== 'over') $('toasts').innerHTML = ''; screen = id; for (const s of SCREENS) $(s).hidden = s !== id; $('toasts').hidden = IN_RUN.includes(id); }
+function show(id) { if (id && id !== 'levelup' && id !== 'pause' && id !== 'over') $('toasts').innerHTML = ''; screen = id; for (const s of SCREENS) $(s).hidden = s !== id; $('toasts').hidden = id === 'levelup' || id === 'pause' || id === 'revive'; }
 function dustAll() { for (const id of ['dustTitle', 'dustPrep', 'dustHangar']) $(id).textContent = fmtN(SAVE.dust); }
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
 
 function stageUnlocked(i) { return i === 0 || (i === 3 ? !!SAVE.cleared[1] : !!SAVE.cleared[i]); }
-function stageLockText(i) { const n = i === 3 ? STAGES[0].name : STAGES[i - 1].name; return L(n + ' 클리어 시 열림', 'Clear ' + n + ' to unlock'); }
+function stageLockText(i) { return tr('lockStage', STAGES[i === 3 ? 0 : i - 1].name); }
 
-function goTitle() { Ads.gameplay(false); G = null; $('hud').hidden = true; hideTip(); A.stopMusic(); dustAll(); show('title'); }
+function goTitle() { G = null; $('hud').hidden = true; hideTip(); A.stopMusic(); dustAll(); show('title'); }
 
 /* ---- prep ---- */
 function goPrep() {
@@ -90,10 +105,10 @@ function renderPrep() {
     b.append(el('span', 'en', (st.endless ? '∞' : 'STAGE ' + st.id) + ' · ' + st.en), el('h4', null, st.name), el('p', null, open ? st.desc : stageLockText(i)));
     const best = SAVE.best[st.id];
     const meta = el('div', 'meta');
-    if (best) { meta.append(L('최고 ', 'Best ')); const bb = el('b', null, fmtN(best.score)); meta.append(bb, ' · ' + fmtT(best.t)); } else meta.textContent = open ? L('기록 없음', 'No record') : L('잠김', 'Locked');
+    if (best) { meta.append(tr('best')); const bb = el('b', null, fmtN(best.score)); meta.append(bb, ' · ' + fmtT(best.t)); } else meta.textContent = open ? tr('noRecord') : tr('locked');
     b.appendChild(meta);
-    if (SAVE.cleared[st.id]) b.appendChild(el('span', 'tag clear', L('클리어', 'Cleared')));
-    else if (!open) b.appendChild(el('span', 'tag', L('잠김', 'Locked')));
+    if (SAVE.cleared[st.id]) b.appendChild(el('span', 'tag clear', tr('cleared')));
+    else if (!open) b.appendChild(el('span', 'tag', tr('locked')));
     b.onclick = () => { SAVE.stage = i; menuNeb = st.neb; A.click(); renderPrep(); };
     sl.appendChild(b);
   });
@@ -105,11 +120,11 @@ function renderPrep() {
     const cv2 = document.createElement('canvas'); cv2.width = cv2.height = 128; drawPortrait(cv2, 'ship', sh.id);
     b.append(cv2, el('span', 'en', sh.role), el('h4', null, sh.name), el('p', null, sh.desc));
     const st = el('div', 'ship-stats');
-    st.append(el('span', null, L('내구도', 'Hull')), el('b', null, String(sh.hp)), el('span', null, L('속도', 'Speed')), el('b', null, String(sh.speed)));
+    st.append(el('span', null, tr('hp')), el('b', null, String(sh.hp)), el('span', null, tr('speed')), el('b', null, String(sh.speed)));
     b.appendChild(st);
     if (!own) b.appendChild(el('span', 'tag', '◆ ' + fmtN(sh.cost)));
     b.onclick = () => {
-      if (!own) { $('prepHint').textContent = L(`${sh.name}은(는) 격납고에서 별가루 ${fmtN(sh.cost)}로 해금할 수 있습니다.`, `Unlock ${sh.name} in the hangar for ${fmtN(sh.cost)} stardust.`); return; }
+      if (!own) { $('prepHint').textContent = tr('shipLocked', sh.name, fmtN(sh.cost)); return; }
       SAVE.ship = sh.id; A.click(); $('prepHint').textContent = ''; renderPrep();
     };
     shl.appendChild(b);
@@ -129,13 +144,13 @@ function renderHangar() {
     const l = SAVE.meta[m.id] || 0, row = el('div', 'meta-row');
     const top = el('div', 'top'); top.append(el('h4', null, m.name), el('span', 'lv', `LV ${l} / ${m.max}`));
     const pips = el('div', 'pips'); for (let k = 1; k <= m.max; k++) pips.appendChild(el('i', k <= l ? 'on' : ''));
-    row.append(top, pips, el('p', null, m.per + (m.max > 1 ? L(' (단계마다)', ' (per level)') : '')));
+    row.append(top, pips, el('p', null, m.per + (m.max > 1 ? tr('perLevel') : '')));
     if (l < m.max) {
-      const cost = metaCost(m, l), btn = el('button', 'btn gold', `${L('강화', 'Upgrade')} ◆ ${fmtN(cost)}`);
+      const cost = metaCost(m, l), btn = el('button', 'btn gold', `${tr('upgrade')} ◆ ${fmtN(cost)}`);
       btn.disabled = SAVE.dust < cost;
       btn.onclick = () => { if (SAVE.dust < cost) return; SAVE.dust -= cost; SAVE.meta[m.id] = l + 1; A.buy(); checkMetaAch(); persist(); renderHangar(); };
       row.appendChild(btn);
-    } else row.appendChild(el('span', 'lv', L('최대 단계', 'Maxed')));
+    } else row.appendChild(el('span', 'lv', tr('maxed')));
     ml.appendChild(row);
   }
   const ss = $('shipShop'); ss.innerHTML = '';
@@ -143,9 +158,9 @@ function renderHangar() {
     const own = !!SAVE.ships[sh.id], card = el('div', 'pick'); card.style.setProperty('--c', sh.color);
     const cv2 = document.createElement('canvas'); cv2.width = cv2.height = 128; drawPortrait(cv2, 'ship', sh.id);
     card.append(cv2, el('span', 'en', sh.role), el('h4', null, sh.name), el('p', null, sh.desc));
-    if (own) card.appendChild(el('span', 'meta', L('보유 중', 'Owned')));
+    if (own) card.appendChild(el('span', 'meta', tr('owned')));
     else {
-      const btn = el('button', 'btn gold', `${L('해금', 'Unlock')} ◆ ${fmtN(sh.cost)}`); btn.disabled = SAVE.dust < sh.cost;
+      const btn = el('button', 'btn gold', `${tr('unlock')} ◆ ${fmtN(sh.cost)}`); btn.disabled = SAVE.dust < sh.cost;
       btn.onclick = () => { if (SAVE.dust < sh.cost) return; SAVE.dust -= sh.cost; SAVE.ships[sh.id] = true; A.buy(); if (SHIPS.every(s => SAVE.ships[s.id])) achieve('allships'); persist(); renderHangar(); };
       card.appendChild(btn);
     }
@@ -161,63 +176,55 @@ function renderRecords() {
   for (const [t, id] of [['ach', 'tabAch'], ['codex', 'tabCodex'], ['stats', 'tabStats']]) $(id).setAttribute('aria-selected', String(recTab === t));
   $('achList').hidden = recTab !== 'ach'; $('codexList').hidden = recTab !== 'codex'; $('statsList').hidden = recTab !== 'stats';
   const done = ACH.filter(a => SAVE.ach[a.id]).length;
-  $('achCount').textContent = `${L('업적', 'Achievements')} ${done} / ${ACH.length}`;
+  $('achCount').textContent = tr('achCount', done, ACH.length);
   const al = $('achList'); al.innerHTML = '';
   for (const a of ACH) {
     const d = el('div', 'ach' + (SAVE.ach[a.id] ? ' done' : ''));
-    d.append(el('b', null, a.name), el('span', null, a.desc), el('span', 'r', (SAVE.ach[a.id] ? L('달성 · ', 'Done · ') : '') + '◆ ' + a.reward));
+    d.append(el('b', null, a.name), el('span', null, a.desc), el('span', 'r', (SAVE.ach[a.id] ? tr('done') : '') + '◆ ' + a.reward));
     al.appendChild(d);
   }
   const cl = $('codexList'); cl.innerHTML = '';
-  cl.appendChild(el('h4', null, L('적', 'Enemies')));
+  cl.appendChild(el('h4', null, tr('enemies')));
   for (const k of Object.keys(ED)) {
     if (k === 'boss') continue;
     const seen = !!SAVE.seen[k], d = el('div', 'ent' + (seen ? '' : ' unseen'));
     const c2 = document.createElement('canvas'); c2.width = c2.height = 112; drawPortrait(c2, 'enemy', k, !seen);
-    const t = el('div'); t.append(el('b', null, seen ? ED[k].name : '???'), el('span', null, seen ? ED[k].info : L('아직 만나지 못했다.', 'Not encountered yet.')));
+    const t = el('div'); t.append(el('b', null, seen ? ED[k].name : '???'), el('span', null, seen ? ED[k].info : tr('unseen')));
     d.append(c2, t); cl.appendChild(d);
   }
-  cl.appendChild(el('h4', null, L('보스', 'Bosses')));
+  cl.appendChild(el('h4', null, tr('bosses')));
   for (const k of Object.keys(BOSSES)) {
     const seen = !!SAVE.seen['boss:' + k], d = el('div', 'ent' + (seen ? '' : ' unseen'));
     const c2 = document.createElement('canvas'); c2.width = c2.height = 112; drawPortrait(c2, 'boss', k, !seen);
-    const t = el('div'); t.append(el('b', null, seen ? BOSSES[k].name : '???'), el('span', null, seen ? BOSSES[k].info : L('아직 만나지 못했다.', 'Not encountered yet.')));
+    const t = el('div'); t.append(el('b', null, seen ? BOSSES[k].name : '???'), el('span', null, seen ? BOSSES[k].info : tr('unseen')));
     d.append(c2, t); cl.appendChild(d);
   }
-  cl.appendChild(el('h4', null, L('무기 진화', 'Weapon Evolutions')));
+  cl.appendChild(el('h4', null, tr('evoHead')));
   for (const v of EVOLUTIONS) {
     const seen = !!SAVE.seen['evo:' + v.id], d = el('div', 'ent' + (seen ? '' : ' unseen'));
     const c2 = document.createElement('canvas'); c2.width = c2.height = 112; drawPortrait(c2, 'evo', v.id, !seen);
-    const recipe = WEAPONS[v.weapon].name + L(' 최대 + ', ' (max) + ') + UP_BY_ID[v.needs].name;
-    const t = el('div'); t.append(el('b', null, seen ? v.name : '???'), el('span', 'recipe', recipe), el('span', null, seen ? v.desc : L('보물 상자에서 진화시키면 기록된다.', 'Recorded once you evolve it from a treasure chest.')));
+    const recipe = tr('evoRecipe', WEAPONS[v.weapon].name, UP_BY_ID[v.needs].name);
+    const t = el('div'); t.append(el('b', null, seen ? v.name : '???'), el('span', 'recipe', recipe), el('span', null, seen ? v.desc : tr('evoUnseen')));
     d.append(c2, t); cl.appendChild(d);
   }
   const s = SAVE.stats, sl = $('statsList'); sl.innerHTML = '';
-  [[L('출격', 'Runs'), fmtN(s.runs)], [L('총 처치', 'Total kills'), fmtN(s.kills)], [L('보스 격파', 'Bosses defeated'), fmtN(s.bosses)], [L('클리어', 'Clears'), fmtN(s.clears)],
-   [L('총 비행 시간', 'Total flight time'), fmtT(s.time)], [L('최고 레벨', 'Best level'), fmtN(s.bestLevel)], [L('누적 별가루', 'Total stardust'), fmtN(SAVE.totalDust)], [L('격추', 'Times shot down'), fmtN(s.deaths)]].forEach(([k, v]) => {
+  [[tr('stRuns'), fmtN(s.runs)], [tr('stKills'), fmtN(s.kills)], [tr('stBosses'), fmtN(s.bosses)], [tr('stClears'), fmtN(s.clears)],
+   [tr('stTime'), fmtT(s.time)], [tr('stLevel'), fmtN(s.bestLevel)], [tr('stDust'), fmtN(SAVE.totalDust)], [tr('stDeaths'), fmtN(s.deaths)]].forEach(([k, v]) => {
     const d = el('div'); d.append(el('span', null, k), el('b', null, v)); sl.appendChild(d);
   });
 }
 
 /* ---- settings ---- */
 function goSettings() {
-  $('optSound').checked = SETTINGS.sound; $('optShake').checked = SETTINGS.shake; $('optTips').checked = !SAVE.tutorialDone;
-  $('langKo').setAttribute('aria-pressed', String(LANG === 'ko')); $('langEn').setAttribute('aria-pressed', String(LANG === 'en'));
+  $('optSound').checked = SETTINGS.sound; $('optShake').checked = SETTINGS.shake; $('optTips').checked = !SAVE.tutorialDone; $('optLang').value = LANG;
   $('btnResetConfirm').hidden = true; show('settings');
 }
 
 /* --------------------------------------------------------------------------
    run flow
    -------------------------------------------------------------------------- */
-let runsThisSession = 0;
-/* from the second run of a visit on, a midgame ad may play first; the portal rate-limits it */
 function startRun() {
-  if (Ads.busy) return;
   A.init();
-  if (runsThisSession > 0) Ads.midgame(beginRun); else beginRun();
-}
-function beginRun() {
-  A.init(); runsThisSession++;
   if (!stageUnlocked(SAVE.stage)) SAVE.stage = 0;
   if (!SAVE.ships[SAVE.ship]) SAVE.ship = 'scout';
   newGame(SAVE.stage, SAVE.ship, SAVE);
@@ -226,54 +233,70 @@ function beginRun() {
   SAVE.stats.runs++; persist();
   show(null); $('hud').hidden = false; $('bossbar').hidden = true; $('banner').hidden = true;
   for (const k in hudCache) delete hudCache[k];
-  renderLoadout(); A.startMusic(SAVE.stage); updateHud(); Ads.gameplay(true);
-  showBanner(G.stage.name, G.stage.endless ? L('끝까지 버텨라', 'Hold out as long as you can') : L('최종 보스를 쓰러뜨리면 클리어', 'Defeat the final boss to clear'), 'info', 2.4);
+  renderLoadout(); A.startMusic(SAVE.stage); updateHud(); PORTAL.start();
+  showBanner(G.stage.name, G.stage.endless ? tr('endureAll') : tr('beatFinal'), 'info', 2.4);
 }
 function pauseRun() {
   if (!G || G.state !== 'play') return;
-  G.state = 'paused'; keys.clear(); joy.on = false; A.stopMusic(); Ads.gameplay(false);
+  G.state = 'paused'; keys.clear(); joy.on = false; A.stopMusic(); PORTAL.stop();
   $('pauseEyebrow').textContent = G.stage.name + ' · ' + fmtT(G.t);
   $('btnQuitConfirm').hidden = true;
   buildChips($('pauseBuild')); show('pause');
 }
-function resumeRun() { if (!G || G.state !== 'paused') return; G.state = 'play'; show(null); A.startMusic(); Ads.gameplay(true); }
+function resumeRun() { if (!G || G.state !== 'paused') return; G.state = 'play'; show(null); A.startMusic(); PORTAL.start(); }
 
-/* ---- rewarded revive: offered once per run after the hangar's own revive is spent ---- */
-function offerRevive() {
-  if (!Ads.ready || AUTO || G.adReviveOffered) return false;
-  G.adReviveOffered = true; G.state = 'revive'; keys.clear(); joy.on = false; A.stopMusic(); hideTip(); Ads.gameplay(false);
-  $('reviveHint').textContent = ''; $('btnReviveAd').disabled = false;
-  show('revive');
-  return true;
+/* between runs the portal may show an interstitial; the first run of a session starts straight away */
+let launching = false, sessionRuns = 0;
+function launch() {
+  if (launching) return;
+  if (!sessionRuns++ || PORTAL.name === 'none') { startRun(); return; }
+  launching = true;
+  PORTAL.midgame().then(() => { launching = false; startRun(); });
 }
-function watchRevive() {
-  if (!G || G.state !== 'revive' || Ads.busy) return;
-  $('btnReviveAd').disabled = true; $('reviveHint').textContent = '';
-  Ads.rewarded(() => {
+
+/* ad builds: a rewarded ad can bring the ship back once per run */
+function offerRevive() {
+  G.state = 'revive'; A.stopMusic(); keys.clear(); joy.on = false; hideTip(); PORTAL.stop(); $('banner').hidden = true;
+  $('btnReviveAd').disabled = false; show('revive');
+}
+function reviveByAd() {
+  if (!G || G.state !== 'revive') return;
+  $('btnReviveAd').disabled = true;
+  PORTAL.reward().then(ok => {
     if (!G || G.state !== 'revive') return;
-    G.state = 'play'; show(null); reviveShip(L('긴급 수리 완료', 'Emergency Repair')); A.startMusic(); Ads.gameplay(true);
-  }, () => {
-    $('btnReviveAd').disabled = false;
-    $('reviveHint').textContent = L('광고를 불러오지 못했습니다. 다시 시도하거나 귀환하세요.', 'The ad could not load. Try again or return.');
+    if (ok) { G.adRevived = true; G.state = 'play'; show(null); revivePlayer(); A.startMusic(); PORTAL.start(); }
+    else { toast(tr('adFail'), '', ''); endRun(false); }
   });
 }
-function declineRevive() { if (G && G.state === 'revive' && !Ads.busy) endRun(false); }
+let doubleGain = 0;
+function doubleByAd() {
+  const b = $('btnDouble'); if (!doubleGain || b.disabled) return;
+  b.disabled = true;
+  PORTAL.reward().then(ok => {
+    if (!ok) { b.disabled = false; toast(tr('adFail'), '', ''); return; }
+    earn(doubleGain); persist(); dustAll();
+    const d = $('overEarn').querySelector('.dust'); if (d) d.textContent = '+' + fmtN(doubleGain * 2);
+    toast(tr('doubled'), '+' + fmtN(doubleGain), ''); doubleGain = 0; b.hidden = true;
+  });
+}
 
 function endRun(win, quit) {
   if (G.state === 'over' || G.state === 'win') return;
-  G.state = win ? 'win' : 'over'; A.stopMusic(); keys.clear(); joy.on = false; hideTip(); Ads.gameplay(false);
-  if (win) Ads.happy();
+  G.state = win ? 'win' : 'over'; A.stopMusic(); keys.clear(); joy.on = false; hideTip(); PORTAL.stop();
+  if (win) PORTAL.happy();
   if (!win && !quit) { A.big(); burst(P.x, P.y, P.color, 80, 300, 3, 1.2); G.shake = 14; }
   const st = G.stage;
   if (win) G.score += 10000 * st.id;
 
   /* stardust */
   const mining = 1 + (SAVE.meta.mining || 0) * .1;
-  const parts_ = [[L('처치', 'Kills'), Math.floor(G.kills / 8)], [L('생존', 'Survival'), Math.floor(G.t / 6)], [L('보스', 'Bosses'), G.bossKills * 40]];
-  if (win) parts_.push([L('클리어', 'Clear'), 150 * st.id]);
-  if (G.bonusDust) parts_.push([L('현상금', 'Bounty'), G.bonusDust]);
+  const parts_ = [[tr('pKills'), Math.floor(G.kills / 8)], [tr('pTime'), Math.floor(G.t / 6)], [tr('pBoss'), G.bossKills * 40]];
+  if (win) parts_.push([tr('pClear'), 150 * st.id]);
+  if (G.bonusDust) parts_.push([tr('pBounty'), G.bonusDust]);
   const base = parts_.reduce((s, p) => s + p[1], 0), gained = Math.round(base * (quit ? .5 : 1) * mining);
-  earn(gained); G.gained = gained;
+  earn(gained);
+  doubleGain = quit ? 0 : gained;
+  $('btnDouble').hidden = !(PORTAL.rewarded && doubleGain > 0); $('btnDouble').disabled = false;
 
   /* records */
   const S_ = SAVE.stats;
@@ -289,7 +312,7 @@ function endRun(win, quit) {
     achieve('clear' + st.id);
     if (st.id === 2 && !G.ups.hp) achieve('nohp');
     if (SHIPS.every(s => SAVE.clearsBy[s.id] && SAVE.clearsBy[s.id][1])) achieve('veteran');
-    if (firstClear && st.id < 3) G.unlockNote = L(STAGES[st.id].name + (st.id === 1 ? ' · ' + STAGES[3].name : '') + ' 항로가 열렸습니다.', 'New route unlocked: ' + STAGES[st.id].name + (st.id === 1 ? ' · ' + STAGES[3].name : '') + '.');
+    if (firstClear && st.id < 3) G.unlockNote = tr('unlockNote', STAGES[st.id].name, st.id === 1);
   }
   if (S_.runs >= 20) achieve('runs20');
   if (S_.boom >= 10) achieve('boom10');
@@ -298,16 +321,16 @@ function endRun(win, quit) {
   persist();
 
   /* results screen */
-  $('overTitle').textContent = win ? L('스테이지 클리어', 'Stage Clear') : quit ? L('귀환', 'Returned') : L('격추됨', 'Shot Down');
+  $('overTitle').textContent = win ? tr('overWin') : quit ? tr('overQuit') : tr('overLose');
   $('overTitle').className = win ? 'win' : 'lose';
-  $('overEyebrow').textContent = st.name + ' · ' + G.ship.name + ' · ' + fmtT(G.t);
-  $('overSub').textContent = win ? (G.unlockNote || L('항로를 돌파했다. 별가루로 기체를 정비하자.', 'Route cleared. Spend your stardust to refit your ship.'))
-    : quit ? L('작전을 중단했다. 별가루는 절반만 회수된다.', 'Mission aborted. Only half the stardust is recovered.')
-    : G.bosses.length ? L(G.bosses[0].name + '에게 당했다. ', 'Destroyed by ' + G.bosses[0].name + '. ') + BOSSES[G.bosses[0].bid].info
-    : G.t < 90 ? L('초반이 가장 어렵다. 결정을 모으며 계속 움직이자.', 'The opening is the hardest part. Keep moving and collect crystals.')
-    : L('격납고의 영구 강화로 기체를 튼튼하게 만들어 다시 도전하자.', 'Strengthen your ship with hangar upgrades and try again.');
+  $('overEyebrow').textContent = (st.endless ? tr('endlessName') : st.name) + ' · ' + G.ship.name + ' · ' + fmtT(G.t);
+  $('overSub').textContent = win ? (G.unlockNote || tr('subWin'))
+    : quit ? tr('subQuit')
+    : G.bosses.length ? tr('subBoss', G.bosses[0].name, BOSSES[G.bosses[0].bid].info)
+    : G.t < 90 ? tr('subEarly')
+    : tr('subMeta');
   const stt = $('overStats'); stt.innerHTML = '';
-  [[L('생존 시간', 'Survived'), fmtT(G.t)], [L('레벨', 'Level'), P.level], [L('처치', 'Kills'), fmtN(G.kills)], [L('점수', 'Score'), fmtN(G.score)]].forEach(([k, v], i) => {
+  [[tr('rTime'), fmtT(G.t)], [tr('rLevel'), P.level], [tr('rKills'), fmtN(G.kills)], [tr('rScore'), fmtN(G.score)]].forEach(([k, v], i) => {
     const d = el('div'); d.append(el('span', null, k), el('b', null, String(v)));
     if (i === 3 && isBest) d.appendChild(el('span', 'rec', 'NEW BEST'));
     stt.appendChild(d);
@@ -315,52 +338,33 @@ function endRun(win, quit) {
   const er = $('overEarn'); er.innerHTML = '';
   er.appendChild(el('span', 'dust', '+' + fmtN(gained)));
   for (const [k, v] of parts_) { const s = el('span'); s.append(k + ' '); s.appendChild(el('b', null, String(v))); er.appendChild(s); }
-  if (mining > 1) er.appendChild(el('span', null, `${L('채굴 계약', 'Mining Contract')} ×${mining.toFixed(1)}`));
-  if (quit) er.appendChild(el('span', null, L('중단 ×0.5', 'Aborted ×0.5')));
+  if (mining > 1) er.appendChild(el('span', null, tr('mining', mining.toFixed(1))));
+  if (quit) er.appendChild(el('span', null, tr('quitHalf')));
   const na = $('overAch'); na.innerHTML = '';
-  for (const id of G.newAch) { const a = ACH.find(x => x.id === id); const s = el('span'); s.append(L('업적 ', 'Achievement ')); s.appendChild(el('b', null, a.name)); s.append(' ◆ ' + a.reward); na.appendChild(s); }
+  for (const id of G.newAch) { const a = ACH.find(x => x.id === id); const s = el('span'); s.append(tr('achPrefix')); s.appendChild(el('b', null, a.name)); s.append(' ◆ ' + a.reward); na.appendChild(s); }
   buildChips($('overBuild'));
-  /* rewarded: watch an ad to collect this run's stardust a second time */
-  $('adDustRow').hidden = !(Ads.ready && !quit && gained > 0);
-  $('btnDoubleDust').disabled = false; $('btnDoubleDust').textContent = L('광고 보고 별가루 +' + fmtN(gained) + ' 더 받기', 'Watch ad for +' + fmtN(gained) + ' more stardust'); $('adDustHint').textContent = '';
   $('hud').hidden = true; $('bossbar').hidden = true;
   dustAll();
   setTimeout(() => show('over'), win || quit ? 300 : 900);
 }
 
-function doubleDust() {
-  if (!G || G.dustDoubled || Ads.busy) return;
-  $('btnDoubleDust').disabled = true; $('adDustHint').textContent = '';
-  Ads.rewarded(() => {
-    if (!G || G.dustDoubled) return;
-    G.dustDoubled = true; earn(G.gained);
-    if (SAVE.totalDust >= 5000) achieve('dust5000');
-    persist(); dustAll();
-    const s = el('span'); s.append(L('광고 보너스 ', 'Ad bonus ')); s.appendChild(el('b', null, '+' + fmtN(G.gained))); $('overEarn').appendChild(s);
-    $('adDustRow').hidden = true;
-  }, () => {
-    $('btnDoubleDust').disabled = false;
-    $('adDustHint').textContent = L('광고를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.', 'The ad could not load. Please try again in a moment.');
-  });
-}
-
 /* ---- level up ---- */
 function openLevelUp() {
-  G.state = 'levelup'; A.level(); rollChoices(); drawCards(); show('levelup'); Ads.gameplay(false);
+  G.state = 'levelup'; A.level(); rollChoices(); drawCards(); show('levelup'); PORTAL.stop();
   keys.clear(); joy.on = false;
 }
 function drawCards() {
   const evoOffer = G.choices.some(u => u.isEvo);
-  $('luEyebrow').textContent = (G.fromChest ? 'TREASURE' : 'LEVEL ' + P.level) + (G.pending > 1 ? L('  ·  선택 ' + G.pending + '회 남음', '  ·  ' + G.pending + ' picks left') : '');
-  $('luTitle').textContent = evoOffer ? L('무기가 진화합니다', 'Weapon Evolution') : G.fromChest ? L('보물 상자', 'Treasure Chest') : L('강화를 고르세요', 'Choose an Upgrade');
+  $('luEyebrow').textContent = (G.fromChest ? 'TREASURE' : 'LEVEL ' + P.level) + (G.pending > 1 ? tr('picksLeft', G.pending) : '');
+  $('luTitle').textContent = evoOffer ? tr('evoTitle') : G.fromChest ? tr('chestTitle') : tr('pickTitle');
   $('luHint').hidden = !(G.tutorial && G.tutorial.step <= 2);
-  $('weaponSlots').textContent = `${L('무기', 'Weapons')} ${weaponCount()} / ${MAX_WEAPONS}`;
+  $('weaponSlots').textContent = tr('slots', weaponCount(), MAX_WEAPONS);
   const box = $('cards'); box.innerHTML = '';
   G.choices.forEach((u, i) => {
     const cur = G.ups[u.id] || 0, next = cur + 1, [catName, catCol] = CAT[u.cat];
     const b = el('button', 'card'); b.id = 'card' + i; b.type = 'button'; b.style.setProperty('--c', catCol);
     const top = el('div', 'top'); top.append(el('span', 'chip', catName), el('span', 'key', '[' + (i + 1) + ']'));
-    const lv = el('div', 'lv', u.isEvo ? L(WEAPONS[u.evo.weapon].name + ' 진화', 'Evolves ' + WEAPONS[u.evo.weapon].name) : u.max > 20 ? L('즉시 효과', 'Instant') : cur === 0 ? (u.isWeapon ? L('새 무기', 'New weapon') : L('새 강화', 'New upgrade')) : 'LV ' + cur + ' → ' + next);
+    const lv = el('div', 'lv', u.isEvo ? tr('evoOf', WEAPONS[u.evo.weapon].name) : u.max > 20 ? tr('instant') : cur === 0 ? (u.isWeapon ? tr('newWeapon') : tr('newUp')) : 'LV ' + cur + ' → ' + next);
     if (u.isEvo) b.classList.add('evo');
     b.append(top, el('h3', null, u.name), lv);
     if (u.max > 1 && u.max <= 20) {
@@ -374,7 +378,7 @@ function drawCards() {
     b.addEventListener('click', () => pickUpgrade(i));
     box.appendChild(b);
   });
-  const rr = $('btnReroll'); rr.textContent = L('다시 뽑기 (' + G.rerolls + '회)', 'Reroll (' + G.rerolls + ')'); rr.appendChild(el('kbd', null, 'R'));
+  const rr = $('btnReroll'); rr.textContent = tr('reroll', G.rerolls) + ' '; rr.appendChild(el('kbd', null, 'R'));
   rr.disabled = G.rerolls <= 0;
   setTimeout(() => { const c = $('card0'); if (c && matchMedia('(hover:hover)').matches) c.focus({ preventScroll: true }); }, 30);
 }
@@ -385,10 +389,10 @@ function evoHint(u, next) {
   const wName = WEAPONS[v.weapon].name, pName = UP_BY_ID[v.needs].name;
   if (u.isWeapon) {
     if (next < u.max) return '';
-    return L('진화 ', 'Evolves into ') + v.name + ' · ' + (G.ups[v.needs] ? L('다음 보물 상자에서 진화', 'at the next treasure chest') : L(pName + '을(를) 얻으면 보물 상자에서 진화', 'get ' + pName + ', then open a treasure chest'));
+    return tr('evoPrefix', v.name) + (G.ups[v.needs] ? tr('evoNext') : tr('evoNeedPassive', pName));
   }
   if (!W[v.weapon]) return '';
-  return L('진화 ', 'Evolves ') + v.name + ' · ' + (W[v.weapon] >= WEAPONS[v.weapon].max ? L(wName + ' 최대 레벨, 다음 보물 상자에서 진화', wName + ' is maxed, evolves at the next treasure chest') : L(wName + '을(를) 최대 레벨로 올리면 보물 상자에서 진화', 'max ' + wName + ', then open a treasure chest'));
+  return tr('evoPrefix', v.name) + (W[v.weapon] >= WEAPONS[v.weapon].max ? tr('evoMaxed', wName) : tr('evoNeedWeapon', wName));
 }
 function pickUpgrade(i) {
   if (!G || G.state !== 'levelup') return;
@@ -398,7 +402,7 @@ function pickUpgrade(i) {
   if (G.tutorial && G.tutorial.step === 2) { G.tutorial.step = 3; G.tutorial.t = 0; }
   renderLoadout();
   if (G.pending > 0) { rollChoices(); drawCards(); A.level(); }
-  else { G.state = 'play'; show(null); P.inv = Math.max(P.inv, .6); Ads.gameplay(true); }
+  else { G.state = 'play'; show(null); P.inv = Math.max(P.inv, .6); PORTAL.start(); }
 }
 function reroll() { if (!G || G.state !== 'levelup' || G.rerolls <= 0) return; G.rerolls--; rollChoices(); drawCards(); }
 
@@ -411,17 +415,17 @@ function setW(id, v) { v = Math.round(clamp(v, 0, 1) * 1000) / 10 + '%'; if (hud
 function updateHud() {
   setText('timer', fmtT(G.t));
   let sub = '';
-  if (G.cleared) sub = L('항로 돌파', 'Route cleared');
-  else if (G.stage.endless) sub = L('다음 보스까지 ', 'Next boss in ') + fmtT(G.endlessT);
-  else if (G.queue.length) sub = (G.queue[0].final ? L('최종 보스까지 ', 'Final boss in ') : L('보스까지 ', 'Boss in ')) + fmtT(G.queue[0].t - G.t);
-  else if (G.bosses.length) sub = L('보스를 쓰러뜨려라', 'Defeat the boss');
+  if (G.cleared) sub = tr('subCleared');
+  else if (G.stage.endless) sub = tr('subNext') + fmtT(G.endlessT);
+  else if (G.queue.length) sub = (G.queue[0].final ? tr('subFinal') : tr('subBossIn')) + fmtT(G.queue[0].t - G.t);
+  else if (G.bosses.length) sub = tr('subFight');
   setText('subtimer', sub);
   setText('lvl', String(P.level)); setText('kills', fmtN(G.kills));
   setText('hptext', String(Math.ceil(P.hp))); setW('hpfill', P.hp / P.maxHp); setW('xpfill', P.xp / P.next);
   if (G.bosses.length) {
     let hp = 0, mx = 0; const names = new Set();
     for (const b of G.bosses) { hp += Math.max(0, b.hp); mx += b.maxHp; names.add(b.name); }
-    setText('bossname', [...names].join(' · ') + (G.bosses.some(b => b.rage) ? L('  ·  광폭', '  ·  ENRAGED') : ''));
+    setText('bossname', [...names].join(' · ') + (G.bosses.some(b => b.rage) ? '  ·  ' + tr('rage') : ''));
     setW('bossfill', hp / mx); $('bossbar').hidden = false;
   } else $('bossbar').hidden = true;
 }
@@ -450,15 +454,15 @@ function tutorialTick(dt) {
   T.t += dt;
   if (T.step === 0) {
     T.moved += Math.hypot(P.x - T.lx, P.y - T.ly); T.lx = P.x; T.ly = P.y;
-    tip('1 / 4', L('<b>WASD</b>·방향키, 또는 화면을 <b>드래그</b>해서 움직이세요', 'Move with <b>WASD</b> or the arrow keys, or <b>drag</b> the screen'));
+    tip('1 / 4', tr('tut1'));
     if (T.moved > 300) { T.step = 1; T.t = 0; }
   } else if (T.step === 1) {
-    tip('2 / 4', L('무기는 자동으로 쏩니다. 적이 남긴 <b>금색 결정</b>을 모으세요', 'Your weapons fire on their own. Collect the <b>gold crystals</b> enemies drop'));
+    tip('2 / 4', tr('tut2'));
     if (P.level >= 2 || G.pending) T.step = 2;
   } else if (T.step === 2) {
     hideTip();
   } else if (T.step === 3) {
-    tip('4 / 4', L('시간이 되면 <b>보스</b>가 옵니다. 화면 가장자리 화살표가 위치를 알려줘요.<br>정해진 시간에 오는 <b>최종 보스</b>를 쓰러뜨리면 클리어!', 'A <b>boss</b> arrives on schedule. Arrows at the screen edge point to it.<br>Defeat the <b>final boss</b> to clear the stage!'));
+    tip('4 / 4', tr('tut4'));
     if (T.t > 8) { G.tutorial = null; SAVE.tutorialDone = true; persist(); hideTip(); }
   }
 }
@@ -479,7 +483,6 @@ addEventListener('keydown', e => {
   if (c === 'KeyM') { toggleMute(); return; }
   if (inRun) { if (c === 'Escape' || c === 'KeyP') pauseRun(); return; }
   if (G && G.state === 'paused') { if (c === 'Escape' || c === 'KeyP') resumeRun(); return; }
-  if (G && G.state === 'revive') return;
   if (G && G.state === 'levelup') {
     const n = { Digit1: 0, Digit2: 1, Digit3: 2, Numpad1: 0, Numpad2: 1, Numpad3: 2 }[c];
     if (n !== undefined) pickUpgrade(n);
@@ -489,7 +492,7 @@ addEventListener('keydown', e => {
   /* Enter on a focused control belongs to that control */
   const onControl = e.target && e.target.closest && e.target.closest('button, input, label');
   if ((c === 'Enter' || c === 'NumpadEnter') && !onControl) {
-    if (screen === 'over' || screen === 'prep') { e.preventDefault(); startRun(); return; }
+    if (screen === 'over' || screen === 'prep') { e.preventDefault(); launch(); return; }
     if (screen === 'title') { e.preventDefault(); goPrep(); return; }
   }
   if (c === 'Escape' && ['prep', 'hangar', 'records', 'settings'].includes(screen)) goTitle();
@@ -530,28 +533,32 @@ function toggleMute() {
    -------------------------------------------------------------------------- */
 const on = (id, f) => { $(id).addEventListener('click', () => { A.init(); f(); }); };
 on('btnPlay', goPrep); on('btnHangar', () => goHangar()); on('btnRecords', goRecords); on('btnSettings', goSettings);
-on('btnLaunch', startRun); on('btnPrepBack', goTitle);
+on('btnLaunch', launch); on('btnPrepBack', goTitle);
 on('btnHangarBack', goTitle); on('tabMeta', () => { hangarTab = 'meta'; renderHangar(); }); on('tabShips', () => { hangarTab = 'ships'; renderHangar(); });
 on('btnRecordsBack', goTitle);
 on('tabAch', () => { recTab = 'ach'; renderRecords(); }); on('tabCodex', () => { recTab = 'codex'; renderRecords(); }); on('tabStats', () => { recTab = 'stats'; renderRecords(); });
 on('btnSettingsBack', goTitle);
 $('optSound').addEventListener('change', e => { SETTINGS.sound = e.target.checked; A.setMuted(!SETTINGS.sound); $('btnMute').setAttribute('aria-pressed', String(A.muted)); persist(); });
 $('optShake').addEventListener('change', e => { SETTINGS.shake = e.target.checked; persist(); });
+$('optLang').addEventListener('change', e => setLang(e.target.value));
 $('optTips').addEventListener('change', e => { SAVE.tutorialDone = !e.target.checked; persist(); });
-/* text from data.js is built once at load, so a language change reloads the page */
-function setLang(l) { if (l === LANG) return; SETTINGS.lang = l; persist(); location.reload(); }
-on('langKo', () => setLang('ko')); on('langEn', () => setLang('en'));
 on('btnReset', () => { $('btnResetConfirm').hidden = false; });
-on('btnResetConfirm', () => { SAVE = freshSave(); SAVE.settings.lang = SETTINGS.lang; Object.assign(SETTINGS, SAVE.settings); SAVE.settings = SETTINGS; persist(); A.setMuted(!SETTINGS.sound); $('btnMute').setAttribute('aria-pressed', String(A.muted)); toast(L('초기화', 'Reset'), L('저장 데이터를 지웠습니다', 'Save data erased'), L('처음부터 시작합니다', 'Starting fresh')); goTitle(); });
+on('btnResetConfirm', () => { SAVE = freshSave(); Object.assign(SETTINGS, SAVE.settings); SAVE.settings = SETTINGS; persist(); A.setMuted(!SETTINGS.sound); $('btnMute').setAttribute('aria-pressed', String(A.muted)); toast(tr('resetT'), tr('resetB'), tr('resetS')); goTitle(); });
 on('btnReroll', reroll);
 on('btnResume', resumeRun);
 on('btnQuit', () => { $('btnQuitConfirm').hidden = false; });
 on('btnQuitConfirm', () => { if (!G || G.state !== 'paused') return; $('btnQuitConfirm').hidden = true; endRun(false, true); });
 on('btnPause', pauseRun);
 on('btnMute', toggleMute);
-on('btnReviveAd', watchRevive); on('btnReviveNo', declineRevive); on('btnDoubleDust', doubleDust);
-on('btnAgain', startRun); on('btnToPrep', goPrep); on('btnToHangar', () => goHangar('meta'));
+on('btnAgain', launch); on('btnToPrep', goPrep); on('btnToHangar', () => goHangar('meta'));
 $('btnMute').setAttribute('aria-pressed', String(A.muted));
+on('btnReviveAd', reviveByAd); on('btnReviveNo', () => { if (G && G.state === 'revive') endRun(false); });
+on('btnDouble', doubleByAd);
+applyStaticText();
+if (SUPPORT_URL && !PORTAL.rewarded && PORTAL.name === 'none') { $('lnkSupport').href = SUPPORT_URL; $('lnkSupport').hidden = false; }
+/* silence the game while a portal ad plays */
+PORTAL.onAd = playing => { A.setMuted(playing || !SETTINGS.sound); };
+PORTAL.loaded();
 dustAll();
 
 /* --------------------------------------------------------------------------
@@ -632,7 +639,7 @@ window.__stardrift = {
   },
   get G() { return G; }, get P() { return P; }, get W() { return W; }, get S() { return S; }, get save() { return SAVE; },
   get counts() { return { enemies: enemies.length, bullets: bullets.length, ebullets: ebullets.length, gems: gems.length, parts: parts.length, hazards: hazards.length }; },
-  start(stage, ship) { if (stage !== undefined) { SAVE.stage = stage; for (let i = 1; i <= Math.max(stage, 1); i++) SAVE.cleared[i] = SAVE.cleared[i] || stage > 0; } if (ship) { SAVE.ship = ship; SAVE.ships[ship] = true; } SAVE.tutorialDone = true; beginRun(); },
+  start(stage, ship) { if (stage !== undefined) { SAVE.stage = stage; for (let i = 1; i <= Math.max(stage, 1); i++) SAVE.cleared[i] = SAVE.cleared[i] || stage > 0; } if (ship) { SAVE.ship = ship; SAVE.ships[ship] = true; } SAVE.tutorialDone = true; startRun(); },
   autopilot(on) { AUTO = on ? autopilotDir : null; },
   sim(seconds, step = 1 / 60) {
     const n = Math.round(seconds / step);
