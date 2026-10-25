@@ -28,6 +28,7 @@ const PORTAL = (() => {
     /* true when this build can show rewarded ads (the reward buttons appear only then) */
     rewarded: false,
     onAd: null, /* (true) when an ad starts, (false) when it ends — the UI mutes and pauses */
+    store: null, /* localStorage-like account storage, when the portal has one */
     ready: null
   };
 
@@ -48,6 +49,7 @@ const PORTAL = (() => {
         sdk = window.CrazyGames && window.CrazyGames.SDK;
         await timeout(sdk.init(), 8000);
         api.rewarded = sdk.environment !== 'disabled';
+        if (sdk.data && sdk.environment !== 'disabled') api.store = sdk.data;
         try { sdk.game.loadingStart(); } catch (e) {}
       } else if (name === 'poki') {
         await timeout(loadScript(SDK_URL.poki), 8000);
@@ -59,7 +61,7 @@ const PORTAL = (() => {
       }
     } catch (e) {
       /* ad blocker or offline: run as an ad-free build */
-      sdk = null; api.rewarded = name === 'debug';
+      sdk = null; api.store = null; api.rewarded = name === 'debug';
     }
   })();
 

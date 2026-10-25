@@ -14,9 +14,9 @@ function freshSave() {
     ach: {}, seen: {}, clearsBy: {}, tutorialDone: false, settings: { sound: true, shake: true },
     stats: { runs: 0, kills: 0, bosses: 0, time: 0, clears: 0, boom: 0, warders: 0, bestLevel: 0, deaths: 0 } };
 }
-function loadSave() {
+function loadSave(raw) {
   try {
-    const raw = localStorage.getItem(SAVE_KEY);
+    if (raw === undefined) raw = localStorage.getItem(SAVE_KEY);
     if (raw) {
       const s = JSON.parse(raw), f = freshSave();
       if (!s || typeof s !== 'object') return f;
@@ -35,7 +35,23 @@ function loadSave() {
 }
 let SAVE = loadSave();
 const SETTINGS = SAVE.settings;
-function persist() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(SAVE)); } catch (e) {} }
+function persist() {
+  const raw = JSON.stringify(SAVE);
+  try { localStorage.setItem(SAVE_KEY, raw); } catch (e) {}
+  try { if (PORTAL.store) PORTAL.store.setItem(SAVE_KEY, raw); } catch (e) {}
+}
+/* portals with account saves (CrazyGames): their copy wins, so progress follows the player across devices */
+PORTAL.ready.then(() => {
+  if (!PORTAL.store) return;
+  let raw = null;
+  try { raw = PORTAL.store.getItem(SAVE_KEY); } catch (e) {}
+  if (!raw) { persist(); return; }
+  if (G) return;
+  SAVE = loadSave(raw); Object.assign(SETTINGS, SAVE.settings); SAVE.settings = SETTINGS;
+  A.setMuted(!SETTINGS.sound); $('btnMute').setAttribute('aria-pressed', String(A.muted));
+  try { localStorage.setItem(SAVE_KEY, raw); } catch (e) {}
+  if (screen === 'title') dustAll();
+});
 A.muted = !SETTINGS.sound;
 
 function markSeen(k) { if (!SAVE.seen[k]) SAVE.seen[k] = true; }
