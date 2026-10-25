@@ -203,3 +203,12 @@ h3.section{margin:6px 0 -6px;font-size:13px;font-weight:700;letter-spacing:.2em;
 
 @media (prefers-reduced-motion:reduce){#banner{animation:none}.card,.pick{transition:none}.toast{animation:none}}
 @media (max-width:640px){#toasts{left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));top:calc(104px + env(safe-area-inset-top,0px));bottom:auto;align-items:center}#toasts .toast{min-width:0;width:100%;max-width:360px;padding:8px 12px}#toasts .toast:not(:last-child){display:none}}
+/* language picker in settings */
+.toggle.lang{justify-content:space-between;flex-wrap:wrap}
+.toggle select{font:inherit;font-size:15px;color:var(--ink);background:var(--deep);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+/* rewarded-ad offers (portal builds only) */
+#btnDouble{align-self:flex-start}
+#lnkSupport{text-decoration:none;text-align:center}
+/* the English logo is a longer word than 별표류 */
+html:not([lang="ko"]) .logo h1{font-size:clamp(54px,14vw,112px)}
+html:not([lang="ko"]) .logo .en{letter-spacing:.42em}
