@@ -168,13 +168,13 @@ function director(dt) {
     G.swarmT = 50;
     const n = 18 + Math.floor(m * 4), R = viewR() + 40, type = m > 4 ? 'mite' : 'drone';
     for (let i = 0; i < n; i++) { const a = i / n * TAU; spawnEnemy(type, P.x + Math.cos(a) * R, P.y + Math.sin(a) * R); }
-    showBanner('포위망 접근', '모든 방향에서', 'info', 1.6);
+    showBanner(L('포위망 접근', 'Encirclement'), L('모든 방향에서', 'From every direction'), 'info', 1.6);
   }
   /* scripted bosses */
   for (const q of G.queue) {
     if (!q.warned && G.t >= q.t - 3.2) {
       q.warned = true; A.siren();
-      showBanner(q.final ? '최종 보스' : '경고: 거대 개체', BOSSES[q.id].name + ' 접근 중', 'warn', 3);
+      showBanner(q.final ? L('최종 보스', 'Final Boss') : L('경고: 거대 개체', 'Warning: Giant'), BOSSES[q.id].name + L(' 접근 중', ' approaching'), 'warn', 3);
     }
     if (!q.done && G.t >= q.t) {
       q.done = true;
@@ -190,7 +190,7 @@ function director(dt) {
     G.endlessT -= dt;
     if (G.endlessT <= 3.2 && !G.endlessWarned) {
       G.endlessWarned = true; A.siren();
-      showBanner('경고: 거대 개체', BOSSES[ENDLESS_ORDER[G.endlessIdx % ENDLESS_ORDER.length]].name + ' 접근 중', 'warn', 3);
+      showBanner(L('경고: 거대 개체', 'Warning: Giant'), BOSSES[ENDLESS_ORDER[G.endlessIdx % ENDLESS_ORDER.length]].name + L(' 접근 중', ' approaching'), 'warn', 3);
     }
     if (G.endlessT <= 0) {
       G.endlessT = 150; G.endlessWarned = false;
@@ -203,7 +203,7 @@ function director(dt) {
 const ENDLESS_ORDER = ['hive', 'twins', 'crystal', 'storm', 'queen', 'engine'];
 function enrage(list) {
   for (const b of list) { if ((b.rage || 0) >= 3) continue; b.rage = (b.rage || 0) + 1; b.speed *= 1.15; b.dmg *= 1.12; }
-  A.siren(); showBanner('광폭화', list[0].name + '의 공격이 빨라진다', 'warn', 2.4);
+  A.siren(); showBanner(L('광폭화', 'Enraged'), L(list[0].name + '의 공격이 빨라진다', list[0].name + ' attacks faster'), 'warn', 2.4);
 }
 function spawnBoss(id, final, tier) {
   const def = BOSSES[id], [x, y] = edgePoint(-40);
@@ -247,7 +247,7 @@ function splitBoss(b) {
   b.x -= 60;
   G.bosses.push(c);
   fx.push({ k: 'ring', x: b.x + 30, y: b.y, r0: 20, r1: 220, life: .5, max: .5, color: b.color });
-  A.big(); showBanner('분열', '둘 다 쓰러뜨려야 한다', 'warn', 1.8);
+  A.big(); showBanner(L('분열', 'Split'), L('둘 다 쓰러뜨려야 한다', 'Destroy both halves'), 'warn', 1.8);
 }
 function burst(x, y, color, n, spd = 160, size = 2.4, life = .5) {
   for (let i = 0; i < n && parts.length < 1400; i++) {
@@ -294,7 +294,7 @@ function killBoss(e) {
   if (P.hp <= 15) achieve('clutch');
   if (e.bid === 'twins' && !G.bosses.some(b => b.bid === 'twins') && G.t - e.born <= 60) achieve('twinsfast');
   const sibling = G.bosses.some(b => b.bid === e.bid);
-  showBanner(sibling ? '하나 남았다' : '격파', e.name, 'info', 1.8);
+  showBanner(sibling ? L('하나 남았다', 'One left') : L('격파', 'Destroyed'), e.name, 'info', 1.8);
   if (e.final && !G.bosses.some(b => b.final)) stageClear();
 }
 function stageClear() {
@@ -302,7 +302,7 @@ function stageClear() {
   for (const e of enemies) if (!e.dead && e.type !== 'boss') { e.dead = true; burst(e.x, e.y, e.color, 6, 160, 2.4, .5); dropGem(e.x, e.y, e.xp); }
   ebullets.length = 0; hazards.length = 0;
   for (const g of gems) g.pull = true;
-  showBanner('스테이지 클리어', G.stage.name, 'info', 3);
+  showBanner(L('스테이지 클리어', 'Stage Clear'), G.stage.name, 'info', 3);
 }
 function hurtPlayer(dmg, sx, sy, tag = '?') {
   if (P.inv > 0 || G.state !== 'play' || G.cleared) return;
@@ -319,7 +319,7 @@ function hurtPlayer(dmg, sx, sy, tag = '?') {
   A.hurt(); burst(P.x, P.y, '#ff3355', 18, 220, 2.6, .5);
   if (sx !== undefined) { const dx = P.x - sx, dy = P.y - sy, d = Math.hypot(dx, dy) || 1; P.vx += dx / d * 260; P.vy += dy / d * 260; }
   if (P.hp <= 0) {
-    if (G.revives > 0) { G.revives--; reviveShip('비상 재가동'); }
+    if (G.revives > 0) { G.revives--; reviveShip(L('비상 재가동', 'Emergency Reboot')); }
     else { P.hp = 0; if (!offerRevive()) endRun(false); }
   }
 }
@@ -327,7 +327,7 @@ function reviveShip(title) {
   P.hp = P.maxHp * .5; P.inv = 2.2; G.flash = .6; pushAway(320, 700);
   ebullets.length = 0;
   fx.push({ k: 'ring', x: P.x, y: P.y, r0: 20, r1: 320, life: .6, max: .6, color: COL.heal, w: 6 });
-  showBanner(title, '한 번 더 싸울 수 있다', 'info', 2); A.level();
+  showBanner(title, L('한 번 더 싸울 수 있다', 'Back in the fight'), 'info', 2); A.level();
 }
 function pushAway(R, f) {
   for (const e of enemies) { const dx = e.x - P.x, dy = e.y - P.y, d = Math.hypot(dx, dy); if (d < R && d > 0) { e.kx += dx / d * f * (1 - e.kb); e.ky += dy / d * f * (1 - e.kb); } }
@@ -682,7 +682,7 @@ const PAT_LEN = { radial: 3.4, spiral: 3.4, fan: 3.2, summon: 2, charge: 3.2, cr
 function hazard(k, x, y, r, warn, extra) { hazards.push(Object.assign({ k, x, y, r, warn, max: warn, life: 0, tick: 0 }, extra || {})); }
 function updateBoss(b, dt, d, ux, uy) {
   const tier = b.tier, sp = b.speed, haste = 1 + (b.rage || 0) * .3;
-  if (b.final && !b.rage && G.t - b.born > 100) { b.rage = 1; b.speed *= 1.15; showBanner('광폭화', b.name, 'warn', 2); A.siren(); }
+  if (b.final && !b.rage && G.t - b.born > 100) { b.rage = 1; b.speed *= 1.15; showBanner(L('광폭화', 'Enraged'), b.name, 'warn', 2); A.siren(); }
   if (!b.lock) {
     let tx, ty;
     if (d > 300) { tx = ux * sp; ty = uy * sp; } else { tx = (-uy * .9 + ux * .2) * sp; ty = (ux * .9 + uy * .2) * sp; }

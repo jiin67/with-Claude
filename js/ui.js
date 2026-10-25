@@ -3,7 +3,7 @@
    Menus, saves, achievements, tutorial, HUD, input and the main loop.
    ========================================================================== */
 const $ = id => document.getElementById(id);
-const fmtN = n => Math.floor(n).toLocaleString('ko-KR');
+const fmtN = n => Math.floor(n).toLocaleString(L('ko-KR', 'en-US'));
 
 /* --------------------------------------------------------------------------
    save data (browser storage; the game still works when it is unavailable)
@@ -11,7 +11,7 @@ const fmtN = n => Math.floor(n).toLocaleString('ko-KR');
 const SAVE_KEY = 'stardrift.save.v2';
 function freshSave() {
   return { v: 2, dust: 0, totalDust: 0, ships: { scout: true }, ship: 'scout', stage: 0, meta: {}, cleared: {}, best: {},
-    ach: {}, seen: {}, clearsBy: {}, tutorialDone: false, settings: { sound: true, shake: true },
+    ach: {}, seen: {}, clearsBy: {}, tutorialDone: false, settings: { sound: true, shake: true, lang: '' },
     stats: { runs: 0, kills: 0, bosses: 0, time: 0, clears: 0, boom: 0, warders: 0, bestLevel: 0, deaths: 0 } };
 }
 function loadSave() {
@@ -45,7 +45,7 @@ function achieve(id) {
   const a = ACH.find(x => x.id === id); if (!a) return;
   SAVE.ach[id] = Date.now(); earn(a.reward);
   if (G && G.newAch) G.newAch.push(id);
-  toast('업적 달성', a.name, `${a.desc} · 별가루 +${a.reward}`);
+  toast(L('업적 달성', 'Achievement'), a.name, `${a.desc} · ${L('별가루', 'Stardust')} +${a.reward}`);
   A.ach(); persist();
 }
 function toast(kind, title, sub) {
@@ -69,7 +69,7 @@ function dustAll() { for (const id of ['dustTitle', 'dustPrep', 'dustHangar']) $
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
 
 function stageUnlocked(i) { return i === 0 || (i === 3 ? !!SAVE.cleared[1] : !!SAVE.cleared[i]); }
-function stageLockText(i) { return i === 3 ? '잔해 지대 클리어 시 열림' : STAGES[i - 1].name + ' 클리어 시 열림'; }
+function stageLockText(i) { const n = i === 3 ? STAGES[0].name : STAGES[i - 1].name; return L(n + ' 클리어 시 열림', 'Clear ' + n + ' to unlock'); }
 
 function goTitle() { Ads.gameplay(false); G = null; $('hud').hidden = true; hideTip(); A.stopMusic(); dustAll(); show('title'); }
 
@@ -90,10 +90,10 @@ function renderPrep() {
     b.append(el('span', 'en', (st.endless ? '∞' : 'STAGE ' + st.id) + ' · ' + st.en), el('h4', null, st.name), el('p', null, open ? st.desc : stageLockText(i)));
     const best = SAVE.best[st.id];
     const meta = el('div', 'meta');
-    if (best) { meta.append('최고 '); const bb = el('b', null, fmtN(best.score)); meta.append(bb, ' · ' + fmtT(best.t)); } else meta.textContent = open ? '기록 없음' : '잠김';
+    if (best) { meta.append(L('최고 ', 'Best ')); const bb = el('b', null, fmtN(best.score)); meta.append(bb, ' · ' + fmtT(best.t)); } else meta.textContent = open ? L('기록 없음', 'No record') : L('잠김', 'Locked');
     b.appendChild(meta);
-    if (SAVE.cleared[st.id]) b.appendChild(el('span', 'tag clear', '클리어'));
-    else if (!open) b.appendChild(el('span', 'tag', '잠김'));
+    if (SAVE.cleared[st.id]) b.appendChild(el('span', 'tag clear', L('클리어', 'Cleared')));
+    else if (!open) b.appendChild(el('span', 'tag', L('잠김', 'Locked')));
     b.onclick = () => { SAVE.stage = i; menuNeb = st.neb; A.click(); renderPrep(); };
     sl.appendChild(b);
   });
@@ -105,11 +105,11 @@ function renderPrep() {
     const cv2 = document.createElement('canvas'); cv2.width = cv2.height = 128; drawPortrait(cv2, 'ship', sh.id);
     b.append(cv2, el('span', 'en', sh.role), el('h4', null, sh.name), el('p', null, sh.desc));
     const st = el('div', 'ship-stats');
-    st.append(el('span', null, '내구도'), el('b', null, String(sh.hp)), el('span', null, '속도'), el('b', null, String(sh.speed)));
+    st.append(el('span', null, L('내구도', 'Hull')), el('b', null, String(sh.hp)), el('span', null, L('속도', 'Speed')), el('b', null, String(sh.speed)));
     b.appendChild(st);
     if (!own) b.appendChild(el('span', 'tag', '◆ ' + fmtN(sh.cost)));
     b.onclick = () => {
-      if (!own) { $('prepHint').textContent = `${sh.name}은(는) 격납고에서 별가루 ${fmtN(sh.cost)}로 해금할 수 있습니다.`; return; }
+      if (!own) { $('prepHint').textContent = L(`${sh.name}은(는) 격납고에서 별가루 ${fmtN(sh.cost)}로 해금할 수 있습니다.`, `Unlock ${sh.name} in the hangar for ${fmtN(sh.cost)} stardust.`); return; }
       SAVE.ship = sh.id; A.click(); $('prepHint').textContent = ''; renderPrep();
     };
     shl.appendChild(b);
@@ -129,13 +129,13 @@ function renderHangar() {
     const l = SAVE.meta[m.id] || 0, row = el('div', 'meta-row');
     const top = el('div', 'top'); top.append(el('h4', null, m.name), el('span', 'lv', `LV ${l} / ${m.max}`));
     const pips = el('div', 'pips'); for (let k = 1; k <= m.max; k++) pips.appendChild(el('i', k <= l ? 'on' : ''));
-    row.append(top, pips, el('p', null, m.per + (m.max > 1 ? ' (단계마다)' : '')));
+    row.append(top, pips, el('p', null, m.per + (m.max > 1 ? L(' (단계마다)', ' (per level)') : '')));
     if (l < m.max) {
-      const cost = metaCost(m, l), btn = el('button', 'btn gold', `강화 ◆ ${fmtN(cost)}`);
+      const cost = metaCost(m, l), btn = el('button', 'btn gold', `${L('강화', 'Upgrade')} ◆ ${fmtN(cost)}`);
       btn.disabled = SAVE.dust < cost;
       btn.onclick = () => { if (SAVE.dust < cost) return; SAVE.dust -= cost; SAVE.meta[m.id] = l + 1; A.buy(); checkMetaAch(); persist(); renderHangar(); };
       row.appendChild(btn);
-    } else row.appendChild(el('span', 'lv', '최대 단계'));
+    } else row.appendChild(el('span', 'lv', L('최대 단계', 'Maxed')));
     ml.appendChild(row);
   }
   const ss = $('shipShop'); ss.innerHTML = '';
@@ -143,9 +143,9 @@ function renderHangar() {
     const own = !!SAVE.ships[sh.id], card = el('div', 'pick'); card.style.setProperty('--c', sh.color);
     const cv2 = document.createElement('canvas'); cv2.width = cv2.height = 128; drawPortrait(cv2, 'ship', sh.id);
     card.append(cv2, el('span', 'en', sh.role), el('h4', null, sh.name), el('p', null, sh.desc));
-    if (own) card.appendChild(el('span', 'meta', '보유 중'));
+    if (own) card.appendChild(el('span', 'meta', L('보유 중', 'Owned')));
     else {
-      const btn = el('button', 'btn gold', `해금 ◆ ${fmtN(sh.cost)}`); btn.disabled = SAVE.dust < sh.cost;
+      const btn = el('button', 'btn gold', `${L('해금', 'Unlock')} ◆ ${fmtN(sh.cost)}`); btn.disabled = SAVE.dust < sh.cost;
       btn.onclick = () => { if (SAVE.dust < sh.cost) return; SAVE.dust -= sh.cost; SAVE.ships[sh.id] = true; A.buy(); if (SHIPS.every(s => SAVE.ships[s.id])) achieve('allships'); persist(); renderHangar(); };
       card.appendChild(btn);
     }
@@ -161,40 +161,40 @@ function renderRecords() {
   for (const [t, id] of [['ach', 'tabAch'], ['codex', 'tabCodex'], ['stats', 'tabStats']]) $(id).setAttribute('aria-selected', String(recTab === t));
   $('achList').hidden = recTab !== 'ach'; $('codexList').hidden = recTab !== 'codex'; $('statsList').hidden = recTab !== 'stats';
   const done = ACH.filter(a => SAVE.ach[a.id]).length;
-  $('achCount').textContent = `업적 ${done} / ${ACH.length}`;
+  $('achCount').textContent = `${L('업적', 'Achievements')} ${done} / ${ACH.length}`;
   const al = $('achList'); al.innerHTML = '';
   for (const a of ACH) {
     const d = el('div', 'ach' + (SAVE.ach[a.id] ? ' done' : ''));
-    d.append(el('b', null, a.name), el('span', null, a.desc), el('span', 'r', (SAVE.ach[a.id] ? '달성 · ' : '') + '◆ ' + a.reward));
+    d.append(el('b', null, a.name), el('span', null, a.desc), el('span', 'r', (SAVE.ach[a.id] ? L('달성 · ', 'Done · ') : '') + '◆ ' + a.reward));
     al.appendChild(d);
   }
   const cl = $('codexList'); cl.innerHTML = '';
-  cl.appendChild(el('h4', null, '적'));
+  cl.appendChild(el('h4', null, L('적', 'Enemies')));
   for (const k of Object.keys(ED)) {
     if (k === 'boss') continue;
     const seen = !!SAVE.seen[k], d = el('div', 'ent' + (seen ? '' : ' unseen'));
     const c2 = document.createElement('canvas'); c2.width = c2.height = 112; drawPortrait(c2, 'enemy', k, !seen);
-    const t = el('div'); t.append(el('b', null, seen ? ED[k].name : '???'), el('span', null, seen ? ED[k].info : '아직 만나지 못했다.'));
+    const t = el('div'); t.append(el('b', null, seen ? ED[k].name : '???'), el('span', null, seen ? ED[k].info : L('아직 만나지 못했다.', 'Not encountered yet.')));
     d.append(c2, t); cl.appendChild(d);
   }
-  cl.appendChild(el('h4', null, '보스'));
+  cl.appendChild(el('h4', null, L('보스', 'Bosses')));
   for (const k of Object.keys(BOSSES)) {
     const seen = !!SAVE.seen['boss:' + k], d = el('div', 'ent' + (seen ? '' : ' unseen'));
     const c2 = document.createElement('canvas'); c2.width = c2.height = 112; drawPortrait(c2, 'boss', k, !seen);
-    const t = el('div'); t.append(el('b', null, seen ? BOSSES[k].name : '???'), el('span', null, seen ? BOSSES[k].info : '아직 만나지 못했다.'));
+    const t = el('div'); t.append(el('b', null, seen ? BOSSES[k].name : '???'), el('span', null, seen ? BOSSES[k].info : L('아직 만나지 못했다.', 'Not encountered yet.')));
     d.append(c2, t); cl.appendChild(d);
   }
-  cl.appendChild(el('h4', null, '무기 진화'));
+  cl.appendChild(el('h4', null, L('무기 진화', 'Weapon Evolutions')));
   for (const v of EVOLUTIONS) {
     const seen = !!SAVE.seen['evo:' + v.id], d = el('div', 'ent' + (seen ? '' : ' unseen'));
     const c2 = document.createElement('canvas'); c2.width = c2.height = 112; drawPortrait(c2, 'evo', v.id, !seen);
-    const recipe = WEAPONS[v.weapon].name + ' 최대 + ' + UP_BY_ID[v.needs].name;
-    const t = el('div'); t.append(el('b', null, seen ? v.name : '???'), el('span', 'recipe', recipe), el('span', null, seen ? v.desc : '보물 상자에서 진화시키면 기록된다.'));
+    const recipe = WEAPONS[v.weapon].name + L(' 최대 + ', ' (max) + ') + UP_BY_ID[v.needs].name;
+    const t = el('div'); t.append(el('b', null, seen ? v.name : '???'), el('span', 'recipe', recipe), el('span', null, seen ? v.desc : L('보물 상자에서 진화시키면 기록된다.', 'Recorded once you evolve it from a treasure chest.')));
     d.append(c2, t); cl.appendChild(d);
   }
   const s = SAVE.stats, sl = $('statsList'); sl.innerHTML = '';
-  [['출격', fmtN(s.runs)], ['총 처치', fmtN(s.kills)], ['보스 격파', fmtN(s.bosses)], ['클리어', fmtN(s.clears)],
-   ['총 비행 시간', fmtT(s.time)], ['최고 레벨', fmtN(s.bestLevel)], ['누적 별가루', fmtN(SAVE.totalDust)], ['격추', fmtN(s.deaths)]].forEach(([k, v]) => {
+  [[L('출격', 'Runs'), fmtN(s.runs)], [L('총 처치', 'Total kills'), fmtN(s.kills)], [L('보스 격파', 'Bosses defeated'), fmtN(s.bosses)], [L('클리어', 'Clears'), fmtN(s.clears)],
+   [L('총 비행 시간', 'Total flight time'), fmtT(s.time)], [L('최고 레벨', 'Best level'), fmtN(s.bestLevel)], [L('누적 별가루', 'Total stardust'), fmtN(SAVE.totalDust)], [L('격추', 'Times shot down'), fmtN(s.deaths)]].forEach(([k, v]) => {
     const d = el('div'); d.append(el('span', null, k), el('b', null, v)); sl.appendChild(d);
   });
 }
@@ -202,6 +202,7 @@ function renderRecords() {
 /* ---- settings ---- */
 function goSettings() {
   $('optSound').checked = SETTINGS.sound; $('optShake').checked = SETTINGS.shake; $('optTips').checked = !SAVE.tutorialDone;
+  $('langKo').setAttribute('aria-pressed', String(LANG === 'ko')); $('langEn').setAttribute('aria-pressed', String(LANG === 'en'));
   $('btnResetConfirm').hidden = true; show('settings');
 }
 
@@ -226,7 +227,7 @@ function beginRun() {
   show(null); $('hud').hidden = false; $('bossbar').hidden = true; $('banner').hidden = true;
   for (const k in hudCache) delete hudCache[k];
   renderLoadout(); A.startMusic(SAVE.stage); updateHud(); Ads.gameplay(true);
-  showBanner(G.stage.name, G.stage.endless ? '끝까지 버텨라' : '최종 보스를 쓰러뜨리면 클리어', 'info', 2.4);
+  showBanner(G.stage.name, G.stage.endless ? L('끝까지 버텨라', 'Hold out as long as you can') : L('최종 보스를 쓰러뜨리면 클리어', 'Defeat the final boss to clear'), 'info', 2.4);
 }
 function pauseRun() {
   if (!G || G.state !== 'play') return;
@@ -250,10 +251,10 @@ function watchRevive() {
   $('btnReviveAd').disabled = true; $('reviveHint').textContent = '';
   Ads.rewarded(() => {
     if (!G || G.state !== 'revive') return;
-    G.state = 'play'; show(null); reviveShip('긴급 수리 완료'); A.startMusic(); Ads.gameplay(true);
+    G.state = 'play'; show(null); reviveShip(L('긴급 수리 완료', 'Emergency Repair')); A.startMusic(); Ads.gameplay(true);
   }, () => {
     $('btnReviveAd').disabled = false;
-    $('reviveHint').textContent = '광고를 불러오지 못했습니다. 다시 시도하거나 귀환하세요.';
+    $('reviveHint').textContent = L('광고를 불러오지 못했습니다. 다시 시도하거나 귀환하세요.', 'The ad could not load. Try again or return.');
   });
 }
 function declineRevive() { if (G && G.state === 'revive' && !Ads.busy) endRun(false); }
@@ -268,9 +269,9 @@ function endRun(win, quit) {
 
   /* stardust */
   const mining = 1 + (SAVE.meta.mining || 0) * .1;
-  const parts_ = [['처치', Math.floor(G.kills / 8)], ['생존', Math.floor(G.t / 6)], ['보스', G.bossKills * 40]];
-  if (win) parts_.push(['클리어', 150 * st.id]);
-  if (G.bonusDust) parts_.push(['현상금', G.bonusDust]);
+  const parts_ = [[L('처치', 'Kills'), Math.floor(G.kills / 8)], [L('생존', 'Survival'), Math.floor(G.t / 6)], [L('보스', 'Bosses'), G.bossKills * 40]];
+  if (win) parts_.push([L('클리어', 'Clear'), 150 * st.id]);
+  if (G.bonusDust) parts_.push([L('현상금', 'Bounty'), G.bonusDust]);
   const base = parts_.reduce((s, p) => s + p[1], 0), gained = Math.round(base * (quit ? .5 : 1) * mining);
   earn(gained); G.gained = gained;
 
@@ -288,7 +289,7 @@ function endRun(win, quit) {
     achieve('clear' + st.id);
     if (st.id === 2 && !G.ups.hp) achieve('nohp');
     if (SHIPS.every(s => SAVE.clearsBy[s.id] && SAVE.clearsBy[s.id][1])) achieve('veteran');
-    if (firstClear && st.id < 3) G.unlockNote = STAGES[st.id].name + (st.id === 1 ? ' · 무한 공허' : '') + ' 항로가 열렸습니다.';
+    if (firstClear && st.id < 3) G.unlockNote = L(STAGES[st.id].name + (st.id === 1 ? ' · ' + STAGES[3].name : '') + ' 항로가 열렸습니다.', 'New route unlocked: ' + STAGES[st.id].name + (st.id === 1 ? ' · ' + STAGES[3].name : '') + '.');
   }
   if (S_.runs >= 20) achieve('runs20');
   if (S_.boom >= 10) achieve('boom10');
@@ -297,16 +298,16 @@ function endRun(win, quit) {
   persist();
 
   /* results screen */
-  $('overTitle').textContent = win ? '스테이지 클리어' : quit ? '귀환' : '격추됨';
+  $('overTitle').textContent = win ? L('스테이지 클리어', 'Stage Clear') : quit ? L('귀환', 'Returned') : L('격추됨', 'Shot Down');
   $('overTitle').className = win ? 'win' : 'lose';
-  $('overEyebrow').textContent = (st.endless ? '무한 공허' : st.name) + ' · ' + G.ship.name + ' · ' + fmtT(G.t);
-  $('overSub').textContent = win ? (G.unlockNote || '항로를 돌파했다. 별가루로 기체를 정비하자.')
-    : quit ? '작전을 중단했다. 별가루는 절반만 회수된다.'
-    : G.bosses.length ? G.bosses[0].name + '에게 당했다. ' + BOSSES[G.bosses[0].bid].info
-    : G.t < 90 ? '초반이 가장 어렵다. 결정을 모으며 계속 움직이자.'
-    : '격납고의 영구 강화로 기체를 튼튼하게 만들어 다시 도전하자.';
+  $('overEyebrow').textContent = st.name + ' · ' + G.ship.name + ' · ' + fmtT(G.t);
+  $('overSub').textContent = win ? (G.unlockNote || L('항로를 돌파했다. 별가루로 기체를 정비하자.', 'Route cleared. Spend your stardust to refit your ship.'))
+    : quit ? L('작전을 중단했다. 별가루는 절반만 회수된다.', 'Mission aborted. Only half the stardust is recovered.')
+    : G.bosses.length ? L(G.bosses[0].name + '에게 당했다. ', 'Destroyed by ' + G.bosses[0].name + '. ') + BOSSES[G.bosses[0].bid].info
+    : G.t < 90 ? L('초반이 가장 어렵다. 결정을 모으며 계속 움직이자.', 'The opening is the hardest part. Keep moving and collect crystals.')
+    : L('격납고의 영구 강화로 기체를 튼튼하게 만들어 다시 도전하자.', 'Strengthen your ship with hangar upgrades and try again.');
   const stt = $('overStats'); stt.innerHTML = '';
-  [['생존 시간', fmtT(G.t)], ['레벨', P.level], ['처치', fmtN(G.kills)], ['점수', fmtN(G.score)]].forEach(([k, v], i) => {
+  [[L('생존 시간', 'Survived'), fmtT(G.t)], [L('레벨', 'Level'), P.level], [L('처치', 'Kills'), fmtN(G.kills)], [L('점수', 'Score'), fmtN(G.score)]].forEach(([k, v], i) => {
     const d = el('div'); d.append(el('span', null, k), el('b', null, String(v)));
     if (i === 3 && isBest) d.appendChild(el('span', 'rec', 'NEW BEST'));
     stt.appendChild(d);
@@ -314,14 +315,14 @@ function endRun(win, quit) {
   const er = $('overEarn'); er.innerHTML = '';
   er.appendChild(el('span', 'dust', '+' + fmtN(gained)));
   for (const [k, v] of parts_) { const s = el('span'); s.append(k + ' '); s.appendChild(el('b', null, String(v))); er.appendChild(s); }
-  if (mining > 1) er.appendChild(el('span', null, `채굴 계약 ×${mining.toFixed(1)}`));
-  if (quit) er.appendChild(el('span', null, '중단 ×0.5'));
+  if (mining > 1) er.appendChild(el('span', null, `${L('채굴 계약', 'Mining Contract')} ×${mining.toFixed(1)}`));
+  if (quit) er.appendChild(el('span', null, L('중단 ×0.5', 'Aborted ×0.5')));
   const na = $('overAch'); na.innerHTML = '';
-  for (const id of G.newAch) { const a = ACH.find(x => x.id === id); const s = el('span'); s.append('업적 '); s.appendChild(el('b', null, a.name)); s.append(' ◆ ' + a.reward); na.appendChild(s); }
+  for (const id of G.newAch) { const a = ACH.find(x => x.id === id); const s = el('span'); s.append(L('업적 ', 'Achievement ')); s.appendChild(el('b', null, a.name)); s.append(' ◆ ' + a.reward); na.appendChild(s); }
   buildChips($('overBuild'));
   /* rewarded: watch an ad to collect this run's stardust a second time */
   $('adDustRow').hidden = !(Ads.ready && !quit && gained > 0);
-  $('btnDoubleDust').disabled = false; $('btnDoubleDust').textContent = '광고 보고 별가루 +' + fmtN(gained) + ' 더 받기'; $('adDustHint').textContent = '';
+  $('btnDoubleDust').disabled = false; $('btnDoubleDust').textContent = L('광고 보고 별가루 +' + fmtN(gained) + ' 더 받기', 'Watch ad for +' + fmtN(gained) + ' more stardust'); $('adDustHint').textContent = '';
   $('hud').hidden = true; $('bossbar').hidden = true;
   dustAll();
   setTimeout(() => show('over'), win || quit ? 300 : 900);
@@ -335,11 +336,11 @@ function doubleDust() {
     G.dustDoubled = true; earn(G.gained);
     if (SAVE.totalDust >= 5000) achieve('dust5000');
     persist(); dustAll();
-    const s = el('span'); s.append('광고 보너스 '); s.appendChild(el('b', null, '+' + fmtN(G.gained))); $('overEarn').appendChild(s);
+    const s = el('span'); s.append(L('광고 보너스 ', 'Ad bonus ')); s.appendChild(el('b', null, '+' + fmtN(G.gained))); $('overEarn').appendChild(s);
     $('adDustRow').hidden = true;
   }, () => {
     $('btnDoubleDust').disabled = false;
-    $('adDustHint').textContent = '광고를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.';
+    $('adDustHint').textContent = L('광고를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.', 'The ad could not load. Please try again in a moment.');
   });
 }
 
@@ -350,16 +351,16 @@ function openLevelUp() {
 }
 function drawCards() {
   const evoOffer = G.choices.some(u => u.isEvo);
-  $('luEyebrow').textContent = (G.fromChest ? 'TREASURE' : 'LEVEL ' + P.level) + (G.pending > 1 ? '  ·  선택 ' + G.pending + '회 남음' : '');
-  $('luTitle').textContent = evoOffer ? '무기가 진화합니다' : G.fromChest ? '보물 상자' : '강화를 고르세요';
+  $('luEyebrow').textContent = (G.fromChest ? 'TREASURE' : 'LEVEL ' + P.level) + (G.pending > 1 ? L('  ·  선택 ' + G.pending + '회 남음', '  ·  ' + G.pending + ' picks left') : '');
+  $('luTitle').textContent = evoOffer ? L('무기가 진화합니다', 'Weapon Evolution') : G.fromChest ? L('보물 상자', 'Treasure Chest') : L('강화를 고르세요', 'Choose an Upgrade');
   $('luHint').hidden = !(G.tutorial && G.tutorial.step <= 2);
-  $('weaponSlots').textContent = `무기 ${weaponCount()} / ${MAX_WEAPONS}`;
+  $('weaponSlots').textContent = `${L('무기', 'Weapons')} ${weaponCount()} / ${MAX_WEAPONS}`;
   const box = $('cards'); box.innerHTML = '';
   G.choices.forEach((u, i) => {
     const cur = G.ups[u.id] || 0, next = cur + 1, [catName, catCol] = CAT[u.cat];
     const b = el('button', 'card'); b.id = 'card' + i; b.type = 'button'; b.style.setProperty('--c', catCol);
     const top = el('div', 'top'); top.append(el('span', 'chip', catName), el('span', 'key', '[' + (i + 1) + ']'));
-    const lv = el('div', 'lv', u.isEvo ? WEAPONS[u.evo.weapon].name + ' 진화' : u.max > 20 ? '즉시 효과' : cur === 0 ? (u.isWeapon ? '새 무기' : '새 강화') : 'LV ' + cur + ' → ' + next);
+    const lv = el('div', 'lv', u.isEvo ? L(WEAPONS[u.evo.weapon].name + ' 진화', 'Evolves ' + WEAPONS[u.evo.weapon].name) : u.max > 20 ? L('즉시 효과', 'Instant') : cur === 0 ? (u.isWeapon ? L('새 무기', 'New weapon') : L('새 강화', 'New upgrade')) : 'LV ' + cur + ' → ' + next);
     if (u.isEvo) b.classList.add('evo');
     b.append(top, el('h3', null, u.name), lv);
     if (u.max > 1 && u.max <= 20) {
@@ -373,7 +374,7 @@ function drawCards() {
     b.addEventListener('click', () => pickUpgrade(i));
     box.appendChild(b);
   });
-  const rr = $('btnReroll'); rr.textContent = '다시 뽑기 (' + G.rerolls + '회)'; rr.appendChild(el('kbd', null, 'R'));
+  const rr = $('btnReroll'); rr.textContent = L('다시 뽑기 (' + G.rerolls + '회)', 'Reroll (' + G.rerolls + ')'); rr.appendChild(el('kbd', null, 'R'));
   rr.disabled = G.rerolls <= 0;
   setTimeout(() => { const c = $('card0'); if (c && matchMedia('(hover:hover)').matches) c.focus({ preventScroll: true }); }, 30);
 }
@@ -384,10 +385,10 @@ function evoHint(u, next) {
   const wName = WEAPONS[v.weapon].name, pName = UP_BY_ID[v.needs].name;
   if (u.isWeapon) {
     if (next < u.max) return '';
-    return '진화 ' + v.name + ' · ' + (G.ups[v.needs] ? '다음 보물 상자에서 진화' : pName + '을(를) 얻으면 보물 상자에서 진화');
+    return L('진화 ', 'Evolves into ') + v.name + ' · ' + (G.ups[v.needs] ? L('다음 보물 상자에서 진화', 'at the next treasure chest') : L(pName + '을(를) 얻으면 보물 상자에서 진화', 'get ' + pName + ', then open a treasure chest'));
   }
   if (!W[v.weapon]) return '';
-  return '진화 ' + v.name + ' · ' + wName + (W[v.weapon] >= WEAPONS[v.weapon].max ? ' 최대 레벨, 다음 보물 상자에서 진화' : '을(를) 최대 레벨로 올리면 보물 상자에서 진화');
+  return L('진화 ', 'Evolves ') + v.name + ' · ' + (W[v.weapon] >= WEAPONS[v.weapon].max ? L(wName + ' 최대 레벨, 다음 보물 상자에서 진화', wName + ' is maxed, evolves at the next treasure chest') : L(wName + '을(를) 최대 레벨로 올리면 보물 상자에서 진화', 'max ' + wName + ', then open a treasure chest'));
 }
 function pickUpgrade(i) {
   if (!G || G.state !== 'levelup') return;
@@ -410,17 +411,17 @@ function setW(id, v) { v = Math.round(clamp(v, 0, 1) * 1000) / 10 + '%'; if (hud
 function updateHud() {
   setText('timer', fmtT(G.t));
   let sub = '';
-  if (G.cleared) sub = '항로 돌파';
-  else if (G.stage.endless) sub = '다음 보스까지 ' + fmtT(G.endlessT);
-  else if (G.queue.length) sub = (G.queue[0].final ? '최종 보스까지 ' : '보스까지 ') + fmtT(G.queue[0].t - G.t);
-  else if (G.bosses.length) sub = '보스를 쓰러뜨려라';
+  if (G.cleared) sub = L('항로 돌파', 'Route cleared');
+  else if (G.stage.endless) sub = L('다음 보스까지 ', 'Next boss in ') + fmtT(G.endlessT);
+  else if (G.queue.length) sub = (G.queue[0].final ? L('최종 보스까지 ', 'Final boss in ') : L('보스까지 ', 'Boss in ')) + fmtT(G.queue[0].t - G.t);
+  else if (G.bosses.length) sub = L('보스를 쓰러뜨려라', 'Defeat the boss');
   setText('subtimer', sub);
   setText('lvl', String(P.level)); setText('kills', fmtN(G.kills));
   setText('hptext', String(Math.ceil(P.hp))); setW('hpfill', P.hp / P.maxHp); setW('xpfill', P.xp / P.next);
   if (G.bosses.length) {
     let hp = 0, mx = 0; const names = new Set();
     for (const b of G.bosses) { hp += Math.max(0, b.hp); mx += b.maxHp; names.add(b.name); }
-    setText('bossname', [...names].join(' · ') + (G.bosses.some(b => b.rage) ? '  ·  광폭' : ''));
+    setText('bossname', [...names].join(' · ') + (G.bosses.some(b => b.rage) ? L('  ·  광폭', '  ·  ENRAGED') : ''));
     setW('bossfill', hp / mx); $('bossbar').hidden = false;
   } else $('bossbar').hidden = true;
 }
@@ -449,15 +450,15 @@ function tutorialTick(dt) {
   T.t += dt;
   if (T.step === 0) {
     T.moved += Math.hypot(P.x - T.lx, P.y - T.ly); T.lx = P.x; T.ly = P.y;
-    tip('1 / 4', '<b>WASD</b>·방향키, 또는 화면을 <b>드래그</b>해서 움직이세요');
+    tip('1 / 4', L('<b>WASD</b>·방향키, 또는 화면을 <b>드래그</b>해서 움직이세요', 'Move with <b>WASD</b> or the arrow keys, or <b>drag</b> the screen'));
     if (T.moved > 300) { T.step = 1; T.t = 0; }
   } else if (T.step === 1) {
-    tip('2 / 4', '무기는 자동으로 쏩니다. 적이 남긴 <b>금색 결정</b>을 모으세요');
+    tip('2 / 4', L('무기는 자동으로 쏩니다. 적이 남긴 <b>금색 결정</b>을 모으세요', 'Your weapons fire on their own. Collect the <b>gold crystals</b> enemies drop'));
     if (P.level >= 2 || G.pending) T.step = 2;
   } else if (T.step === 2) {
     hideTip();
   } else if (T.step === 3) {
-    tip('4 / 4', '시간이 되면 <b>보스</b>가 옵니다. 화면 가장자리 화살표가 위치를 알려줘요.<br>정해진 시간에 오는 <b>최종 보스</b>를 쓰러뜨리면 클리어!');
+    tip('4 / 4', L('시간이 되면 <b>보스</b>가 옵니다. 화면 가장자리 화살표가 위치를 알려줘요.<br>정해진 시간에 오는 <b>최종 보스</b>를 쓰러뜨리면 클리어!', 'A <b>boss</b> arrives on schedule. Arrows at the screen edge point to it.<br>Defeat the <b>final boss</b> to clear the stage!'));
     if (T.t > 8) { G.tutorial = null; SAVE.tutorialDone = true; persist(); hideTip(); }
   }
 }
@@ -537,8 +538,11 @@ on('btnSettingsBack', goTitle);
 $('optSound').addEventListener('change', e => { SETTINGS.sound = e.target.checked; A.setMuted(!SETTINGS.sound); $('btnMute').setAttribute('aria-pressed', String(A.muted)); persist(); });
 $('optShake').addEventListener('change', e => { SETTINGS.shake = e.target.checked; persist(); });
 $('optTips').addEventListener('change', e => { SAVE.tutorialDone = !e.target.checked; persist(); });
+/* text from data.js is built once at load, so a language change reloads the page */
+function setLang(l) { if (l === LANG) return; SETTINGS.lang = l; persist(); location.reload(); }
+on('langKo', () => setLang('ko')); on('langEn', () => setLang('en'));
 on('btnReset', () => { $('btnResetConfirm').hidden = false; });
-on('btnResetConfirm', () => { SAVE = freshSave(); Object.assign(SETTINGS, SAVE.settings); SAVE.settings = SETTINGS; persist(); A.setMuted(!SETTINGS.sound); $('btnMute').setAttribute('aria-pressed', String(A.muted)); toast('초기화', '저장 데이터를 지웠습니다', '처음부터 시작합니다'); goTitle(); });
+on('btnResetConfirm', () => { SAVE = freshSave(); SAVE.settings.lang = SETTINGS.lang; Object.assign(SETTINGS, SAVE.settings); SAVE.settings = SETTINGS; persist(); A.setMuted(!SETTINGS.sound); $('btnMute').setAttribute('aria-pressed', String(A.muted)); toast(L('초기화', 'Reset'), L('저장 데이터를 지웠습니다', 'Save data erased'), L('처음부터 시작합니다', 'Starting fresh')); goTitle(); });
 on('btnReroll', reroll);
 on('btnResume', resumeRun);
 on('btnQuit', () => { $('btnQuitConfirm').hidden = false; });
