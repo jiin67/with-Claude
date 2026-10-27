@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>ORBIT FORGE</title>
+<meta name="description" content="Idle space mining. Tap the asteroid, build a fleet of 10 structures, catch comets and collapse stars into Dark Matter.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="c" data-i18n-aria="canvas"></canvas>
+
+<header id="top">
+  <div class="wallet">
+    <div class="ore"><i class="gem"></i><b id="ore">0</b></div>
+    <div class="ops"><b id="ops">0</b> <span data-i18n="perSec">per sec</span></div>
+  </div>
+  <div class="actions">
+    <button class="pill gold" id="btnBoost" hidden></button>
+    <button class="icon" id="btnSettings" data-i18n-aria="settings">⚙</button>
+  </div>
+</header>
+<div id="effects"></div>
+
+<aside id="panel">
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tabBuild" aria-selected="true" data-i18n="tabBuild">Build</button>
+    <button role="tab" id="tabUp" aria-selected="false"><span data-i18n="tabUp">Upgrades</span><em id="upBadge" hidden></em></button>
+    <button role="tab" id="tabCollapse" aria-selected="false" data-i18n="tabCollapse">Collapse</button>
+    <button role="tab" id="tabRecords" aria-selected="false" data-i18n="tabRecords">Records</button>
+  </nav>
+
+  <section class="page" id="pageBuild">
+    <div class="buyn" role="group" data-i18n-aria="buyN">
+      <button data-n="1" aria-pressed="true">×1</button><button data-n="10">×10</button><button data-n="100">×100</button><button data-n="max">MAX</button>
+    </div>
+    <div id="buildList" class="list"></div>
+  </section>
+
+  <section class="page" id="pageUp" hidden>
+    <div id="upList" class="up-grid"></div>
+    <p class="empty" id="upEmpty" data-i18n="noUps" hidden></p>
+  </section>
+
+  <section class="page" id="pageCollapse" hidden>
+    <h2 data-i18n="collapseTitle">Stellar Collapse</h2>
+    <p class="muted" data-i18n="collapseIntro"></p>
+    <div class="dm-card">
+      <div><span class="lbl" data-i18n="dmOwned">Dark Matter</span><b id="dmOwned">0</b><span class="muted" id="dmBonus"></span></div>
+      <p id="collapseInfo"></p>
+      <div class="row"><button class="btn violet" id="btnCollapse" data-i18n="collapseBtn">Collapse</button><button class="btn danger" id="btnCollapseConfirm" hidden data-i18n="collapseConfirm">Really collapse</button></div>
+    </div>
+    <h3 data-i18n="relics">Relics</h3>
+    <div id="relicList" class="list"></div>
+  </section>
+
+  <section class="page" id="pageRecords" hidden>
+    <h3 data-i18n="stats">Stats</h3>
+    <div id="statList" class="stats"></div>
+    <h3 data-i18n="achTitle">Achievements</h3>
+    <p class="muted" id="achBonus"></p>
+    <div id="achList" class="ach-grid"></div>
+  </section>
+</aside>
+
+<div id="tip" hidden></div>
+<div id="toasts" aria-live="polite"></div>
+
+<div class="modal" id="welcome" hidden>
+  <div class="card">
+    <h2 data-i18n="welcome">Welcome back</h2>
+    <p class="muted" id="awayText"></p>
+    <div class="big-gain"><i class="gem"></i><b id="awayGain">0</b></div>
+    <div class="row">
+      <button class="btn gold" id="btnCollect2" hidden data-i18n="collect2">Watch ad: collect 2×</button>
+      <button class="btn" id="btnCollect" data-i18n="collect">Collect</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="settings" hidden>
+  <div class="card">
+    <h2 data-i18n="settings">Settings</h2>
+    <label class="opt"><span data-i18n="sound">Sound</span><input type="checkbox" id="optSound"></label>
+    <label class="opt"><span data-i18n="notation">Number format</span>
+      <select id="optNotation"><option value="short" data-i18n="notShort"></option><option value="sci" data-i18n="notSci"></option></select></label>
+    <label class="opt"><span data-i18n="language">Language</span>
+      <select id="optLang"><option value="en">English</option><option value="ko">한국어</option></select></label>
+    <div class="danger-zone">
+      <p class="muted" data-i18n="resetWarn"></p>
+      <div class="row"><button class="btn ghost" id="btnReset" data-i18n="reset">Reset data</button><button class="btn danger" id="btnResetConfirm" hidden data-i18n="resetConfirm">Really erase</button></div>
+    </div>
+    <div class="row"><button class="btn" id="btnSettingsClose" data-i18n="close">Close</button></div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/logic.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/portal.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/render.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
