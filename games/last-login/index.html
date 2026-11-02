@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>LAST LOGIN</title>
+<meta name="description" content="Escape-room mystery played entirely on a missing researcher's laptop. Crack the lock screen, open the vault, mount the hidden drive, find her.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- title -->
+<section id="title" class="full">
+  <div class="title-card">
+    <div class="eyebrow" data-i18n="tagline"></div>
+    <h1>LAST<br>LOGIN</h1>
+    <div class="title-sub" id="titleSub"></div>
+    <div class="col">
+      <button class="btn primary" id="btnStart" data-i18n="start"></button>
+      <button class="btn" id="btnResume" hidden data-i18n="resume"></button>
+      <button class="btn ghost" id="btnTitleSettings" data-i18n="settings"></button>
+    </div>
+  </div>
+</section>
+
+<!-- lock screen -->
+<section id="lock" class="full" hidden>
+  <div class="lock-top">
+    <div class="lock-clock" id="lockClock">00:00</div>
+    <div class="lock-date" id="lockDate"></div>
+  </div>
+  <div class="lock-widgets">
+    <div class="widget">
+      <div class="w-title" id="wTitle"></div>
+      <div id="wItems"></div>
+    </div>
+    <div class="widget notifs" id="wNotifs"></div>
+  </div>
+  <div class="sticky" id="stickyNote"></div>
+  <form class="pin" id="pinForm" autocomplete="off">
+    <div class="avatar">Y</div>
+    <div class="owner" id="lockOwner"></div>
+    <div class="dots" id="pinDots"><i></i><i></i><i></i><i></i></div>
+    <input id="pinInput" inputmode="numeric" pattern="[0-9]*" maxlength="4" aria-label="PIN">
+    <div class="pin-msg" id="pinMsg"></div>
+    <div class="keypad" id="keypad"></div>
+  </form>
+  <button class="hint-fab" id="hintLock" type="button">?</button>
+</section>
+
+<!-- desktop -->
+<section id="desktop" class="full" hidden>
+  <header id="menubar">
+    <div class="mb-left"><span class="mb-logo">●</span><b id="mbDevice"></b><span id="mbChapter" class="mb-chapter"></span></div>
+    <div class="mb-right">
+      <button class="mb-btn" id="btnHint">? <span data-i18n="hint"></span></button>
+      <button class="mb-btn" id="btnDeskSettings" aria-label="Settings">⚙</button>
+      <span id="mbClock">00:00</span>
+    </div>
+  </header>
+  <div id="windows"></div>
+  <nav id="dock"></nav>
+</section>
+
+<!-- chapter card -->
+<div class="modal" id="chapterCard" hidden>
+  <div class="card center">
+    <div class="eyebrow" id="chEyebrow"></div>
+    <h2 id="chTitle"></h2>
+    <p class="muted" id="chBody"></p>
+    <button class="btn primary" id="btnChapterNext" data-i18n="next"></button>
+  </div>
+</div>
+
+<!-- ending -->
+<section id="ending" class="full" hidden>
+  <div class="title-card">
+    <div class="eyebrow" id="endSub"></div>
+    <h1 id="endTitle"></h1>
+    <p class="end-body" id="endBody"></p>
+    <div class="stats" id="endStats"></div>
+    <div class="col">
+      <button class="btn primary" id="btnAgain"></button>
+      <button class="btn ghost" id="btnShare"></button>
+    </div>
+  </div>
+</section>
+
+<!-- hint -->
+<div class="modal" id="hintModal" hidden>
+  <div class="card">
+    <div class="row between"><h2 data-i18n="hint"></h2><span class="muted" id="hintCount"></span></div>
+    <p id="hintText" class="hint-text"></p>
+    <div class="row">
+      <button class="btn primary" id="btnHintMore"></button>
+      <button class="btn ghost" id="btnHintClose" data-i18n="close"></button>
+    </div>
+  </div>
+</div>
+
+<!-- settings -->
+<div class="modal" id="settings" hidden>
+  <div class="card">
+    <h2 data-i18n="settings"></h2>
+    <label class="opt"><span data-i18n="sound"></span><input type="checkbox" id="optSound"></label>
+    <label class="opt"><span data-i18n="language"></span><select id="optLang"><option value="en">English</option><option value="ko">한국어</option></select></label>
+    <div class="danger-zone">
+      <p class="muted" data-i18n="resetWarn"></p>
+      <div class="row"><button class="btn ghost" id="btnReset" data-i18n="reset"></button><button class="btn danger" id="btnResetConfirm" hidden data-i18n="resetConfirm"></button></div>
+    </div>
+    <div class="row"><button class="btn" id="btnSettingsClose" data-i18n="close"></button></div>
+  </div>
+</div>
+<div id="toasts"></div>
+
+<script src="js/content.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/portal.js"></script>
+<script src="js/game.js"></script>
+<script src="js/apps.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
