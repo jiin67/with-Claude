@@ -46,18 +46,18 @@ Object.assign(OUTRO.en, {
   ],
   locker: [
     { s: 'pam', m: 'I work the desk. I\'m the one who reported it. Why would I report my own theft?' },
-    { s: 'nell', m: 'Because Vic was going to anyway. Your card bought a drink in the locker room at 6:31, during the fifteen minutes you had the master key.' },
+    { s: 'nell', m: 'Because Vic was going to anyway. The 6:31 selfie has your empty chair, your lanyard on the desk and the key hook bare. All during your fifteen minutes with the master key.' },
     { s: 'pam', m: 'Membership\'s down and they\'re cutting a desk shift. I was going to keep the watch a week, then "find" it. Be the hero. Keep the hours.' },
-    { s: 'theo', m: 'Nell, you said you never used the locker room. You were in and out in six minutes.' },
-    { s: 'nell', m: 'I changed my shoes and left. I didn\'t want to be the person whose locker is next to the one that got robbed. Dumb, I know.' },
+    { s: 'theo', m: 'Nell, you said you never used the locker room. The turnstile has you in and out in six minutes.' },
+    { s: 'nell', m: 'I changed my shoes and left. I didn\'t want to be the person whose locker is next to the one that got robbed. The same log says I was gone before Vic saw his watch, so.' },
     { s: 'theo', m: 'Watch goes back to Vic tonight, Pam. Then we talk to the manager. Together.' }
   ],
   drone: [
-    { s: 'vera', m: 'A parking receipt. You\'re going to hang this on a parking receipt.' },
-    { s: 'gil', m: 'And the loan sheet with your signature, and a takeoff from that exact lot at 22:14 while your car was in it.' },
-    { s: 'vera', m: 'He undercut me on every contract for two years and bragged about it. I wanted one night where his glass came down. I never thought about the plants.' },
+    { s: 'vera', m: 'A parking receipt. You\'re going to hang this on a parking receipt when my phone says I was home.' },
+    { s: 'jay', m: 'Your phone was home. Nobody unlocked it from 9:40 to 10:52. Your car paid for the lot the drone took off from at 10:05.' },
+    { s: 'vera', m: 'He undercut me on every contract for two years and bragged about it. I left the phone on the counter on purpose. I wanted one night where his glass came down. I never thought about the plants.' },
     { s: 'ren', m: 'I said it was windy because I\'d cancelled a shoot and wanted the excuse to sound real. There wasn\'t any wind. Sorry, Gil.' },
-    { s: 'gil', m: 'I\'m the registered owner, so the greenhouse bill comes to me first. Vera, it\'s going to you second, with a lawyer attached.' }
+    { s: 'gil', m: 'And I said garage because the bill comes to the registered owner first. Vera, it\'s going to you second, with a lawyer attached.' }
   ],
   karaoke: [
     { s: 'teo', m: 'A bus stop. Hundreds of people use that stop. This is what you\'ve got?' },
@@ -120,18 +120,18 @@ Object.assign(OUTRO.ko, {
   ],
   locker: [
     { s: 'pam', m: '저 프런트예요. 신고한 사람이 저라고요. 제가 왜 제 절도를 신고해요?' },
-    { s: 'nell', m: '어차피 빅 씨가 할 거니까요. 마스터키 들고 있던 15분 사이, 6시 31분에 탈의실 자판기에서 팸 씨 카드가 찍혔어요.' },
+    { s: 'nell', m: '어차피 빅 씨가 할 거니까요. 6시 31분 셀카에 빈 의자, 데스크 위 사원증, 빈 키 걸이가 다 찍혔어요. 팸 씨가 마스터키 들고 있던 15분 안에요.' },
     { s: 'pam', m: '회원이 줄어서 프런트 근무 하나를 자른대요. 시계 일주일 갖고 있다가 "찾은" 척하려고 했어요. 영웅이 돼서 자리 지키려고요.' },
-    { s: 'theo', m: '넬 씨, 탈의실 안 썼다고 했잖아요. 6분 만에 들어갔다 나왔던데요.' },
-    { s: 'nell', m: '신발만 갈아 신고 나왔어요. 털린 사물함 바로 옆 칸 주인이 되기 싫었어요. 바보 같은 거 알아요.' },
+    { s: 'theo', m: '넬 씨, 탈의실 안 썼다고 했잖아요. 회전문엔 6분 만에 들어갔다 나온 걸로 찍혔는데요.' },
+    { s: 'nell', m: '신발만 갈아 신고 나왔어요. 털린 사물함 바로 옆 칸 주인이 되기 싫었어요. 근데 그 기록이 빅 씨가 시계 보기 전에 제가 나갔다는 것도 말해 주네요.' },
     { s: 'theo', m: '팸 씨, 시계는 오늘 밤 빅 씨한테 돌아가요. 그다음 매니저한테 같이 가요.' }
   ],
   drone: [
-    { s: 'vera', m: '주차 영수증이요. 주차 영수증 하나로 이걸 저한테 씌우겠다는 거예요.' },
-    { s: 'gil', m: '그리고 베라 씨 서명이 있는 대여 장부, 그리고 차가 거기 있던 22시 14분에 바로 그 주차장에서 이륙한 비행 기록이요.' },
-    { s: 'vera', m: '2년 동안 계약마다 저보다 싸게 후려치고 자랑했어요. 그 사람 유리가 내려앉는 밤 하루를 원했어요. 밑에 식물은 생각 못 했어요.' },
+    { s: 'vera', m: '주차 영수증이요. 제 폰이 집이라고 하는데 주차 영수증 하나로 저한테 씌우겠다는 거예요.' },
+    { s: 'jay', m: '폰은 집에 있었죠. 9시 40분부터 10시 52분까지 아무도 안 풀었으니까요. 차는 10시 5분에 드론이 뜬 그 주차장 주차비를 냈고요.' },
+    { s: 'vera', m: '2년 동안 계약마다 저보다 싸게 후려치고 자랑했어요. 폰은 일부러 조리대에 두고 나갔어요. 그 사람 유리가 내려앉는 밤 하루를 원했어요. 밑에 식물은 생각 못 했어요.' },
     { s: 'ren', m: '바람 얘기는 촬영 취소한 핑계가 진짜처럼 들리라고 한 거예요. 바람 없었어요. 길 씨, 미안해요.' },
-    { s: 'gil', m: '등록 소유자가 저라 온실 청구서가 저한테 먼저 와요. 베라 씨, 두 번째로 당신한테 갑니다. 변호사 붙여서요.' }
+    { s: 'gil', m: '저도 차고라고 한 건 청구서가 등록 소유자한테 먼저 오니까요. 베라 씨, 두 번째로 당신한테 갑니다. 변호사 붙여서요.' }
   ],
   karaoke: [
     { s: 'teo', m: '버스 정류장이라고. 그 정류장 쓰는 사람이 몇백 명인데. 이게 다야?' },
