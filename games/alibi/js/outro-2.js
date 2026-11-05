@@ -4,8 +4,9 @@ Object.assign(OUTRO.en, {
   bakery: [
     { s: 'kiro', m: 'Me? I drop flour. I don\'t even know which button turns that thing off.' },
     { s: 'nia', m: 'The alarm says the delivery code opened the back door at 11:40 and closed it at 11:55. The oven died at 11:48, in between.' },
+    { s: 'sam', m: 'And the bike thing was me. Mr. Hale said it, I ran with it. I wanted it to be anyone but the person I was supposed to check up on.' },
     { s: 'kiro', m: 'Fine. The front was blocked, so I came in the back. It was roaring in there, I thought someone forgot it. I was trying to help.' },
-    { s: 'sam', m: 'And I said it was off because I didn\'t check. I just set the alarm and left. Sorry, Nia.' },
+    { s: 'sam', m: 'And I said the oven was off because I didn\'t look. I just set the alarm and left. Sorry, Nia.' },
     { s: 'nia', m: 'Next time, Kiro, "helping" means a text. Sam, next time, look at the oven. Both of you are making croissants with me at 4am.' }
   ],
   train: [
@@ -31,10 +32,10 @@ Object.assign(OUTRO.en, {
   ],
   dog: [
     { s: 'lia', m: 'I didn\'t let him OUT. I let myself IN. There\'s a difference.' },
-    { s: 'wren', m: 'Your code at 3:32, gate alert at 3:34, Biscuit through the gate at 3:36. The difference is two minutes.' },
+    { s: 'wren', m: 'The 3:33 still has you walking back from the gate with an empty bag and the latch up. Your code at 3:32, alert at 3:34, Biscuit out at 3:36.' },
     { s: 'lia', m: 'He cries when I leave the treats at the door. I just wanted to pet him for a second. I thought I\'d closed it. I didn\'t.' },
     { s: 'otis', m: 'And I said north side because my boss thinks I was there. I swapped routes with a guy. Not proud of it, but I never touched the gate.' },
-    { s: 'wren', m: 'Lia, he\'s home and he\'s fine. New rule: you want to see him, you text me and we walk him together.' }
+    { s: 'wren', m: 'Lia, you can visit him. With me, on walk days. And the gate gets closed with the code, not with hope.' }
   ],
   gallery: [
     { s: 'kai', m: 'Me. The artist\'s partner. Stealing from my own partner\'s show. Do you hear yourself?' },
@@ -60,11 +61,11 @@ Object.assign(OUTRO.en, {
     { s: 'gil', m: 'And I said garage because the bill comes to the registered owner first. Vera, it\'s going to you second, with a lawyer attached.' }
   ],
   karaoke: [
-    { s: 'teo', m: 'A bus stop. Hundreds of people use that stop. This is what you\'ve got?' },
-    { s: 'yuri', m: 'The phone pinged there at 11:14. Your card tapped there at 11:15. You said you walked.' },
+    { s: 'teo', m: 'A bus stop. Hundreds of people use that stop. And everyone here already knows it was staff.' },
+    { s: 'yuri', m: 'Sol was out of our room at 9:44. The phone was still inside at 11:08. It pinged at the stop at 11:14, your card tapped there at 11:15. You said you walked.' },
     { s: 'teo', m: 'Dani owes me 200 and keeps "forgetting". I figured I\'d hold the phone till payday. It was stupid. It\'s in my bag.' },
-    { s: 'sol', m: 'And I did go into the room. Someone had spilled lemonade on the deck, I wiped it. Staff aren\'t supposed to enter during a booking, so I said I didn\'t.' },
-    { s: 'yuri', m: 'Teo. Phone, tonight, at my door. Then you and Dani sort out the 200 like adults.' }
+    { s: 'sol', m: 'And I did go into the room. Someone had spilled lemonade on the deck, I wiped it. We get a written warning for entering during a song, so I said I didn\'t.' },
+    { s: 'yuri', m: 'Sol, I\'m sorry we piled on you. Teo. Phone, tonight, at my door. Then you and Dani sort out the 200 like adults.' }
   ],
   server: [
     { s: 'rex', m: 'I\'m the contractor, so I\'m the easy answer. Did anyone actually look at what I was doing on that VPN?' },
@@ -78,9 +79,10 @@ Object.assign(OUTRO.ko, {
   bakery: [
     { s: 'kiro', m: '저요? 저는 밀가루만 나르는 사람이에요. 그 오븐 끄는 버튼이 어딘지도 몰라요.' },
     { s: 'nia', m: '경보 기록에 배송 코드로 뒷문이 11시 40분에 열리고 11시 55분에 닫혔어요. 오븐은 11시 48분에 꺼졌고요. 딱 그 사이예요.' },
-    { s: 'kiro', m: '…앞이 막혀 있어서 뒤로 들어갔어요. 오븐이 막 돌아가길래 누가 깜빡한 줄 알았어요. 도와준다고 한 건데.' },
-    { s: 'sam', m: '그리고 저는 확인도 안 하고 꺼져 있었다고 했어요. 경보만 걸고 그냥 나왔어요. 누나 미안.' },
-    { s: 'nia', m: '키로 씨, 다음엔 "도와주기"는 문자 한 통이에요. 샘, 다음엔 오븐 좀 봐. 둘 다 새벽 4시에 나랑 크루아상 구워.' }
+    { s: 'sam', m: '자전거 얘기는 제가 키웠어요. 헤일 씨가 한 말에 올라탄 거예요. 제가 확인했어야 할 사람만 아니면 누구라도 좋았거든요.' },
+    { s: 'kiro', m: '알았어요. 앞이 막혀 있어서 뒷문으로 들어갔어요. 안에서 오븐이 쾅쾅 돌아가길래 누가 깜빡한 줄 알았어요. 도우려고 한 거예요.' },
+    { s: 'sam', m: '그리고 오븐 꺼져 있었다고 한 건 안 봐서예요. 경보만 걸고 나갔어요. 누나, 미안해요.' },
+    { s: 'nia', m: '키로 씨, 다음부턴 "도움"은 문자 한 통이에요. 샘, 다음부턴 오븐을 봐. 둘 다 새벽 4시에 나랑 크루아상 만들어.' }
   ],
   train: [
     { s: 'mara', m: '네? 오크필드에서 내린 사람이 한둘이에요? 졸았다고 저를 찍는 거예요?' },
@@ -105,10 +107,10 @@ Object.assign(OUTRO.ko, {
   ],
   dog: [
     { s: 'lia', m: '내가 내보낸 게 아니라 내가 들어간 거예요. 그건 다르잖아요.' },
-    { s: 'wren', m: '3시 32분에 네 코드, 3시 34분에 문 열림 알림, 3시 36분에 비스킷이 대문 밖으로. 그 다른 게 2분이야.' },
+    { s: 'wren', m: '3시 33분 사진에 네가 빈 봉지 들고 대문에서 돌아오고 걸쇠는 올라가 있어. 3시 32분 네 코드, 3시 34분 알림, 3시 36분 비스킷 외출.' },
     { s: 'lia', m: '간식만 두고 가면 얘가 울어요. 잠깐만 쓰다듬고 싶었어요. 닫은 줄 알았어요. 안 닫혔더라고요.' },
     { s: 'otis', m: '북쪽이라고 한 건 상사가 제가 거기 있는 줄 알아서요. 동료랑 구역을 바꿨어요. 자랑은 아니지만 대문은 건드린 적 없어요.' },
-    { s: 'wren', m: '리아, 얘 집에 왔고 멀쩡해. 새 규칙: 보고 싶으면 나한테 문자해. 같이 산책 가자.' }
+    { s: 'wren', m: '리아, 얘 보러 와도 돼. 산책 날에 나랑 같이. 대문은 코드로 닫는 거지 바람으로 닫는 게 아니야.' }
   ],
   gallery: [
     { s: 'kai', m: '제가요. 작가의 파트너가. 자기 파트너 전시에서 훔쳤다고요? 지금 무슨 말인지 아세요?' },
@@ -134,11 +136,11 @@ Object.assign(OUTRO.ko, {
     { s: 'gil', m: '저도 차고라고 한 건 청구서가 등록 소유자한테 먼저 오니까요. 베라 씨, 두 번째로 당신한테 갑니다. 변호사 붙여서요.' }
   ],
   karaoke: [
-    { s: 'teo', m: '버스 정류장이라고. 그 정류장 쓰는 사람이 몇백 명인데. 이게 다야?' },
-    { s: 'yuri', m: '폰이 11시 14분에 거기서 잡혔고, 네 카드가 11시 15분에 거기서 찍혔어. 넌 걸어갔다며.' },
+    { s: 'teo', m: '버스 정류장이라고. 그 정류장 쓰는 사람이 몇백 명인데. 그리고 여기 다들 직원 짓인 거 알잖아.' },
+    { s: 'yuri', m: '솔 씨는 9시 44분에 우리 방에서 나갔어. 폰은 11시 8분에도 안에 있었고. 11시 14분에 정류장에서 잡혔고 네 카드는 11시 15분에 거기서 찍혔어. 넌 걸어갔다며.' },
     { s: 'teo', m: '다니가 20만 원 빌려 가고 계속 "깜빡"하잖아. 월급날까지 폰 들고 있으려고 했어. 바보 같았어. 내 가방에 있어.' },
-    { s: 'sol', m: '그리고 저 방에 들어가긴 했어요. 누가 기계에 레모네이드를 쏟아서 닦았어요. 예약 중엔 직원이 들어가면 안 돼서 안 갔다고 했어요.' },
-    { s: 'yuri', m: '태오. 폰, 오늘 밤, 우리 집 앞으로. 그다음 다니랑 20만 원은 어른답게 정리해.' }
+    { s: 'sol', m: '그리고 저 방에 들어가긴 했어요. 누가 기계에 레모네이드를 쏟아서 닦았어요. 노래 중에 들어가면 서면 경고라서 안 갔다고 했어요.' },
+    { s: 'yuri', m: '솔 씨, 몰아세워서 미안해요. 태오. 폰, 오늘 밤, 우리 집 앞으로. 그다음 다니랑 20만 원은 어른답게 정리해.' }
   ],
   server: [
     { s: 'rex', m: '외주니까 제일 쉬운 답이겠죠. 그 VPN에서 제가 뭘 했는지 실제로 본 사람 있어요?' },

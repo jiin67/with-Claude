@@ -2,28 +2,28 @@
 /* ALIBI — case pack E */
 CASES.en.push(
   {
-    id: 'dog', title: 'The Open Gate', place: 'Maple Court · 4:20 pm', difficulty: 1,
-    intro: 'Biscuit the beagle was found two streets away at ten past four. The yard is fenced and the gate has a smart lock. Three people came by today.',
+    id: 'dog', title: 'The Open Gate', place: 'Maple Court · 4:20 pm', difficulty: 2,
+    intro: 'Biscuit the beagle was found two streets away at ten past four. The yard is fenced and the gate has a smart lock. The doorbell camera caught one still that afternoon. Look closely.',
     suspects: [['wren', 'Wren', 'Dog walker'], ['otis', 'Otis', 'Meter reader'], ['lia', 'Lia', 'Neighbor, 15']],
     facts: [
-      ['🔔', 'Doorbell camera: 10:05 Otis at the front door with a utility badge · 15:30 Lia at the front door with a bag of treats. Nobody else all day.'],
+      ['🔔', 'Doorbell camera still, 15:33.', ['timestamp 15:33', 'Lia walking back from the side gate, treat bag empty', 'side gate behind her: latch up, gate ajar', 'Biscuit in the yard, nose already in the gap', 'no van or vehicle in the street']],
       ['🔐', 'Gate smart lock: locked 13:41 (Wren\'s code) · unlocked 15:32 (Lia\'s code) · "gate left open" alert 15:34. Never re-locked.'],
       ['📍', 'GPS collar: in the yard until 15:36 · through the gate 15:36 · Elm Street 16:10.'],
-      ['🧾', 'Utility visit slip: meter read 10:06, "read from the sidewalk, no entry to the yard".'],
+      ['🧾', 'Utility visit slip: meter read 10:06, "read from the sidewalk, no entry to the yard". Doorbell still 10:05: Otis at the door with a badge.'],
       ['🐕', 'Walker app: Wren\'s walk 13:00–13:40, "returned to yard, gate locked".']
     ],
     chat: [
       { s: 'wren', t: '16:22', m: 'Got him back at 1:40 and locked the gate behind me. Code and everything, it beeped.' },
-      { s: 'otis', t: '16:24', m: 'I wasn\'t even on that street today, my route was the north side.', ev: [0, 3], lie: 'The doorbell camera shows Otis at the door at 10:05 and the utility slip has the meter read at 10:06.' },
-      { s: 'lia', t: '16:26', m: 'I just left some treats at the front door around 3:30. Never went into the yard.', ev: 1, lie: 'The gate was unlocked with Lia\'s code at 15:32, two minutes after the doorbell saw her.' },
-      { s: 'wren', t: '16:27', m: 'Did anyone go back after me? The lock keeps a log.' },
-      { s: 'lia', t: '16:28', m: 'Maybe the latch is broken. It sticks sometimes.' },
+      { s: 'otis', t: '16:24', m: 'I wasn\'t even on that street today, my route was the north side.', ev: 3, lie: 'The utility slip has the meter read at 10:06 and the morning doorbell still shows Otis at the door at 10:05.' },
+      { s: 'lia', t: '16:26', m: 'I just left some treats at the front door around 3:30. Never went near the gate.', ev: [0, 1], lie: 'The 15:33 still shows Lia walking back from the side gate with an empty treat bag, and the lock log has her code opening it at 15:32.' },
+      { s: 'wren', t: '16:27', m: 'Did anyone go back after me? The lock keeps a log. And the doorbell takes stills.' },
+      { s: 'lia', t: '16:28', m: 'Okay, I looked at the gate. It was already open when I got there, the latch sticks.', ev: 1, lie: 'The lock log says the gate stayed locked from Wren\'s code at 13:41 until Lia\'s own code opened it at 15:32.' },
       { s: 'otis', t: '16:30', m: 'If the gate was open the collar will show when he left.' },
-      { s: 'wren', t: '16:31', m: 'It does. 3:36. Somebody opened that gate right before.' },
+      { s: 'wren', t: '16:31', m: 'It does. 3:36. Two minutes after somebody\'s code opened it.' },
       { s: 'lia', t: '16:33', m: 'well he\'s home now so' }
     ],
     culprit: 'lia',
-    solve: 'Lia unlocked the gate with her own code at 15:32 to feed Biscuit, left it open, and the collar shows him walking out at 15:36. Otis lied about his route, but the slip proves he only read the meter from the sidewalk at 10:06, five hours before the gate opened.'
+    solve: 'The 15:33 doorbell still does the work: Lia is walking back from the side gate with an empty treat bag, the latch is up, the gate is ajar, and Biscuit already has his nose in the gap. The lock log matches it, her code at 15:32 and "left open" at 15:34, and the collar has him through the gate at 15:36. Otis lied about his route, but the slip and the morning still put him on the sidewalk at 10:06, five hours earlier, never inside the yard.'
   },
   {
     id: 'gallery', title: 'Blue Hour', place: 'Gallery Sett · 9:40 pm', difficulty: 3,
@@ -52,28 +52,28 @@ CASES.en.push(
 );
 CASES.ko.push(
   {
-    id: 'dog', title: '열린 대문', place: '메이플 코트 · 오후 4:20', difficulty: 1,
-    intro: '비글 비스킷이 4시 10분에 두 블록 떨어진 곳에서 발견됐다. 마당은 울타리로 막혀 있고 대문엔 스마트 잠금장치가 있다. 오늘 집에 들른 사람은 셋.',
+    id: 'dog', title: '열린 대문', place: '메이플 코트 · 오후 4:20', difficulty: 2,
+    intro: '비글 비스킷이 4시 10분에 두 블록 떨어진 곳에서 발견됐다. 마당은 울타리로 막혀 있고 대문엔 스마트 잠금장치가 있다. 그날 오후 초인종 카메라가 사진 한 장을 남겼다. 자세히 보라.',
     suspects: [['wren', '렌', '도그워커'], ['otis', '오티스', '검침원'], ['lia', '리아', '옆집, 15살']],
     facts: [
-      ['🔔', '초인종 카메라: 10:05 오티스, 공사 배지를 달고 현관 앞 · 15:30 리아, 간식 봉지를 들고 현관 앞. 그 밖엔 하루 종일 아무도 없음.'],
+      ['🔔', '초인종 카메라 사진, 15:33.', ['타임스탬프 15:33', '옆문 쪽에서 걸어 돌아오는 리아, 빈 간식 봉지', '뒤쪽 옆 대문: 걸쇠 올라감, 문 살짝 열림', '마당의 비스킷, 벌써 틈에 코를 들이밈', '길에 차량 없음']],
       ['🔐', '대문 스마트 잠금: 13:41 잠김(렌의 코드) · 15:32 열림(리아의 코드) · 15:34 "대문 열림" 경고. 이후 다시 잠긴 적 없음.'],
       ['📍', 'GPS 목걸이: 15:36까지 마당 · 15:36 대문 통과 · 16:10 엘름 스트리트.'],
-      ['🧾', '검침 방문 전표: 10:06 검침, "인도에서 확인, 마당 출입 없음".'],
+      ['🧾', '검침 방문 전표: 10:06 검침, "인도에서 확인, 마당 출입 없음". 초인종 사진 10:05: 배지를 단 오티스가 현관 앞.'],
       ['🐕', '산책 앱: 렌의 산책 13:00–13:40, "마당에 복귀, 대문 잠금".']
     ],
     chat: [
       { s: 'wren', t: '16:22', m: '1시 40분에 데려다주고 대문 잠갔어요. 코드 누르고 삑 소리까지 확인했어요.' },
-      { s: 'otis', t: '16:24', m: '저 오늘 그 길은 가지도 않았어요. 북쪽 구역 돌았어요.', ev: [0, 3], lie: '초인종 카메라에 오티스가 10:05에 현관 앞에 있는 모습이 찍혔고, 검침 전표에도 10:06 검침이 적혀 있다.' },
-      { s: 'lia', t: '16:26', m: '3시 반쯤 현관에 간식만 두고 갔어요. 마당엔 들어간 적 없어요.', ev: 1, lie: '초인종이 리아를 본 2분 뒤인 15:32에 대문이 리아의 코드로 열렸다.' },
-      { s: 'wren', t: '16:27', m: '제 다음에 누가 또 왔어요? 잠금장치에 기록 남잖아요.' },
-      { s: 'lia', t: '16:28', m: '걸쇠가 고장 났을 수도 있어요. 가끔 걸리던데.' },
+      { s: 'otis', t: '16:24', m: '저 오늘 그 길은 가지도 않았어요. 북쪽 구역 돌았어요.', ev: 3, lie: '검침 전표에 10:06 검침이 적혀 있고, 아침 초인종 사진에 오티스가 10:05에 현관 앞에 있다.' },
+      { s: 'lia', t: '16:26', m: '3시 반쯤 현관에 간식만 두고 갔어요. 대문 근처엔 가지도 않았어요.', ev: [0, 1], lie: '15:33 사진에 리아가 빈 간식 봉지를 들고 옆 대문 쪽에서 돌아오고 있고, 잠금 기록엔 15:32에 리아의 코드로 문이 열렸다.' },
+      { s: 'wren', t: '16:27', m: '제 다음에 누가 또 왔어요? 잠금장치에 기록 남잖아요. 초인종도 사진 찍고요.' },
+      { s: 'lia', t: '16:28', m: '네, 대문 쪽 보긴 했어요. 근데 갔을 때 이미 열려 있었어요. 걸쇠가 잘 걸리더라고요.', ev: 1, lie: '잠금 기록상 대문은 13:41 렌의 코드로 잠긴 뒤 15:32 리아 본인의 코드로 열릴 때까지 잠겨 있었다.' },
       { s: 'otis', t: '16:30', m: '대문이 열려 있었으면 목걸이에 언제 나갔는지 나오겠네요.' },
-      { s: 'wren', t: '16:31', m: '나와요. 3시 36분. 바로 전에 누가 대문을 연 거예요.' },
+      { s: 'wren', t: '16:31', m: '나와요. 3시 36분. 누군가의 코드로 열린 지 2분 뒤예요.' },
       { s: 'lia', t: '16:33', m: '어쨌든 지금은 집에 왔으니까' }
     ],
     culprit: 'lia',
-    solve: '리아는 비스킷에게 간식을 주려고 15:32에 자기 코드로 대문을 열고 그대로 두었다. 목걸이는 비스킷이 15:36에 걸어 나간 것을 보여 준다. 오티스는 동선을 거짓말했지만, 전표대로 대문이 열리기 다섯 시간 전인 10:06에 인도에서 검침만 했다.'
+    solve: '15:33 초인종 사진이 다 말해 준다. 리아는 빈 간식 봉지를 들고 옆 대문에서 돌아오는 중이고, 걸쇠는 올라가 있고, 문은 열려 있고, 비스킷은 벌써 틈에 코를 들이밀고 있다. 잠금 기록이 그대로 맞아떨어진다. 15:32 리아의 코드, 15:34 "대문 열림", 그리고 목걸이는 15:36 대문 통과. 오티스는 동선을 거짓말했지만, 전표와 아침 사진은 그를 다섯 시간 전인 10:06에 인도에 두었을 뿐 마당 안엔 없었다.'
   },
   {
     id: 'gallery', title: '블루 아워', place: '갤러리 세트 · 오후 9:40', difficulty: 3,
