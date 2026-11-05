@@ -27,7 +27,7 @@ CASES.en.push(
     solve: 'Pam signed out the master key from 18:25 to 18:40 for a locked-out member nobody can name, and her own card bought a drink inside the locker room at 18:31 while she swore she was at the desk. Nell lied about never using the locker room, but the turnstile has her out by 18:08, Vic saw the watch at 18:09, and roll call put her on a bike at 18:45.'
   },
   {
-    id: 'drone', title: 'Through the Glass', place: 'Orchard Lane greenhouse · 11:00 pm', difficulty: 3,
+    id: 'drone', title: 'Through the Glass', place: 'Orchard Lane greenhouse · 11:00 pm', difficulty: 2,
     intro: 'A drone came through the greenhouse roof at twenty past ten. The registration traces to one person. The flight log, the club paperwork and a parking receipt tell a longer story.',
     suspects: [['gil', 'Gil', 'Hobbyist, registered owner'], ['ren', 'Ren', 'Real-estate photographer'], ['jay', 'Jay', 'Teenager'], ['vera', 'Vera', 'Greenhouse owner\'s rival']],
     facts: [
@@ -79,7 +79,7 @@ CASES.ko.push(
     solve: '팸은 아무도 이름을 모르는 "잠긴 회원"을 이유로 18:25부터 18:40까지 마스터키를 빌렸고, 프런트에 있었다던 18:31에 본인 카드로 탈의실 안에서 음료를 샀다. 넬은 탈의실을 안 썼다고 거짓말했지만, 회전문 기록상 18:08에 나갔고 빅은 18:09에 시계를 봤으며 18:45 점호 때 넬은 자전거 위에 있었다.'
   },
   {
-    id: 'drone', title: '유리를 뚫고', place: '오처드 레인 온실 · 오후 11:00', difficulty: 3,
+    id: 'drone', title: '유리를 뚫고', place: '오처드 레인 온실 · 오후 11:00', difficulty: 2,
     intro: '10시 20분쯤 드론 하나가 온실 지붕을 뚫고 떨어졌다. 등록 정보는 한 사람을 가리킨다. 비행 기록과 동호회 서류, 주차 영수증은 더 긴 이야기를 한다.',
     suspects: [['gil', '길', '취미 비행, 등록 소유자'], ['ren', '렌', '부동산 사진가'], ['jay', '제이', '10대'], ['vera', '베라', '온실 주인의 경쟁자']],
     facts: [

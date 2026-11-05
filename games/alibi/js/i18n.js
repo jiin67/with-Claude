@@ -31,7 +31,7 @@ const STR = {
     result: (s, m) => `알리바이 ALIBI · 별 ${s}/${m} · 모든 사건 해결`,
     daily: '오늘의 사건', dailyDone: (st, t) => `오늘 해결 · ${'★'.repeat(st)} · ${t}`, dailySub: '매일 새 사건. 시간은 기록돼요.', time: '시간', claims: '이 사람의 주장', noClaims: '아직 한 말이 없어요',
     shareCase: (title, st, t) => `알리바이 ALIBI · ${title} · ${'★'.repeat(st)}${'☆'.repeat(3 - st)} · ${t}`, streak: n => `${n}일 연속`,
-    music: '배경 음악', accuseLine: n => `범인은 ${n}, 당신이에요.`, me: '탐정', pickEv: '어느 증거와 어긋나나요?', wrongEv: '수상한 말은 맞아요. 하지만 어긋나는 증거는 그게 아니에요.', evidenceFirst: '증거', chatFirst: '채팅',
+    music: '배경 음악', confessed: '자백', brief: '사건 개요', accuseLine: n => `범인은 ${n}, 당신이에요.`, me: '탐정', pickEv: '어느 증거와 어긋나나요?', wrongEv: '수상한 말은 맞아요. 하지만 어긋나는 증거는 그게 아니에요.', evidenceFirst: '증거', chatFirst: '채팅',
     coach: ['먼저 <b>증거</b> 탭을 열어 사실을 읽어 보세요.', '다시 <b>채팅</b>으로 돌아오세요.', n => `${n}의 말이 증거와 어긋나요. 그 말을 누르고, <b>어긋나는 증거</b>를 고르세요.`, '잘했어요. 남은 거짓말 하나는 직접 찾아보세요.', '거짓말을 다 찾았어요. <b>범인 지목</b>을 누르세요.']
   },
   en: {
@@ -49,7 +49,7 @@ const STR = {
     result: (s, m) => `ALIBI · ${s}/${m} stars · all cases closed`,
     daily: 'Today\'s case', dailyDone: (st, t) => `Solved today · ${'★'.repeat(st)} · ${t}`, dailySub: 'A new case every day. Your time counts.', time: 'Time', claims: 'What they claim', noClaims: 'Nothing said yet',
     shareCase: (title, st, t) => `ALIBI · ${title} · ${'★'.repeat(st)}${'☆'.repeat(3 - st)} · ${t}`, streak: n => `${n}-day streak`,
-    music: 'Music', accuseLine: n => `It was you, ${n}.`, me: 'Detective', pickEv: 'Which evidence contradicts it?', wrongEv: 'Right message, wrong evidence. Something else contradicts it.', evidenceFirst: 'Evidence', chatFirst: 'Chat',
+    music: 'Music', confessed: 'CONFESSED', brief: 'Case brief', accuseLine: n => `It was you, ${n}.`, me: 'Detective', pickEv: 'Which evidence contradicts it?', wrongEv: 'Right message, wrong evidence. Something else contradicts it.', evidenceFirst: 'Evidence', chatFirst: 'Chat',
     coach: ['Open the <b>Evidence</b> tab first and read the facts.', 'Now go back to the <b>Chat</b>.', n => `What ${n} says doesn't match the evidence. Tap that message, then <b>pick the evidence it contradicts</b>.`, 'Nice. Find the remaining lie on your own.', 'All lies found. Press <b>Accuse</b>.']
   }
 };

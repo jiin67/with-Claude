@@ -58,7 +58,7 @@ const CASES = {
       intro: 'A competitor posted your unreleased product page an hour after the draft was finished. Four people had access.',
       suspects: [['ava', 'Ava', 'Design lead'], ['ben', 'Ben', 'Engineer'], ['cleo', 'Cleo', 'Product manager'], ['dev', 'Dev', 'Intern']],
       facts: [
-        ['📄', 'Document log: opened by Ben 22:10 (office) · Dev 22:31 (external IP) · Cleo 09:00 next morning.'],
+        ['📄', 'Document log: opened by Ben 22:10 (office) · Dev 22:31 (external IP) · Cleo 20:15 (office).'],
         ['📶', 'IT ticket: office Wi-Fi was down from 21:30 to 23:30.'],
         ['🌐', 'Competitor page went live at 23:00.'],
         ['🔑', 'Access list: Ben, Cleo, Dev. Ava was never added.']
@@ -68,7 +68,7 @@ const CASES = {
         { s: 'ben', t: '23:43', m: 'I did, around 10, on the office wifi. Just proofreading, then I left.', ev: 1, lie: 'The office Wi-Fi was down from 21:30. Ben opened it at 22:10 from the office, so he used another connection and is hiding something about how.' },
         { s: 'dev', t: '23:44', m: 'I never opened the draft. I don\'t even think I have access?', ev: [0, 3], lie: 'The log shows Dev opened it at 22:31 from an external IP, and the access list includes Dev.' },
         { s: 'ava', t: '23:45', m: 'I couldn\'t have. Nobody ever added me to that doc.' },
-        { s: 'cleo', t: '23:46', m: 'I only opened it this morning to add the pricing table.' },
+        { s: 'cleo', t: '23:46', m: 'I opened it at quarter past eight to add the pricing table, then went home.' },
         { s: 'ben', t: '23:47', m: 'Dev, you were still here at 10:30, I saw you at your desk.' },
         { s: 'dev', t: '23:48', m: 'I was packing up!!' }
       ],
@@ -191,7 +191,7 @@ const CASES = {
       intro: '초안을 끝낸 지 한 시간 만에 경쟁사가 우리 미공개 제품 페이지를 올렸다. 접근 권한이 있던 사람은 넷.',
       suspects: [['ava', '아바', '디자인 리드'], ['ben', '벤', '엔지니어'], ['cleo', '클레오', 'PM'], ['dev', '데브', '인턴']],
       facts: [
-        ['📄', '문서 기록: 벤 22:10 열람(사무실) · 데브 22:31 열람(외부 IP) · 클레오 다음 날 09:00.'],
+        ['📄', '문서 기록: 벤 22:10 열람(사무실) · 데브 22:31 열람(외부 IP) · 클레오 20:15 열람(사무실).'],
         ['📶', 'IT 티켓: 사무실 와이파이 21:30–23:30 먹통.'],
         ['🌐', '경쟁사 페이지 게시: 23:00.'],
         ['🔑', '접근 권한: 벤, 클레오, 데브. 아바는 추가된 적 없음.']
@@ -201,7 +201,7 @@ const CASES = {
         { s: 'ben', t: '23:43', m: '저요, 10시쯤 사무실 와이파이로요. 오타만 보고 퇴근했어요.', ev: 1, lie: '사무실 와이파이는 21:30부터 끊겨 있었다. 벤은 22:10에 사무실에서 열었으니 다른 연결을 썼고, 그걸 숨기고 있다.' },
         { s: 'dev', t: '23:44', m: '저는 초안 연 적 없어요. 저한테 권한이 있긴 한가요?', ev: [0, 3], lie: '기록에 데브가 22:31에 외부 IP로 열었다고 남아 있고, 권한 목록에도 데브가 있다.' },
         { s: 'ava', t: '23:45', m: '저는 못 열어요. 그 문서에 저 추가된 적이 없잖아요.' },
-        { s: 'cleo', t: '23:46', m: '저는 오늘 아침에 가격표 넣으려고 연 게 전부예요.' },
+        { s: 'cleo', t: '23:46', m: '저는 8시 15분에 가격표 넣으려고 열었다가 바로 퇴근했어요.' },
         { s: 'ben', t: '23:47', m: '데브, 10시 반에도 자리에 있었잖아요. 제가 봤어요.' },
         { s: 'dev', t: '23:48', m: '짐 싸고 있었어요!!' }
       ],
