@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800&family=Noto+Sans+KR:wght@500;700;900&display=swap"><style>
+body{margin:0;width:652px;height:488px;overflow:hidden;background:radial-gradient(500px 300px at 20% 0%,rgba(255,106,61,.35),transparent 60%),radial-gradient(500px 300px at 100% 100%,rgba(90,110,255,.3),transparent 60%),#0f1016;font-family:'Noto Sans KR',sans-serif;color:#fff;position:relative}
+h1{position:absolute;left:28px;top:30px;margin:0;font-size:32px;width:270px;font-weight:900;line-height:1.2;letter-spacing:-.02em}
+h1 small{display:block;font-size:14px;font-weight:700;color:#ffb199;letter-spacing:.14em;margin-bottom:8px}
+.sub{position:absolute;left:28px;top:150px;width:250px;font-size:14px;color:#c8ccdd;font-weight:500;line-height:1.5}
+.badges{position:absolute;left:28px;bottom:30px;display:flex;gap:8px;flex-wrap:wrap;width:250px}
+.badges span{font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15)}
+.phones{position:absolute;right:-70px;top:30px;display:flex;transform:scale(.86);transform-origin:top right}
+.phone{width:168px;height:364px;border-radius:26px;border:5px solid #2a2d3a;overflow:hidden;background:#000;box-shadow:0 30px 60px rgba(0,0,0,.6);background-size:cover;background-position:top center}
+.phone:nth-child(1){transform:translate(40px,70px) rotate(-6deg);z-index:1}
+.phone:nth-child(2){transform:translate(0,20px);z-index:3}
+.phone:nth-child(3){transform:translate(-40px,70px) rotate(6deg);z-index:2}
+</style></head><body>
+<h1><small>QR 하나로 끝나는</small>매장 이벤트<br>게임 제작</h1>
+<div class="sub">룰렛 · 즉석복권 · 뽑기 상자<br>사다리 · 투표 설문<br>앱 설치 없음 · 서버 비용 없음<br>3일 납품</div>
+<div class="badges"><span>로고·색 맞춤</span><span>경품 확률 설정</span><span>쿠폰 코드 발급</span><span>구글 시트 연동</span></div>
+<div class="phones"><div class="phone" id="p1"></div><div class="phone" id="p2"></div><div class="phone" id="p3"></div></div>
+<script>const q=new URLSearchParams(location.search);['p1','p2','p3'].forEach((id,i)=>document.getElementById(id).style.backgroundImage='url('+q.get(id)+')');</script>
+</body></html>
