@@ -30,6 +30,7 @@ window.EVENT_CONFIG = {
 
   /* 쿠폰 코드 앞머리. 예: ORU-1105-K7Q2 */
   couponPrefix: 'ORU',
+  sheetUrl: '',               // 당첨 내역을 구글 시트로 모으려면 shared/README.md 대로 만든 웹 앱 URL 을 넣으세요 (비우면 보내지 않음)
 
   footer: '쿠폰은 당일에만 유효합니다',
   shareText: '카페 오루 행운 룰렛에서 뽑았어요!',

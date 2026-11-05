@@ -108,6 +108,7 @@ function pick(box) {
     box.classList.remove('shake'); box.classList.add('open'); S.pop();
     const prize = draw(), play = { label: prize.label, lose: !!prize.lose, code: prize.lose ? '' : couponCode(), at: new Date().toISOString() };
     state.plays.push(play); save(state);
+    window.EVENT_REPORT && EVENT_REPORT({ prize: play.label, code: play.code, lose: play.lose });
     setTimeout(() => showResult(play, false), 550);
   }, 600);
 }

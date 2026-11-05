@@ -27,6 +27,7 @@ window.EVENT_CONFIG = {
 
   /* 쿠폰 코드 앞머리. 예: MORI-1105-K7Q2 */
   couponPrefix: 'MORI',
+  sheetUrl: '',               // 당첨 내역을 구글 시트로 모으려면 shared/README.md 대로 만든 웹 앱 URL 을 넣으세요 (비우면 보내지 않음)
 
   /* 은박을 몇 % 긁으면 자동으로 전부 걷히는지 */
   revealPercent: 55,

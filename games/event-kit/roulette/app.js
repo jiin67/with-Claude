@@ -96,6 +96,7 @@ function finish(i) {
   spinning = false;
   const p = prizes[i], rec = { prize: p.label, miss: !!p.miss, code: couponCode(), at: Date.now() };
   log.plays.push(rec); saveLog(log);
+  window.EVENT_REPORT && EVENT_REPORT({ prize: rec.prize, code: rec.miss ? '' : rec.code, lose: rec.miss });
   showResult(rec);
   if (!p.miss) { A.win(); confetti(); }
   $('btnSpin').textContent = T.spin;

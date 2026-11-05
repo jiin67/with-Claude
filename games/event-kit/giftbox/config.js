@@ -33,6 +33,7 @@ window.EVENT_CONFIG = {
 
   /* 쿠폰 번호 앞글자. 예: BRG-1105-K7Q2 */
   couponPrefix: 'BRG',
+  sheetUrl: '',               // 당첨 내역을 구글 시트로 모으려면 shared/README.md 대로 만든 웹 앱 URL 을 넣으세요 (비우면 보내지 않음)
 
   /* 화면에 나오는 모든 문구 */
   text: {

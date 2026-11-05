@@ -100,7 +100,7 @@ function cleared() {
 function revealAll() {
   if (done) return; done = true; lastP = null; A.off();
   cv.classList.add('fade'); $('hint').classList.add('off');
-  if (play && !play.done) { play.done = true; if (!preview) save(state); }
+  if (play && !play.done) { play.done = true; if (!preview) { save(state); window.EVENT_REPORT && EVENT_REPORT({ prize: play.prize, code: play.code, lose: play.lose }); } }
   setTimeout(showResult, 450);
 }
 cv.addEventListener('pointerdown', e => { if (done) return; A.init(); scratching = true; lastP = null; $('hint').classList.add('off'); const [x, y] = pos(e); scratchTo(x, y); A.on(); try { cv.setPointerCapture(e.pointerId); } catch (_) {} });
