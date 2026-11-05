@@ -59,7 +59,7 @@ function tr(key, ...a) {
   return typeof s === 'function' ? s(...a) : s;
 }
 /* play order: the tutorial first, then the cases with the strongest twists early, so fewer players quit before the good ones */
-const ORDER = ['cake', 'vase', 'guild', 'hotel', 'podcast', 'festival', 'bakery', 'draft', 'karaoke', 'library', 'rooftop', 'dog', 'wedding', 'train', 'pool', 'exam', 'locker', 'gallery', 'drone', 'server'];
+const ORDER = ['cake', 'window', 'vase', 'clock', 'guild', 'bike', 'hotel', 'podcast', 'festival', 'bakery', 'draft', 'karaoke', 'library', 'rooftop', 'dog', 'wedding', 'train', 'pool', 'exam', 'locker', 'gallery', 'drone', 'server'];
 const CL = [...ORDER.map(id => CASES[LANG].find(c => c.id === id)).filter(Boolean), ...CASES[LANG].filter(c => !ORDER.includes(c.id))];
 
 function fmtTime(sec) { sec = Math.max(0, Math.floor(sec)); const m = Math.floor(sec / 60), x = sec % 60; return m + ':' + String(x).padStart(2, '0'); }

@@ -139,7 +139,12 @@ function renderCase() {
     chat.appendChild(row);
   });
   const ev = $('factList'); ev.innerHTML = '';
-  for (const [ic, t] of c.facts) { const f = el('div', 'fact'); f.append(el('div', 'ic', ic), el('div', null, t)); ev.appendChild(f); }
+  for (const [ic, t, photo] of c.facts) {
+    const f = el('div', 'fact' + (photo ? ' photo' : '')), body = el('div');
+    body.append(t);
+    if (photo) { const z = el('div', 'zoom'); for (const d of photo) z.appendChild(el('span', null, d)); body.appendChild(z); }
+    f.append(el('div', 'ic', ic), body); ev.appendChild(f);
+  }
   const su = $('susList'); su.innerHTML = '';
   for (const [id, name, role] of c.suspects) {
     const s = el('div', 'sus'), av = face(el('div', 'av'), id);
@@ -186,8 +191,8 @@ function openEvidenceSheet(k) {
   const m = R.c.chat[k], card = $('sheetCard'); card.innerHTML = '';
   card.append(el('h3', null, tr('pickEv')), el('div', 'quote', m.m));
   const list = el('div', 'list'), guide = coach === 2 && m.lie ? evOf(m)[0] : -1;
-  R.c.facts.forEach(([ic, t], i) => {
-    const b = el('button', 'evpick' + (i === guide ? ' pulse' : '')); b.type = 'button'; b.append(el('span', 'ic', ic), el('span', null, t));
+  R.c.facts.forEach(([ic, t, photo], i) => {
+    const b = el('button', 'evpick' + (i === guide ? ' pulse' : '')); b.type = 'button'; const tx = el('span', null, t); if (photo) { const z = el('div', 'zoom small'); for (const d of photo) z.appendChild(el('span', null, d)); tx.appendChild(z); } b.append(el('span', 'ic', ic), tx);
     b.onclick = () => { closeSheet(); doMark(k, i); };
     list.appendChild(b);
   });

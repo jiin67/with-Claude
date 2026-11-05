@@ -211,3 +211,12 @@ button{cursor:pointer;border:0;background:none;padding:0}
   .pane-title{margin-bottom:6px}
   .top{height:44px}
 }
+
+/* photo evidence: a framed shot with the details you can zoom into */
+.fact.photo{background:#f4f1ea;color:#1b1a1f;border-color:#e7e2d6;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.fact.photo .ic{font-size:22px}
+.zoom{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.zoom span{font-size:12px;padding:4px 9px;border-radius:999px;background:#1b1a1f;color:#f4f1ea}
+.zoom span::before{content:"🔍 ";font-size:10px}
+.zoom.small{margin-top:6px}
+.zoom.small span{background:rgba(255,255,255,.1);color:var(--ink)}

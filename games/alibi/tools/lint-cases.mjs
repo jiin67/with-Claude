@@ -25,6 +25,7 @@ en.forEach((c, i) => {
     if (!sids.includes(x.culprit)) bad(x.id, `${lang}: culprit "${x.culprit}" is not a suspect`);
     if (x.suspects.length < 3) bad(x.id, `${lang}: fewer than 3 suspects`);
     if (x.facts.length < 3) bad(x.id, `${lang}: fewer than 3 facts`);
+    x.facts.forEach((f, i) => { if (!Array.isArray(f) || typeof f[0] !== 'string' || typeof f[1] !== 'string') bad(x.id, `${lang}: facts[${i}] must be [icon, text, details?]`); if (f[2] !== undefined && (!Array.isArray(f[2]) || f[2].length < 2 || f[2].some(d => typeof d !== 'string'))) bad(x.id, `${lang}: facts[${i}] photo details must be 2+ strings`); });
     if (x.chat.length < 6) bad(x.id, `${lang}: chat shorter than 6 messages`);
     if (![1, 2, 3].includes(x.difficulty)) bad(x.id, `${lang}: difficulty must be 1..3`);
     const lies = x.chat.filter(m => m.lie);
@@ -50,6 +51,8 @@ en.forEach((c, i) => {
   if (c.culprit !== k.culprit) bad(c.id, 'culprit differs between languages');
   if (c.suspects.map(s => s[0]).join() !== k.suspects.map(s => s[0]).join()) bad(c.id, 'suspect ids differ between languages');
   if (c.difficulty !== k.difficulty) bad(c.id, 'difficulty differs between languages');
+  if (c.facts.length !== k.facts.length) bad(c.id, 'fact count differs between languages');
+  else c.facts.forEach((f, i) => { if (!!f[2] !== !!k.facts[i][2] || (f[2] && f[2].length !== k.facts[i][2].length)) bad(c.id, `facts[${i}] photo details differ between languages`); });
 });
 if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
 console.log(`✓ ${en.length} cases ok (${files.join(', ')})`);
