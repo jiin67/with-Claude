@@ -9,11 +9,11 @@ Object.assign(OUTRO.en, {
     { s: 'jun', m: 'New rule: the 4pm cake lives in my desk drawer.' }
   ],
   vase: [
-    { s: 'sol', m: 'Grandma it wasn\'t me!! I TOLD you I was at taekwondo' },
-    { s: 'dana', m: 'Sweetheart, the hallway camera has you home at 6:30, and class ends at 6. Everybody knows that.' },
+    { s: 'sol', m: 'Grandma it wasn\'t me!! Dana\'s the one who lied, you all saw it' },
+    { s: 'rafa', m: 'She lied about knocking. The lock says she never came in. Your code opened the door at 6:30, Sol, and class ends at 6.' },
     { s: 'sol', m: '…I came in with wet shoes and slid. It just fell. I thought you\'d be madder about the shoes than the vase.' },
-    { s: 'rafa', m: 'And I said it was dry because I was already late and didn\'t want a complaint about a wet parcel. Sorry.' },
-    { s: 'dana', m: 'Ro, the glue is in my kitchen drawer. Bring the boy, he\'s doing the gluing.' }
+    { s: 'dana', m: 'And I said I wasn\'t there because I\'d come to ask Ro for a loan. I didn\'t want the whole building reading that.' },
+    { s: 'rafa', m: 'Nobody\'s reading anything. Sol, glue. Dana, come by tomorrow, Ro\'s putting the kettle on.' }
   ],
   draft: [
     { s: 'dev', m: 'I\'m the intern. Why would I leak the one thing that gets me hired?' },
@@ -24,7 +24,7 @@ Object.assign(OUTRO.en, {
   ],
   festival: [
     { s: 'jae', m: 'This is insane. I had the desk the WHOLE time. Ask literally anyone.' },
-    { s: 'hana', m: 'I did ask. My own selfie. Empty chair at 5:20, right behind my head.' },
+    { s: 'ian', m: 'Hana\'s selfie asked for us. Empty chair, your jacket on it, box lid open, 5:20 on the gym clock.' },
     { s: 'jae', m: 'Okay. I took it. Forty thousand won. My phone screen is cracked and my mom said no, and the box was just… open. I was going to put it back after the festival.' },
     { s: 'hana', m: 'I said I couldn\'t see the desk because I saw it was empty and didn\'t say anything. That\'s on me too.' },
     { s: 'ian', m: 'Bring it to Teacher Kim before 6. Say it before she finds it. It\'s better, trust me.' }
@@ -83,11 +83,11 @@ Object.assign(OUTRO.ko, {
     { s: 'jun', m: '새 규칙. 4시 케이크는 제 서랍에서 삽니다.' }
   ],
   vase: [
-    { s: 'sol', m: '할머니 나 아니라니까!! 태권도장에 있었다고 했잖아' },
-    { s: 'dana', m: '얘야, 복도 카메라에 너 6시 반에 들어온 게 찍혔어. 그리고 수업은 6시에 끝나잖니. 다들 알아.' },
+    { s: 'sol', m: '할머니 나 아니라니까!! 거짓말한 건 다나 아줌마잖아, 다들 봤지' },
+    { s: 'rafa', m: '다나 씨는 노크한 걸 숨겼지. 도어락은 안 들어왔다고 해. 솔, 6시 반에 네 비밀번호로 문이 열렸고 수업은 6시에 끝나.' },
     { s: 'sol', m: '…젖은 신발로 들어오다가 미끄러졌어. 그냥 떨어졌어. 화병보다 신발 때문에 더 혼날 줄 알았단 말이야.' },
-    { s: 'rafa', m: '저도 비 안 왔다고 한 건, 이미 늦어서 젖은 택배로 민원 들어올까 봐요. 죄송합니다.' },
-    { s: 'dana', m: '로 여사님, 접착제 우리 집 부엌 서랍에 있어요. 애 데리고 오세요. 붙이는 건 애가 해요.' }
+    { s: 'dana', m: '저는 로 여사님께 돈 좀 빌리러 왔던 거예요. 그걸 온 동네가 읽을까 봐 안 왔다고 했어요.' },
+    { s: 'rafa', m: '아무도 안 읽어요. 솔은 접착제. 다나 씨는 내일 오세요, 로 여사님이 차 끓여 놓으신대요.' }
   ],
   draft: [
     { s: 'dev', m: '저 인턴이에요. 저를 뽑아 줄 유일한 걸 왜 제가 유출해요?' },
@@ -98,7 +98,7 @@ Object.assign(OUTRO.ko, {
   ],
   festival: [
     { s: 'jae', m: '말도 안 돼. 나 부스에 계속 있었어. 아무한테나 물어봐.' },
-    { s: 'hana', m: '물어봤어. 내 셀카한테. 5시 20분, 내 머리 바로 뒤에 빈 의자.' },
+    { s: 'ian', m: '하나 셀카가 대신 대답했어. 빈 의자, 걸려 있는 네 점퍼, 열린 현금함 뚜껑, 체육관 시계 5시 20분.' },
     { s: 'jae', m: '알았어. 내가 가져갔어. 4만 원. 폰 액정 깨졌는데 엄마가 안 된대서, 함이 그냥… 열려 있었어. 축제 끝나고 다시 넣으려고 했어.' },
     { s: 'hana', m: '나도 부스가 안 보인다고 한 건, 비어 있는 거 보고도 아무 말 안 해서야. 그건 내 잘못이기도 해.' },
     { s: 'ian', m: '6시 전에 김 선생님한테 가져가. 선생님이 알기 전에 네가 말해. 그게 나아, 진짜.' }

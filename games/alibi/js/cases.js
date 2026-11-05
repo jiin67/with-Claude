@@ -33,25 +33,29 @@ const CASES = {
       solve: 'Mia badged into the kitchen at 15:39 and the fridge opened at 15:40. Theo lied about the flavor to seem uninvolved, but only Mia was there when the cake disappeared.'
     },
     {
-      id: 'vase', title: 'The Broken Vase', place: 'Apartment 7B · 7:30 pm', difficulty: 1,
-      intro: 'Grandma Ro\'s vase is in pieces by the door. Three people passed through this evening. One of them is lying about it.',
+      id: 'vase', title: 'The Broken Vase', place: 'Apartment 7B · 7:30 pm', difficulty: 2,
+      intro: 'Grandma Ro\'s vase is in pieces by the door. Three people were in the hallway tonight, and the loudest one is lying. That might not mean what it seems.',
       suspects: [['rafa', 'Rafa', 'Courier'], ['sol', 'Sol', 'Grandson, 12'], ['dana', 'Dana', 'Neighbor']],
       facts: [
-        ['📷', 'Hallway CCTV: Rafa 18:02 · Sol 18:30 · Dana 19:15.'],
+        ['📷', 'Hallway CCTV: Rafa 18:02, parcel left at the door · Sol 18:30, in · Dana 19:15, knocking, then leaving at 19:17.'],
+        ['🔐', 'Smart lock, 7B: opened by Sol\'s code 18:30 · locked 18:31 · no openings until Ro\'s code at 19:40.'],
         ['🌧️', 'Weather: rain started at 18:00 and did not stop.'],
         ['👣', 'Photo: small wet shoe prints from the door to the vase.'],
         ['🥋', 'Taekwondo gym: Sol\'s class is Tue/Thu 17:00–18:00. Today is Tuesday.']
       ],
       chat: [
-        { s: 'dana', t: '19:20', m: 'Ro, I knocked at 7:15 and nobody answered, but I saw the vase through the door glass. Already broken.' },
-        { s: 'rafa', t: '19:22', m: 'Hi, courier here. Left the parcel outside the door, never went in. It was still dry when I came by.', ev: 1, lie: 'It had been raining since 18:00; Rafa arrived at 18:02.' },
-        { s: 'sol', t: '19:25', m: 'grandma I was at taekwondo until 8!! just got home', ev: [0, 3], lie: 'CCTV shows Sol in the hallway at 18:30, and class ends at 18:00 anyway.' },
-        { s: 'dana', t: '19:26', m: 'I didn\'t go inside either, the door was locked.' },
-        { s: 'sol', t: '19:27', m: 'maybe the courier dropped the box on it' },
-        { s: 'rafa', t: '19:28', m: 'The parcel is a pillow. It weighs nothing.' }
+        { s: 'rafa', t: '19:42', m: 'Courier here. I set the parcel down at 6:02 and left. Never touched the door.' },
+        { s: 'dana', t: '19:44', m: 'Ro, I never came by tonight. Haven\'t left my flat since dinner.', ev: 0, lie: 'The hallway camera shows Dana at Ro\'s door at 19:15, knocking, and leaving at 19:17.' },
+        { s: 'sol', t: '19:45', m: 'grandma I was at taekwondo until 8!! just got home', ev: [1, 4], lie: 'The smart lock opened with Sol\'s code at 18:30, and class ends at 18:00 anyway.' },
+        { s: 'rafa', t: '19:47', m: 'Dana, the camera has you at the door at quarter past seven. Why say you weren\'t there?' },
+        { s: 'dana', t: '19:48', m: 'That camera is wrong half the time. Whatever it shows, I had no reason to be there.' },
+        { s: 'sol', t: '19:49', m: 'she knocks on our door all the time about the TV volume. she was probably mad again' },
+        { s: 'rafa', t: '19:50', m: 'Mad enough to go in? The lock keeps a log too.' },
+        { s: 'dana', t: '19:52', m: 'I did not go in. I don\'t even have a code. Ask the lock.' },
+        { s: 'sol', t: '19:53', m: 'see, she\'s changing her story' }
       ],
       culprit: 'sol',
-      solve: 'Sol came home at 18:30 in the rain and walked in with wet shoes: the small prints lead straight to the vase. Rafa fibbed about the weather, but he never entered.'
+      solve: 'Dana lied about not coming by, and the camera catches her at the door at 19:15. But the same camera shows her knocking and leaving, and the lock never opened for her: the facts that expose her lie also prove she never got inside. Sol\'s code opened the door at 18:30, class had ended at 18:00, it was raining, and the small wet prints run from the door to the vase. Dana only lied because she had come to ask Ro for a loan and was too embarrassed to say so.'
     },
     {
       id: 'draft', title: 'The Leaked Draft', place: 'Startup office · 11:40 pm', difficulty: 2,
@@ -77,24 +81,26 @@ const CASES = {
     },
     {
       id: 'festival', title: 'The Festival Cash Box', place: 'School festival · 5:50 pm', difficulty: 2,
-      intro: 'The ticket desk cash box was full at five. At quarter to six it was empty. Three students were on duty.',
+      intro: 'The ticket desk cash box was full at five. At quarter to six it was empty. Three students were on duty, and one of them took a selfie at exactly the wrong moment.',
       suspects: [['hana', 'Hana', 'Food stall'], ['ian', 'Ian', 'Band'], ['jae', 'Jae', 'Ticket desk']],
       facts: [
-        ['💰', 'Teacher Kim counted the box at 17:00: full.'],
-        ['🎸', 'Stage video: Ian\'s band played 17:10–17:35.'],
-        ['🤳', 'Hana\'s selfie, 17:20, at the food stall. Behind her: the ticket desk, chair empty.'],
+        ['🤳', 'Hana\'s selfie at the food stall, 17:20, posted to the class chat.', ['gym wall clock reads 5:20', 'ticket desk in the background, chair empty', 'cash box on the desk, lid open', 'Jae\'s blue jacket hanging on the chair', 'stage lights on, band mid-song']],
+        ['💰', 'Teacher Kim counted the box at 17:00: full, lid closed.'],
+        ['🎸', 'Stage video: Ian\'s band played 17:10–17:35, Ian on vocals in every shot.'],
         ['📋', 'Duty roster: Jae on the ticket desk 17:00–18:00, no breaks.']
       ],
       chat: [
-        { s: 'ian', t: '17:52', m: 'We were on stage the whole set, ask anyone' },
-        { s: 'jae', t: '17:53', m: 'I never left the desk. Someone must have grabbed it while I was turned around.', ev: 2, lie: 'Hana\'s 17:20 selfie shows the ticket desk with an empty chair.' },
-        { s: 'hana', t: '17:54', m: 'I was at the food stall the whole time, I couldn\'t even see the desk from there.', ev: 2, lie: 'Her own selfie has the ticket desk right behind her.' },
-        { s: 'jae', t: '17:55', m: 'Honestly the box looked pretty empty already at 5.', ev: 0, lie: 'Teacher Kim counted it full at 17:00.' },
-        { s: 'ian', t: '17:56', m: 'Jae, we literally saw you walk past the stage around 5:20' },
-        { s: 'jae', t: '17:56', m: 'That was the bathroom. 2 minutes.' }
+        { s: 'ian', t: '17:52', m: 'We were on stage the whole set, it\'s on video' },
+        { s: 'jae', t: '17:53', m: 'I never left the desk. Someone must have grabbed it while I was turned around.', ev: 0, lie: 'Hana\'s 17:20 selfie shows the ticket desk behind her with the chair empty and Jae\'s jacket left on it.' },
+        { s: 'hana', t: '17:54', m: 'I was at the food stall the whole time, I couldn\'t even see the desk from there.', ev: 0, lie: 'Her own selfie has the ticket desk right behind her, box and all.' },
+        { s: 'jae', t: '17:55', m: 'Honestly the box looked pretty empty already at 5.', ev: 1, lie: 'Teacher Kim counted it full at 17:00, with the lid closed.' },
+        { s: 'ian', t: '17:56', m: 'Hana, you posted a selfie at 5:20. Zoom in behind your head.' },
+        { s: 'hana', t: '17:57', m: 'that\'s just the gym, you can\'t tell anything from that' },
+        { s: 'jae', t: '17:58', m: 'If I\'d left, my jacket would be gone too. I always take it.' },
+        { s: 'ian', t: '17:59', m: 'Look at the chair, Jae.' }
       ],
       culprit: 'jae',
-      solve: 'Jae left the desk around 17:20 and lied about it twice, including about the box being empty at five. Hana lied about not seeing the desk only because she didn\'t want to admit she noticed and said nothing.'
+      solve: 'The selfie tells the whole story: at 5:20 by the gym clock the ticket desk chair is empty, Jae\'s jacket is still on it, and the cash box sits open on the desk, not closed the way Teacher Kim left it at five. Ian was on stage in every frame of the video, and Hana was in front of her own camera. Jae left the desk, and lied about it twice. Hana lied about seeing the desk only because she had noticed it was empty and said nothing.'
     },
     {
       id: 'hotel', title: 'Room 1204', place: 'Hotel Marin · 2:30 pm', difficulty: 3,
@@ -166,25 +172,29 @@ const CASES = {
       solve: '미아는 15:39에 탕비실에 들어갔고 냉장고는 15:40에 열렸다. 테오는 무관해 보이려고 케이크 맛을 꾸며 냈지만, 케이크가 사라질 때 그 자리에 있던 사람은 미아뿐이다.'
     },
     {
-      id: 'vase', title: '깨진 화병', place: '아파트 7B · 오후 7:30', difficulty: 1,
-      intro: '로 할머니의 화병이 현관 앞에서 산산조각 났다. 오늘 저녁 집 앞을 지난 사람은 셋. 그중 하나가 거짓말을 하고 있다.',
+      id: 'vase', title: '깨진 화병', place: '아파트 7B · 오후 7:30', difficulty: 2,
+      intro: '로 할머니의 화병이 현관 앞에서 산산조각 났다. 오늘 밤 복도에 있던 사람은 셋. 가장 큰 목소리로 거짓말하는 사람이 있지만, 그게 보이는 대로의 뜻은 아닐 수 있다.',
       suspects: [['rafa', '라파', '택배 기사'], ['sol', '솔', '손자, 12살'], ['dana', '다나', '옆집']],
       facts: [
-        ['📷', '복도 CCTV: 라파 18:02 · 솔 18:30 · 다나 19:15.'],
+        ['📷', '복도 CCTV: 라파 18:02, 택배 문 앞에 둠 · 솔 18:30, 들어감 · 다나 19:15, 노크 후 19:17에 돌아감.'],
+        ['🔐', '7B 스마트 도어락: 18:30 솔의 비밀번호로 열림 · 18:31 잠김 · 19:40 로 여사님 비밀번호 전까지 열린 기록 없음.'],
         ['🌧️', '날씨: 18:00부터 비, 그친 적 없음.'],
         ['👣', '사진: 현관에서 화병까지 이어진 작은 젖은 발자국.'],
         ['🥋', '태권도장: 솔의 수업은 화·목 17:00–18:00. 오늘은 화요일.']
       ],
       chat: [
-        { s: 'dana', t: '19:20', m: '로 여사님, 7시 15분에 노크했는데 대답이 없더라고요. 문 유리로 화병이 보였는데 이미 깨져 있었어요.' },
-        { s: 'rafa', t: '19:22', m: '택배입니다. 문 앞에 두고 갔고 안에는 안 들어갔어요. 제가 갔을 땐 비도 안 왔고요.', ev: 1, lie: '비는 18:00부터 내렸고 라파는 18:02에 도착했다.' },
-        { s: 'sol', t: '19:25', m: '할머니 나 8시까지 태권도장에 있었어!! 지금 막 왔어', ev: [0, 3], lie: 'CCTV에 솔은 18:30에 복도에 있었고, 수업도 18:00에 끝난다.' },
-        { s: 'dana', t: '19:26', m: '저도 안 들어갔어요. 문이 잠겨 있었거든요.' },
-        { s: 'sol', t: '19:27', m: '택배 아저씨가 상자 떨어뜨린 거 아냐?' },
-        { s: 'rafa', t: '19:28', m: '택배는 베개예요. 무게가 없다시피 해요.' }
+        { s: 'rafa', t: '19:42', m: '택배입니다. 6시 2분에 문 앞에 두고 갔어요. 문엔 손도 안 댔습니다.' },
+        { s: 'dana', t: '19:44', m: '로 여사님, 저 오늘 밤에 간 적 없어요. 저녁 먹고 집 밖에 안 나갔어요.', ev: 0, lie: '복도 카메라에 다나가 19:15에 로 여사님 집 문을 두드리고 19:17에 돌아가는 모습이 찍혀 있다.' },
+        { s: 'sol', t: '19:45', m: '할머니 나 8시까지 태권도장에 있었어!! 지금 막 왔어', ev: [1, 4], lie: '도어락은 18:30에 솔의 비밀번호로 열렸고, 수업도 18:00에 끝난다.' },
+        { s: 'rafa', t: '19:47', m: '다나 씨, 카메라에 7시 15분에 문 앞에 계신 게 찍혔는데요. 왜 안 왔다고 하세요?' },
+        { s: 'dana', t: '19:48', m: '그 카메라 맨날 틀려요. 뭐가 찍혔든 저는 거기 갈 이유가 없었어요.' },
+        { s: 'sol', t: '19:49', m: '아줌마 맨날 TV 소리 때문에 우리 집 두드려. 또 화나서 왔겠지' },
+        { s: 'rafa', t: '19:50', m: '들어갈 만큼 화가 났을까요? 도어락도 기록이 남아요.' },
+        { s: 'dana', t: '19:52', m: '안 들어갔어요. 비밀번호도 몰라요. 도어락한테 물어보세요.' },
+        { s: 'sol', t: '19:53', m: '봐, 말이 계속 바뀌잖아' }
       ],
       culprit: 'sol',
-      solve: '솔은 18:30에 빗속에서 집에 돌아와 젖은 신발로 들어갔다. 작은 발자국이 화병까지 곧장 이어진다. 라파는 날씨를 얼버무렸지만 안에 들어간 적은 없다.'
+      solve: '다나는 안 왔다고 거짓말했고, 카메라는 19:15에 문 앞의 다나를 잡아낸다. 하지만 같은 카메라에 노크하고 돌아가는 모습이 찍혀 있고, 도어락은 다나에게 열린 적이 없다. 거짓말을 깨는 바로 그 증거가 다나가 안에 들어간 적 없다는 걸 증명한다. 솔의 비밀번호로 18:30에 문이 열렸고, 수업은 18:00에 끝났고, 비가 왔고, 작은 젖은 발자국이 현관에서 화병까지 이어진다. 다나는 돈을 빌리러 왔다가 창피해서 거짓말했을 뿐이다.'
     },
     {
       id: 'draft', title: '유출된 초안', place: '스타트업 사무실 · 오후 11:40', difficulty: 2,
@@ -210,24 +220,26 @@ const CASES = {
     },
     {
       id: 'festival', title: '축제 현금함', place: '학교 축제 · 오후 5:50', difficulty: 2,
-      intro: '5시에 가득 찼던 티켓 부스 현금함이 5시 45분에 비어 있었다. 당번 학생은 셋.',
+      intro: '5시에 가득 찼던 티켓 부스 현금함이 5시 45분에 비어 있었다. 당번 학생은 셋. 그중 하나가 하필 그 순간에 셀카를 찍었다.',
       suspects: [['hana', '하나', '먹거리 부스'], ['ian', '이안', '밴드'], ['jae', '재', '티켓 부스']],
       facts: [
-        ['💰', '김 선생님이 17:00에 현금함 확인: 가득 참.'],
-        ['🎸', '무대 영상: 이안의 밴드 공연 17:10–17:35.'],
-        ['🤳', '하나의 셀카, 17:20, 먹거리 부스. 뒤로 티켓 부스가 보이고 의자는 비어 있음.'],
+        ['🤳', '하나의 셀카, 17:20, 먹거리 부스. 반 단톡방에 올림.', ['체육관 벽시계 5:20', '뒤쪽 티켓 부스, 의자는 비어 있음', '책상 위 현금함, 뚜껑 열림', '의자에 걸린 재의 파란 점퍼', '무대 조명 켜짐, 밴드 연주 중']],
+        ['💰', '김 선생님이 17:00에 현금함 확인: 가득 참, 뚜껑 닫힘.'],
+        ['🎸', '무대 영상: 이안의 밴드 공연 17:10–17:35, 모든 장면에 이안이 보컬.'],
         ['📋', '당번표: 재, 티켓 부스 17:00–18:00, 휴식 없음.']
       ],
       chat: [
-        { s: 'ian', t: '17:52', m: '우린 공연 내내 무대에 있었어, 아무나 물어봐' },
-        { s: 'jae', t: '17:53', m: '난 부스 떠난 적 없어. 내가 돌아선 사이에 누가 집어 간 거야.', ev: 2, lie: '하나의 17:20 셀카에 티켓 부스 의자가 비어 있는 게 찍혀 있다.' },
-        { s: 'hana', t: '17:54', m: '난 계속 먹거리 부스에 있었어. 거기서는 티켓 부스가 보이지도 않아.', ev: 2, lie: '본인 셀카에 티켓 부스가 바로 뒤에 찍혀 있다.' },
-        { s: 'jae', t: '17:55', m: '솔직히 5시에 이미 현금함 거의 비어 있었어.', ev: 0, lie: '김 선생님이 17:00에 가득 찬 것을 확인했다.' },
-        { s: 'ian', t: '17:56', m: '재, 너 5시 20분쯤 무대 앞 지나가는 거 우리가 봤는데' },
-        { s: 'jae', t: '17:56', m: '화장실. 2분.' }
+        { s: 'ian', t: '17:52', m: '우린 공연 내내 무대에 있었어, 영상에 다 있어' },
+        { s: 'jae', t: '17:53', m: '난 부스 떠난 적 없어. 내가 돌아선 사이에 누가 집어 간 거야.', ev: 0, lie: '하나의 17:20 셀카에 뒤쪽 티켓 부스 의자가 비어 있고 재의 점퍼만 걸려 있는 게 찍혀 있다.' },
+        { s: 'hana', t: '17:54', m: '난 계속 먹거리 부스에 있었어. 거기서는 티켓 부스가 보이지도 않아.', ev: 0, lie: '본인 셀카에 티켓 부스가 현금함까지 바로 뒤에 찍혀 있다.' },
+        { s: 'jae', t: '17:55', m: '솔직히 5시에 이미 현금함 거의 비어 있었어.', ev: 1, lie: '김 선생님이 17:00에 가득 찬 것을 확인했고 뚜껑도 닫혀 있었다.' },
+        { s: 'ian', t: '17:56', m: '하나야, 너 5시 20분에 셀카 올렸잖아. 머리 뒤쪽 확대해 봐.' },
+        { s: 'hana', t: '17:57', m: '그냥 체육관이야, 그걸로 뭘 알 수 있다고' },
+        { s: 'jae', t: '17:58', m: '내가 나갔으면 점퍼도 없어졌겠지. 난 항상 챙겨.' },
+        { s: 'ian', t: '17:59', m: '의자를 봐, 재.' }
       ],
       culprit: 'jae',
-      solve: '재는 17:20쯤 부스를 비웠고, 그 일과 5시의 현금함 상태에 대해 두 번 거짓말했다. 하나는 부스를 봤다는 걸 인정하고 싶지 않아서 거짓말했지만, 함을 가져가지는 않았다.'
+      solve: '셀카가 전부 말해 준다. 체육관 시계로 5시 20분, 티켓 부스 의자는 비어 있고, 재의 점퍼는 아직 의자에 걸려 있고, 현금함은 김 선생님이 5시에 닫아 둔 것과 달리 뚜껑이 열린 채 책상 위에 있다. 이안은 영상 모든 장면에서 무대 위였고, 하나는 자기 카메라 앞에 있었다. 재는 부스를 비웠고, 그에 대해 두 번 거짓말했다. 하나는 부스가 빈 걸 보고도 아무 말 안 한 게 켕겨서 거짓말했을 뿐이다.'
     },
     {
       id: 'hotel', title: '1204호', place: '호텔 마린 · 오후 2:30', difficulty: 3,
