@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>투표·설문 이벤트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+  <header class="brand">
+    <div class="logo" id="logo"></div>
+    <div class="brand-name" id="brandName"></div>
+    <button class="mute" id="btnMute" type="button" aria-pressed="false"></button>
+  </header>
+
+  <section class="intro" id="intro">
+    <h1 id="title"></h1>
+    <p id="subtitle"></p>
+  </section>
+
+  <section class="poll" id="poll" hidden>
+    <div class="progress" id="progress" aria-hidden="true"></div>
+    <div class="step" id="step"></div>
+    <form id="form" autocomplete="off">
+      <h2 class="q" id="qText"></h2>
+      <p class="q-hint" id="qHint"></p>
+      <div class="options" id="options" role="group"></div>
+      <textarea id="free" maxlength="120" rows="4" hidden></textarea>
+      <p class="err" id="err" role="alert" hidden></p>
+      <div class="actions">
+        <button class="ghost" id="btnSkip" type="button" hidden></button>
+        <button class="primary" id="btnNext" type="submit"></button>
+      </div>
+    </form>
+  </section>
+
+  <section class="result" id="result" hidden>
+    <div class="card" id="card">
+      <div class="kicker" id="kicker"></div>
+      <div class="lbl" id="rewardLbl"></div>
+      <div class="prize" id="prize"></div>
+      <div class="coupon" id="couponBox">
+        <span class="lbl" id="couponLbl"></span>
+        <b id="coupon"></b>
+      </div>
+      <div class="meta"><span id="timeLbl"></span> <span id="time"></span></div>
+      <p class="show" id="show"></p>
+    </div>
+    <div class="chart" id="chart" hidden>
+      <h3 id="chartTitle"></h3>
+      <div id="chartBody"></div>
+    </div>
+  </section>
+
+  <footer class="foot" id="footer"></footer>
+  <div class="preview" id="previewTag" hidden></div>
+</main>
+<canvas id="confetti"></canvas>
+
+<script src="config.js"></script>
+<script src="../shared/report.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
