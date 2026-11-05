@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>행운 룰렛</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+  <header class="brand">
+    <div class="logo" id="logo"></div>
+    <div class="brand-name" id="brandName"></div>
+  </header>
+
+  <h1 id="title"></h1>
+  <p class="sub" id="subtitle"></p>
+
+  <div class="wheel-wrap">
+    <div class="pointer"></div>
+    <canvas id="wheel" width="640" height="640" aria-label="룰렛"></canvas>
+    <div class="hub"></div>
+  </div>
+
+  <button class="btn spin" id="btnSpin" type="button"></button>
+  <button class="sound" id="btnSound" type="button" aria-pressed="true">🔊</button>
+
+  <section class="done" id="done" hidden>
+    <h2 id="doneTitle"></h2>
+    <p class="sub" id="doneSub"></p>
+    <div class="ticket" id="doneTicket"></div>
+  </section>
+
+  <footer id="footer"></footer>
+</main>
+
+<div class="modal" id="result" hidden>
+  <div class="card">
+    <div class="eyebrow" id="resEyebrow"></div>
+    <h2 id="resPrize"></h2>
+    <div class="ticket" id="resTicket"></div>
+    <p class="show" id="resShow"></p>
+    <button class="btn" id="btnClose" type="button"></button>
+  </div>
+</div>
+<canvas id="confetti"></canvas>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
