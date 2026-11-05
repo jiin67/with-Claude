@@ -108,3 +108,16 @@ button{cursor:pointer;border:0;background:none;padding:0}
 
 @media (max-width:480px){#phone{width:100vw;height:100vh;border-radius:0;border:0;transform:none;left:0;top:0}}
 @media (max-width:480px){.status{padding-top:env(safe-area-inset-top,0px);height:calc(44px + env(safe-area-inset-top,0px))}}
+
+/* daily card, claims, result meta */
+.daily{text-align:left;padding:16px;border-radius:20px;background:linear-gradient(135deg,rgba(255,106,61,.25),rgba(90,110,255,.18));border:1px solid rgba(255,106,61,.4);display:flex;flex-direction:column;gap:4px;margin-bottom:4px}
+.daily .badge{align-self:flex-start;margin-bottom:4px}
+.daily b{font-size:17px}.daily span{font-size:12px;color:var(--dim)}
+.daily .streak{font-size:12px;color:var(--warn);font-weight:600}
+.claims{margin:8px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+.claims li{font-size:12px;color:var(--dim);padding:6px 9px;border-radius:8px;background:rgba(255,255,255,.04);border-left:2px solid transparent}
+.claims li.lie{color:var(--ok);border-left-color:var(--ok)}
+.sus{grid-template-columns:44px 1fr;align-items:start}
+.res-meta{display:flex;gap:8px;flex-wrap:wrap}
+.res-meta span{font-size:12px;color:var(--dim);background:rgba(255,255,255,.05);padding:6px 10px;border-radius:999px}
+#timeMeter{font-variant-numeric:tabular-nums}

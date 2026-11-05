@@ -32,31 +32,38 @@ let screen = 'title';
 function show(id) { screen = id; for (const s of SCREENS) $(s).hidden = s !== id; }
 
 /* ---- title and list ---- */
-function renderTitle() { $('titleStars').textContent = tr('total', totalStars(), CL.length * 3); show('title'); }
+function renderTitle() { const st = dailyStreak(); $('titleStars').textContent = tr('total', totalStars(), CL.length * 3) + (st ? ' · ' + tr('streak', st) : ''); show('title'); }
 function renderList() {
   const box = $('caseList'); box.innerHTML = '';
+  /* today's case */
+  const key = todayKey(), di = dailyIndex(key), dc = CL[di], dd = S.daily[key], st = dailyStreak();
+  const d = el('button', 'daily'); d.type = 'button';
+  d.append(el('span', 'badge', tr('daily')), el('b', null, dc.title), el('span', null, dd ? tr('dailyDone', dd.stars, fmtTime(dd.time)) : tr('dailySub')));
+  if (st) d.appendChild(el('span', 'streak', tr('streak', st)));
+  d.onclick = () => { A.init(); A.click(); openIntro(di, key); };
+  box.appendChild(d);
   CL.forEach((c, i) => {
     const open = unlocked(i), b = el('button', 'case-card' + (open ? '' : ' locked')); b.type = 'button';
     const info = el('div'); info.append(el('b', null, c.title), el('span', null, open ? c.place + ' · ' + tr('diff')[c.difficulty - 1] : tr('locked')));
     const st = S.stars[c.id] || 0;
-    b.append(el('div', 'no', open ? String(i + 1) : '🔒'), info, el('div', 'st', S.done[c.id] ? '★'.repeat(st) + '☆'.repeat(3 - st) : ''));
+    b.append(el('div', 'no', open ? String(i + 1) : '🔒'), info, el('div', 'st', S.done[c.id] ? '★'.repeat(st) + '☆'.repeat(3 - st) + (S.best[c.id] ? '\n' + fmtTime(S.best[c.id]) : '') : ''));
     b.onclick = () => { A.init(); if (!open) return; A.click(); openIntro(i); };
     box.appendChild(b);
   });
   show('list');
 }
-function openIntro(i) {
+function openIntro(i, daily) {
   const c = CL[i];
   $('introDiff').textContent = tr('diff')[c.difficulty - 1] + ' · ' + c.place; $('introTitle').textContent = c.title; $('introBody').textContent = c.intro;
   $('introTut').hidden = S.tutorialSeen; $('introTut').innerHTML = tr('tutorial');
-  $('btnIntroGo').textContent = tr('start'); $('btnIntroGo').onclick = () => { $('intro').hidden = true; S.tutorialSeen = true; persist(); beginCase(i); };
+  $('btnIntroGo').textContent = tr('start'); $('btnIntroGo').onclick = () => { $('intro').hidden = true; S.tutorialSeen = true; persist(); beginCase(i, daily); };
   $('intro').hidden = false;
 }
 
 /* ---- the case ---- */
 let tab = 'chat', sel = null;
-function beginCase(i) {
-  startCase(i); tab = 'chat'; sel = null;
+function beginCase(i, daily) {
+  startCase(i, daily); tab = 'chat'; sel = null;
   $('caseTitle').textContent = R.c.title; $('casePlace').textContent = R.c.place;
   renderCase(); show('case'); PORTAL.start();
 }
@@ -67,7 +74,9 @@ function renderMeters() {
   const sm = $('strikeMeter'); sm.innerHTML = ''; sm.append(tr('strikes') + ' ');
   for (let k = 0; k < MAX_STRIKES; k++) sm.appendChild(k < R.strikes ? el('b', null, '✕') : el('span', null, '·'));
   $('btnAccuse').disabled = !allLiesFound();
+  $('timeMeter').textContent = fmtTime(elapsed());
 }
+setInterval(() => { if (R && R.state === 'play' && screen === 'case') $('timeMeter').textContent = fmtTime(elapsed()); }, 1000);
 function renderCase() {
   const c = R.c;
   const chat = $('paneChat'); chat.innerHTML = '';
@@ -89,6 +98,11 @@ function renderCase() {
     const info = el('div'); info.append(el('b', null, name), el('span', null, role));
     const n = c.chat.filter((m, k) => m.s === id && R.found.has(k)).length;
     if (n) info.appendChild(el('div', 'lies', tr('foundLie') + ' × ' + n));
+    /* everything this person claimed, so claims can be checked one by one */
+    const ul = el('ul', 'claims'), mine = c.chat.map((m, k) => ({ m, k })).filter(x => x.m.s === id);
+    if (!mine.length) ul.appendChild(el('li', null, tr('noClaims')));
+    for (const { m, k } of mine) ul.appendChild(el('li', R.found.has(k) ? 'lie' : '', m.t + ' · ' + m.m));
+    info.appendChild(ul);
     s.append(av, info); su.appendChild(s);
   }
   setTab(tab); renderMeters();
@@ -131,18 +145,26 @@ function showSolved(stars) {
   $('resBadge').textContent = tr('solved'); $('resTitle').textContent = R.c.title;
   const st = $('resStars'); st.innerHTML = ''; for (let k = 0; k < 3; k++) st.appendChild(el('span', k < stars ? '' : 'off', '★'));
   $('resBody').textContent = R.c.solve;
+  const meta = $('resMeta'); meta.innerHTML = '';
+  meta.append(el('span', null, tr('time') + ' ' + fmtTime(R.time)), el('span', null, tr('strikes') + ' ' + R.strikes), el('span', null, tr('hint') + ' ' + R.hints));
+  if (R.daily) meta.appendChild(el('span', null, tr('daily')));
+  $('btnResShare').hidden = false;
   const last = R.i >= CL.length - 1;
-  $('btnResNext').textContent = last ? tr('allDone') : tr('next');
-  $('btnResNext').onclick = () => { A.click(); if (last) { toast(tr('allDoneSub')); renderList(); } else PORTAL.midgame().then(() => openIntro(R.i + 1)); };
+  $('btnResNext').textContent = R.daily ? tr('toList') : last ? tr('allDone') : tr('next');
+  $('btnResNext').onclick = () => { A.click(); if (R.daily) PORTAL.midgame().then(renderList); else if (last) { toast(tr('allDoneSub')); renderList(); } else PORTAL.midgame().then(() => openIntro(R.i + 1)); };
   show('result');
 }
 function showFailed() {
   A.lose(); PORTAL.stop();
-  $('resBadge').textContent = tr('failed'); $('resTitle').textContent = R.c.title; $('resStars').innerHTML = ''; $('resBody').textContent = tr('failedSub');
-  $('btnResNext').textContent = tr('retry'); $('btnResNext').onclick = () => { A.click(); PORTAL.midgame().then(() => beginCase(R.i)); };
+  $('resBadge').textContent = tr('failed'); $('resTitle').textContent = R.c.title; $('resStars').innerHTML = ''; $('resBody').textContent = tr('failedSub'); $('resMeta').innerHTML = ''; $('btnResShare').hidden = true;
+  $('btnResNext').textContent = tr('retry'); $('btnResNext').onclick = () => { A.click(); const d = R.daily; PORTAL.midgame().then(() => beginCase(R.i, d)); };
   show('result');
 }
 $('btnResList').addEventListener('click', () => { A.click(); renderList(); });
+$('btnResShare').addEventListener('click', () => {
+  const t = tr('shareCase', R.c.title, S.stars[R.c.id] || 1, fmtTime(R.time));
+  try { navigator.clipboard.writeText(t).then(() => toast(tr('copied'), 'ok'), () => toast(t)); } catch (e) { toast(t); }
+});
 
 /* ---- hints ---- */
 $('btnHint').addEventListener('click', () => {

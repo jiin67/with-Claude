@@ -28,7 +28,9 @@ const STR = {
     tutorial: '채팅에서 수상한 말을 누르고 <b>거짓말로 표시</b>하세요. 증거 탭과 어긋나는 말이 거짓말이에요. 다 찾으면 범인을 지목합니다.',
     settings: '설정', sound: '효과음', language: '언어 / Language', reset: '진행 상황 지우기', resetConfirm: '정말 지우기', resetWarn: '모든 사건의 기록을 지웁니다.', close: '닫기', back: '뒤로',
     allDone: '모든 사건 해결', allDoneSub: '새 사건은 업데이트로 추가됩니다.', total: (s, m) => `별 ${s} / ${m}`, share: '기록 복사', copied: '복사했어요',
-    result: (s, m) => `알리바이 ALIBI · 별 ${s}/${m} · 모든 사건 해결`
+    result: (s, m) => `알리바이 ALIBI · 별 ${s}/${m} · 모든 사건 해결`,
+    daily: '오늘의 사건', dailyDone: (st, t) => `오늘 해결 · ${'★'.repeat(st)} · ${t}`, dailySub: '매일 새 사건. 시간은 기록돼요.', time: '시간', claims: '이 사람의 주장', noClaims: '아직 한 말이 없어요',
+    shareCase: (title, st, t) => `알리바이 ALIBI · ${title} · ${'★'.repeat(st)}${'☆'.repeat(3 - st)} · ${t}`, streak: n => `${n}일 연속`
   },
   en: {
     title: 'ALIBI', tagline: 'Read the chat. Check the evidence. Catch the lie.', start: 'Open the case files', cases: 'Case files',
@@ -42,7 +44,9 @@ const STR = {
     tutorial: 'Tap a suspicious message and <b>mark it as a lie</b>. A lie is a claim the Evidence tab contradicts. Find them all, then accuse.',
     settings: 'Settings', sound: 'Sound', language: 'Language / 언어', reset: 'Erase progress', resetConfirm: 'Really erase', resetWarn: 'Erases every case record.', close: 'Close', back: 'Back',
     allDone: 'All cases closed', allDoneSub: 'New cases arrive with updates.', total: (s, m) => `${s} / ${m} stars`, share: 'Copy result', copied: 'Copied',
-    result: (s, m) => `ALIBI · ${s}/${m} stars · all cases closed`
+    result: (s, m) => `ALIBI · ${s}/${m} stars · all cases closed`,
+    daily: 'Today\'s case', dailyDone: (st, t) => `Solved today · ${'★'.repeat(st)} · ${t}`, dailySub: 'A new case every day. Your time counts.', time: 'Time', claims: 'What they claim', noClaims: 'Nothing said yet',
+    shareCase: (title, st, t) => `ALIBI · ${title} · ${'★'.repeat(st)}${'☆'.repeat(3 - st)} · ${t}`, streak: n => `${n}-day streak`
   }
 };
 function tr(key, ...a) {
@@ -51,3 +55,5 @@ function tr(key, ...a) {
   return typeof s === 'function' ? s(...a) : s;
 }
 const CL = CASES[LANG];
+
+function fmtTime(sec) { sec = Math.max(0, Math.floor(sec)); const m = Math.floor(sec / 60), x = sec % 60; return m + ':' + String(x).padStart(2, '0'); }

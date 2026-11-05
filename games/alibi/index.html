@@ -34,7 +34,7 @@
   <!-- case -->
   <section id="case" class="screen" hidden>
     <header class="top"><button class="link" id="btnCaseBack">‹</button><div class="tt"><b id="caseTitle"></b><span id="casePlace"></span></div><button class="link" id="btnHint">?</button></header>
-    <div class="meter"><span id="lieMeter"></span><span id="strikeMeter"></span></div>
+    <div class="meter"><span id="lieMeter"></span><span id="timeMeter"></span><span id="strikeMeter"></span></div>
     <nav class="tabs"><button data-tab="chat" aria-selected="true" data-i18n="tabChat"></button><button data-tab="evidence" aria-selected="false" data-i18n="tabEvidence"></button><button data-tab="suspects" aria-selected="false" data-i18n="tabSuspects"></button></nav>
     <div class="pane" id="paneChat"></div>
     <div class="pane" id="paneEvidence" hidden></div>
@@ -50,8 +50,9 @@
       <h2 id="resTitle"></h2>
       <div class="stars" id="resStars"></div>
       <p class="lede" id="resBody"></p>
+      <div class="res-meta" id="resMeta"></div>
       <button class="btn primary big" id="btnResNext"></button>
-      <button class="btn ghost" id="btnResList" data-i18n="toList"></button>
+      <div class="row"><button class="btn ghost" id="btnResShare" data-i18n="share"></button><button class="btn ghost" id="btnResList" data-i18n="toList"></button></div>
     </div>
   </section>
 </div>
@@ -68,6 +69,9 @@
 <div id="toasts"></div>
 
 <script src="js/cases.js"></script>
+<script src="js/cases-a.js"></script>
+<script src="js/cases-b.js"></script>
+<script src="js/cases-c.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/portal.js"></script>
 <script src="js/game.js"></script>
