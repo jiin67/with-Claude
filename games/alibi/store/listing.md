@@ -15,7 +15,7 @@ ALIBI is a deduction game played on a detective's phone. Each case gives you a g
 
 **Features**
 - 23 cases with rising difficulty: an office kitchen, an apartment, a startup leak, a school festival, a hotel, a game guild, a library, a wedding, a rooftop garden, a podcast studio, a bakery, a late train, a drained pool, a leaked answer key, an open gate, a gallery blackout, a gym locker, a crashed drone, a karaoke room, a dropped database, a café photo, a slow camera clock, a stolen e-bike
-- Not every case is the same puzzle: read details inside a photo, decide which of two conflicting records to trust, and spot the lie that actually clears someone
+- Not every case is the same puzzle: study an actual photo and recognize who is in it, decide which of two conflicting records to trust, and spot the lie that actually clears someone
 - Every suspect has a face; name the culprit and watch the chat turn: pushback, the decisive fact, a confession
 - Ambient music and a hands-on guide for your first case
 - A daily case with a timer and a streak

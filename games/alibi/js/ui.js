@@ -142,7 +142,11 @@ function renderCase() {
   for (const [ic, t, photo] of c.facts) {
     const f = el('div', 'fact' + (photo ? ' photo' : '')), body = el('div');
     body.append(t);
-    if (photo) { const z = el('div', 'zoom'); for (const d of photo) z.appendChild(el('span', null, d)); body.appendChild(z); }
+    if (photo) {
+      const sc = sceneSVG(c);
+      if (sc) { const img = el('div', 'photo-img'); img.innerHTML = sc; img.onclick = () => openPhoto(c); body.appendChild(img); }
+      const z = el('div', 'zoom'); for (const d of photo) z.appendChild(el('span', null, d)); body.appendChild(z);
+    }
     f.append(el('div', 'ic', ic), body); ev.appendChild(f);
   }
   const su = $('susList'); su.innerHTML = '';
@@ -159,6 +163,19 @@ function renderCase() {
     s.append(av, info); su.appendChild(s);
   }
   setTab(tab); renderMeters();
+}
+/* a case photo: the scene with the suspects' real faces dropped in */
+function sceneSVG(c) {
+  const sc = typeof SCENES !== 'undefined' && SCENES[c.id]; if (!sc) return null;
+  const face = (id, x, y, size, hood) => {
+    const inner = faceSVG(c.id + ':' + id).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '').replace(/<rect width="64" height="64"[^>]*\/>/, '');
+    return `<svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="0 0 64 64">${inner}${hood ? '<path d="M8 36c0-20 10-30 24-30s24 10 24 30c-6-8-14-12-24-12S14 28 8 36z" fill="#f5c400"/>' : ''}</svg>`;
+  };
+  return `<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">${sc(face)}</svg>`;
+}
+function openPhoto(c) {
+  const d = el('div', 'modal photo-modal'), card = el('div', 'photo-big'); card.innerHTML = sceneSVG(c);
+  d.appendChild(card); d.onclick = () => d.remove(); document.body.appendChild(d);
 }
 /* the guide for the very first case: five steps, each pointing at the next thing to press */
 let coach = -1;

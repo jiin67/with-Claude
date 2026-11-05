@@ -220,3 +220,21 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .zoom span::before{content:"🔍 ";font-size:10px}
 .zoom.small{margin-top:6px}
 .zoom.small span{background:rgba(255,255,255,.1);color:var(--ink)}
+
+/* result on a wide screen: text left, the culprit large on the right */
+@media (min-width:760px) and (min-aspect-ratio:1/1){
+  #result .hero{max-width:1100px;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:40px}
+  #result .res-head{flex-direction:column;grid-column:2;grid-row:1/6;align-items:center;justify-self:center}
+  #result .res-head>div{text-align:center}
+  #result .res-face{width:220px;height:220px;border-width:6px}
+  #result .res-face::after{font-size:13px;padding:5px 12px;bottom:12px}
+  #result .stars,#result .lede,#result .res-meta,#result .btn,#result .row{grid-column:1}
+}
+
+/* the photo itself */
+.photo-img{margin-top:8px;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:zoom-in}
+.photo-img svg{display:block;width:100%;height:auto}
+.photo-modal{cursor:zoom-out}
+.photo-big{width:min(900px,96vw);border-radius:12px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.photo-big svg{display:block;width:100%;height:auto}
+.evpick .zoom.small{display:none}

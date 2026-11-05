@@ -84,7 +84,7 @@ const CASES = {
       intro: 'The ticket desk cash box was full at five. At quarter to six it was empty. Three students were on duty, and one of them took a selfie at exactly the wrong moment.',
       suspects: [['hana', 'Hana', 'Food stall'], ['ian', 'Ian', 'Band'], ['jae', 'Jae', 'Ticket desk']],
       facts: [
-        ['🤳', 'Hana\'s selfie at the food stall, 17:20, posted to the class chat.', ['gym wall clock reads 5:20', 'ticket desk in the background, chair empty', 'cash box on the desk, lid open', 'Jae\'s blue jacket hanging on the chair', 'stage lights on, band mid-song']],
+        ['🤳', 'Hana\'s selfie at the food stall, 17:20, posted to the class chat.', ['gym clock', 'ticket desk chair', 'cash box', 'jacket on the chair', 'stage']],
         ['💰', 'Teacher Kim counted the box at 17:00: full, lid closed.'],
         ['🎸', 'Stage video: Ian\'s band played 17:10–17:35, Ian on vocals in every shot.'],
         ['📋', 'Duty roster: Jae on the ticket desk 17:00–18:00, no breaks.']
@@ -223,7 +223,7 @@ const CASES = {
       intro: '5시에 가득 찼던 티켓 부스 현금함이 5시 45분에 비어 있었다. 당번 학생은 셋. 그중 하나가 하필 그 순간에 셀카를 찍었다.',
       suspects: [['hana', '하나', '먹거리 부스'], ['ian', '이안', '밴드'], ['jae', '재', '티켓 부스']],
       facts: [
-        ['🤳', '하나의 셀카, 17:20, 먹거리 부스. 반 단톡방에 올림.', ['체육관 벽시계 5:20', '뒤쪽 티켓 부스, 의자는 비어 있음', '책상 위 현금함, 뚜껑 열림', '의자에 걸린 재의 파란 점퍼', '무대 조명 켜짐, 밴드 연주 중']],
+        ['🤳', '하나의 셀카, 17:20, 먹거리 부스. 반 단톡방에 올림.', ['체육관 시계', '티켓 부스 의자', '현금함', '의자에 걸린 점퍼', '무대']],
         ['💰', '김 선생님이 17:00에 현금함 확인: 가득 참, 뚜껑 닫힘.'],
         ['🎸', '무대 영상: 이안의 밴드 공연 17:10–17:35, 모든 장면에 이안이 보컬.'],
         ['📋', '당번표: 재, 티켓 부스 17:00–18:00, 휴식 없음.']

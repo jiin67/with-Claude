@@ -3,7 +3,7 @@
 <style>
 html,body{margin:0;width:100vw;height:100vh;overflow:hidden;background:#0f1016;font-family:'Inter',sans-serif}
 svg{position:absolute;inset:0;width:100%;height:100%}
-.box{position:absolute;right:5%;top:44%;transform:translateY(-50%);text-align:right;width:38%}
+.box{position:absolute;right:5%;top:44%;transform:translateY(-50%);text-align:right;width:40%}
 .badge{display:inline-block;font-size:var(--es);font-weight:700;letter-spacing:.2em;color:#ff6a3d;border:.3vmin solid #ff6a3d;padding:.8vmin 1.6vmin;border-radius:99px;margin-bottom:2vmin}
 h1{margin:0;font-weight:800;font-size:var(--fs);line-height:.9;letter-spacing:-.05em;color:#fff;text-shadow:0 1vmin 4vmin rgba(0,0,0,.6)}
 .sub{color:#dfe2ee;font-size:var(--ss);margin-top:2vmin;font-weight:500}
@@ -25,16 +25,16 @@ body.icon .box{display:none}
  <g opacity=".45" fill="#3a3e55"><rect x="230" y="148" width="250" height="18" rx="9"/><rect x="420" y="256" width="200" height="18" rx="9"/><rect x="210" y="908" width="300" height="18" rx="9"/></g>
  <!-- the detective: coat, head, hat, arm to the handle -->
  <g filter="url(#sh)">
-  <path d="M760 1080c0-150 60-250 170-280l40-10c110 30 170 130 170 290z" fill="#1f2436"/>
-  <path d="M945 790l24-6 26 296h-80z" fill="#2b3148"/>
+  <path d="M760 1080c0-150 60-250 170-280l40-10c110 30 170 130 170 290z" fill="#2b3350"/><path d="M930 800l30-8 10 288h-50z" fill="#ff6a3d" opacity=".9"/>
+  
   <path d="M935 735h50v60c-10 10-40 10-50 0z" fill="#d9a07a"/>
   <circle cx="960" cy="690" r="78" fill="#e9b48f"/>
   <path d="M880 640c0-60 36-98 80-98s80 38 80 98v10H880z" fill="#2a2d3a"/><rect x="848" y="640" width="224" height="22" rx="11" fill="#2a2d3a"/><rect x="882" y="616" width="156" height="12" fill="#ff6a3d" opacity=".85"/>
   <path d="M935 714q25 14 50 0" stroke="#5a2a1a" stroke-width="5" fill="none" stroke-linecap="round"/>
   <circle cx="938" cy="690" r="5" fill="#23170f"/><circle cx="982" cy="690" r="5" fill="#23170f"/>
   <path d="M928 668l22 4M970 672l22-4" stroke="#3a2a22" stroke-width="5" stroke-linecap="round"/>
-  <path d="M915 835c-60-10-130-20-185-70" stroke="#1f2436" stroke-width="66" stroke-linecap="round" fill="none"/>
-  <circle cx="730" cy="765" r="40" fill="#e9b48f"/>
+  <path d="M905 850c-50-20-110-40-170-85" stroke="#2b3350" stroke-width="64" stroke-linecap="round" fill="none"/><path d="M905 850c-50-20-110-40-170-85" stroke="#39436a" stroke-width="40" stroke-linecap="round" fill="none"/>
+  <circle cx="735" cy="765" r="42" fill="#e9b48f"/><path d="M712 752q24-10 48 0" stroke="#d9a07a" stroke-width="6" fill="none" stroke-linecap="round"/>
  </g>
  <g filter="url(#sh)"><rect x="690" y="690" width="84" height="250" rx="42" transform="rotate(-45 732 815)" fill="url(#handle)"/></g>
  <g filter="url(#sh)"><circle cx="540" cy="540" r="288" fill="#ff6a3d"/><circle cx="540" cy="540" r="260" fill="url(#lens)"/></g>
@@ -48,7 +48,7 @@ body.icon .box{display:none}
  <circle cx="540" cy="540" r="260" fill="url(#shine)"/>
  <circle cx="540" cy="540" r="260" fill="none" stroke="#fff" stroke-opacity=".15" stroke-width="6"/>
 </svg>
-<div class="box"><div class="badge">DETECTIVE · DEDUCTION</div><h1 id="h">ALIBI</h1><div class="sub" id="s">Read the chat. Check the evidence. Catch the lie.</div></div>
+<div class="box"><div class="badge">DETECTIVE · DEDUCTION</div><h1 id="h">ALIBI</h1><div class="sub" id="s">Read the chat. Catch the lie.</div></div>
 <script>const q=new URLSearchParams(location.search), m=Math.min(innerWidth, innerHeight*1.5), r=document.documentElement.style;
 r.setProperty('--fs',(m*.105)+'px'); r.setProperty('--ss',(m*.022)+'px'); r.setProperty('--es',(m*.016)+'px');
 const art=document.getElementById('art');

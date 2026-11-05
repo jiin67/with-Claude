@@ -2,7 +2,7 @@
 /* ALIBI — case pack J: the lie that proves innocence */
 CASES.en.push({
   id: 'bike', title: 'The Missing E-Bike', place: 'Maple Court, 3rd-floor hallway · 10:45 pm', difficulty: 2,
-  intro: 'Lin\'s electric bike vanished from the hallway rack between 22:00 and 22:30. Four people had the hallway that evening. The loudest liar is not the thief.',
+  intro: 'Lin\'s electric bike vanished from the hallway rack between 22:00 and 22:30. Four people had the hallway that evening.',
   suspects: [['dae', 'Dae', 'Lin\'s roommate'], ['lin', 'Lin', 'Bike owner'], ['owen', 'Owen', 'Delivery rider, 3C'], ['piper', 'Piper', 'Building super']],
   facts: [
     ['🚪', 'Stairwell door log: Owen out 22:12 (delivery jacket on the camera) · Piper in 22:40 · Dae in 22:52. No other exits 22:00–22:30.'],
@@ -27,7 +27,7 @@ CASES.en.push({
 });
 CASES.ko.push({
   id: 'bike', title: '사라진 전기자전거', place: '메이플 코트 3층 복도 · 오후 10:45', difficulty: 2,
-  intro: '린의 전기자전거가 22:00에서 22:30 사이 복도 거치대에서 사라졌다. 그날 저녁 복도를 지난 사람은 넷. 가장 크게 거짓말하는 사람이 도둑은 아니다.',
+  intro: '린의 전기자전거가 22:00에서 22:30 사이 복도 거치대에서 사라졌다. 그날 저녁 복도를 지난 사람은 넷.',
   suspects: [['dae', '대현', '린의 룸메이트'], ['lin', '린', '자전거 주인'], ['owen', '오웬', '배달 기사, 3C호'], ['piper', '파이퍼', '관리인']],
   facts: [
     ['🚪', '계단실 문 기록: 오웬 22:12 나감(카메라에 배달 조끼) · 파이퍼 22:40 들어옴 · 대현 22:52 들어옴. 22:00–22:30 사이 다른 출입 없음.'],

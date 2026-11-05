@@ -6,7 +6,7 @@ CASES.en.push(
     intro: 'Biscuit the beagle was found two streets away at ten past four. The yard is fenced and the gate has a smart lock. The doorbell camera caught one still that afternoon. Look closely.',
     suspects: [['wren', 'Wren', 'Dog walker'], ['otis', 'Otis', 'Meter reader'], ['lia', 'Lia', 'Neighbor, 15']],
     facts: [
-      ['🔔', 'Doorbell camera still, 15:33.', ['timestamp 15:33', 'Lia walking back from the side gate, treat bag empty', 'side gate behind her: latch up, gate ajar', 'Biscuit in the yard, nose already in the gap', 'no van or vehicle in the street']],
+      ['🔔', 'Doorbell camera still, 15:33.', ['timestamp', 'person on the path', 'side gate latch', 'the dog', 'the street']],
       ['🔐', 'Gate smart lock: locked 13:41 (Wren\'s code) · unlocked 15:32 (Lia\'s code) · "gate left open" alert 15:34. Never re-locked.'],
       ['📍', 'GPS collar: in the yard until 15:36 · through the gate 15:36 · Elm Street 16:10.'],
       ['🧾', 'Utility visit slip: meter read 10:06, "read from the sidewalk, no entry to the yard". Doorbell still 10:05: Otis at the door with a badge.'],
@@ -26,7 +26,7 @@ CASES.en.push(
     solve: 'The 15:33 doorbell still does the work: Lia is walking back from the side gate with an empty treat bag, the latch is up, the gate is ajar, and Biscuit already has his nose in the gap. The lock log matches it, her code at 15:32 and "left open" at 15:34, and the collar has him through the gate at 15:36. Otis lied about his route, but the slip and the morning still put him on the sidewalk at 10:06, five hours earlier, never inside the yard.'
   },
   {
-    id: 'gallery', title: 'Blue Hour', place: 'Gallery Sett · 9:40 pm', difficulty: 3,
+    id: 'gallery', title: 'Blue Hour', place: 'Vireo Gallery · 9:40 pm', difficulty: 3,
     intro: 'Sometime tonight the painting Blue Hour was swapped for a print. The lights went down for a two-minute projection during the toast. Four people were close enough.',
     suspects: [['nell', 'Nell', 'Gallery assistant'], ['hugo', 'Hugo', 'Collector, sponsor'], ['bea', 'Bea', 'Caterer'], ['kai', 'Kai', 'Artist\'s partner']],
     facts: [
@@ -56,7 +56,7 @@ CASES.ko.push(
     intro: '비글 비스킷이 4시 10분에 두 블록 떨어진 곳에서 발견됐다. 마당은 울타리로 막혀 있고 대문엔 스마트 잠금장치가 있다. 그날 오후 초인종 카메라가 사진 한 장을 남겼다. 자세히 보라.',
     suspects: [['wren', '렌', '도그워커'], ['otis', '오티스', '검침원'], ['lia', '리아', '옆집, 15살']],
     facts: [
-      ['🔔', '초인종 카메라 사진, 15:33.', ['타임스탬프 15:33', '옆문 쪽에서 걸어 돌아오는 리아, 빈 간식 봉지', '뒤쪽 옆 대문: 걸쇠 올라감, 문 살짝 열림', '마당의 비스킷, 벌써 틈에 코를 들이밈', '길에 차량 없음']],
+      ['🔔', '초인종 카메라 사진, 15:33.', ['타임스탬프', '길 위의 사람', '옆문 걸쇠', '강아지', '길']],
       ['🔐', '대문 스마트 잠금: 13:41 잠김(렌의 코드) · 15:32 열림(리아의 코드) · 15:34 "대문 열림" 경고. 이후 다시 잠긴 적 없음.'],
       ['📍', 'GPS 목걸이: 15:36까지 마당 · 15:36 대문 통과 · 16:10 엘름 스트리트.'],
       ['🧾', '검침 방문 전표: 10:06 검침, "인도에서 확인, 마당 출입 없음". 초인종 사진 10:05: 배지를 단 오티스가 현관 앞.'],
@@ -76,7 +76,7 @@ CASES.ko.push(
     solve: '15:33 초인종 사진이 다 말해 준다. 리아는 빈 간식 봉지를 들고 옆 대문에서 돌아오는 중이고, 걸쇠는 올라가 있고, 문은 열려 있고, 비스킷은 벌써 틈에 코를 들이밀고 있다. 잠금 기록이 그대로 맞아떨어진다. 15:32 리아의 코드, 15:34 "대문 열림", 그리고 목걸이는 15:36 대문 통과. 오티스는 동선을 거짓말했지만, 전표와 아침 사진은 그를 다섯 시간 전인 10:06에 인도에 두었을 뿐 마당 안엔 없었다.'
   },
   {
-    id: 'gallery', title: '블루 아워', place: '갤러리 세트 · 오후 9:40', difficulty: 3,
+    id: 'gallery', title: '블루 아워', place: '비레오 갤러리 · 오후 9:40', difficulty: 3,
     intro: '오늘 밤 어느 순간 그림 "블루 아워"가 인쇄본으로 바뀌었다. 건배사 도중 2분짜리 영상 상영으로 조명이 꺼졌다. 가까이 있던 사람은 넷.',
     suspects: [['nell', '넬', '갤러리 어시스턴트'], ['hugo', '휴고', '수집가, 후원자'], ['bea', '베아', '케이터링'], ['kai', '카이', '작가의 파트너']],
     facts: [

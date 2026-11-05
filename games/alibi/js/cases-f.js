@@ -8,7 +8,7 @@ CASES.en.push(
     intro: 'Vic came out of spin class to find locker 22 open and his watch gone. Three people were in the building for that hour. A member\'s selfie by the water fountain shows more than she meant it to.',
     suspects: [['pam', 'Pam', 'Front desk'], ['theo', 'Theo', 'Spin instructor'], ['nell', 'Nell', 'Member, locker 23']],
     facts: [
-      ['📷', 'Member selfie by the water fountain, 18:31. Posted with "halfway through spin 💦".', ['wall clock reads 6:31', 'front desk in the background, chair empty', 'master-key hook by the desk, empty', 'locker-room door propped open with a cone', 'Pam\'s lanyard lying on the desk']],
+      ['📷', 'Member selfie by the water fountain, 18:31. Posted with "halfway through spin 💦".', ['wall clock', 'front desk', 'key hook', 'locker-room door', 'desk surface']],
       ['🚪', 'Locker-room turnstile log (member cards only): Vic in 17:55 · Nell in 18:02, out 18:08 · Vic out 19:05. Staff use the staff door, which keeps no log.'],
       ['🗝️', 'Master-key sign-out sheet: Pam, 18:25–18:40, reason "member locked out, locker 14". The desk log has no locked-out request all evening; locker 14 has been unassigned since May.'],
       ['🏃', 'Spin studio: attendance scan Vic 18:10, Nell 18:10. Roll call at 18:45: all twelve riders present. Class video shows Theo on the lead bike 18:10–19:00.'],
@@ -61,7 +61,7 @@ CASES.ko.push(
     intro: '빅이 스피닝 수업을 마치고 나오니 22번 사물함이 열려 있고 시계가 사라졌다. 그 한 시간 동안 건물에 있던 사람은 셋. 어느 회원이 정수기 앞에서 찍은 셀카에는 본인이 의도한 것보다 많은 것이 찍혀 있다.',
     suspects: [['pam', '팸', '프런트 직원'], ['theo', '테오', '스피닝 강사'], ['nell', '넬', '회원, 23번 사물함']],
     facts: [
-      ['📷', '회원 셀카, 정수기 앞, 18:31. "스피닝 절반 완료 💦"와 함께 게시.', ['벽시계 6:31', '뒤쪽 프런트 데스크, 의자 비어 있음', '데스크 옆 마스터키 걸이, 비어 있음', '탈의실 문이 콘으로 괴어 열려 있음', '데스크 위에 놓인 팸의 목걸이 사원증']],
+      ['📷', '회원 셀카, 정수기 앞, 18:31. "스피닝 절반 완료 💦"와 함께 게시.', ['벽시계', '프런트 데스크', '키 걸이', '탈의실 문', '데스크 위']],
       ['🚪', '탈의실 회전문 기록(회원 카드만): 빅 입장 17:55 · 넬 입장 18:02, 퇴장 18:08 · 빅 퇴장 19:05. 직원은 기록이 남지 않는 직원용 문을 쓴다.'],
       ['🗝️', '마스터키 대출 장부: 팸, 18:25–18:40, 사유 "회원 잠김, 14번 사물함". 프런트 일지에 그날 저녁 잠김 신고는 없음. 14번 사물함은 5월부터 배정되지 않은 빈 칸.'],
       ['🏃', '스피닝 스튜디오: 출석 스캔 빅 18:10, 넬 18:10. 18:45 점호: 12명 전원 자리에 있음. 수업 영상에 테오는 18:10–19:00 내내 앞 자전거에 있다.'],
