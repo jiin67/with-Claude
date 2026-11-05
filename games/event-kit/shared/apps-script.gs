@@ -13,7 +13,7 @@
  * 코드를 고친 뒤에는 배포 → 배포 관리 → 새 버전 으로 다시 배포해야 반영된다.
  */
 
-var HEADER = ['시각', '브랜드', '경품', '쿠폰 코드', '결과', '시간대', '페이지', '브라우저'];
+var HEADER = ['시각', '브랜드', '경품', '쿠폰 코드', '결과', '답변', '시간대', '페이지', '브라우저'];
 
 function doPost(e) {
   try {
@@ -24,6 +24,7 @@ function doPost(e) {
       data.time ? new Date(data.time) : new Date(),
       data.brand || '', data.prize || '', data.code || '',
       data.lose ? '꽝' : '당첨',
+      data.answers || '',
       data.tz || '', data.page || '', data.ua || ''
     ]);
   } catch (err) {

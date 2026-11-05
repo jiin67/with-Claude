@@ -71,13 +71,18 @@ function makeBoard() {
   let count = 0;
   for (let r = 0; r < rows; r++) {
     const row = new Array(gaps).fill(false);
-    for (let g = 0; g < gaps; g++) if (!row[g - 1] && Math.random() < .4) { row[g] = true; count++; }
+    for (let g = 0; g < gaps; g++) if (!row[g - 1] && Math.random() < .25) { row[g] = true; count++; }
     rungs.push(row);
   }
   /* 너무 심심하지 않게: 가로줄이 8개보다 적으면 빈 자리에 채워 넣음 */
   for (let tries = 0; count < 8 && tries < 200; tries++) {
     const r = (Math.random() * rows) | 0, g = (Math.random() * gaps) | 0;
     if (!rungs[r][g] && !rungs[r][g - 1] && !rungs[r][g + 1]) { rungs[r][g] = true; count++; }
+  }
+  /* 12개를 넘으면 무작위로 덜어냄 */
+  for (let tries = 0; count > 12 && tries < 400; tries++) {
+    const r = (Math.random() * rows) | 0, g = (Math.random() * gaps) | 0;
+    if (rungs[r][g]) { rungs[r][g] = false; count--; }
   }
   return { bottoms, rungs, rows };
 }

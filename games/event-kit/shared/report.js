@@ -30,6 +30,7 @@
       if (!url() || !result) return;
       var c = cfg(), body = JSON.stringify({
         brand: c.brand || '', prize: result.prize || '', code: result.code || '', lose: !!result.lose,
+        answers: result.answers ? JSON.stringify(result.answers) : '',   /* 투표·설문 키트의 답변 */
         time: new Date().toISOString(), tz: (Intl.DateTimeFormat().resolvedOptions().timeZone || ''),
         page: location.pathname.split('/').slice(-2).join('/'), ua: navigator.userAgent
       });
