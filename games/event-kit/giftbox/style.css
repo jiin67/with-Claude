@@ -1,0 +1,78 @@
+/* 랜덤 뽑기 상자 — 색은 config.js의 colors에서 app.js가 --primary, --bg, --ink로 넣어 줍니다 */
+:root{
+  --primary:#5b8cff; --bg:#0f1016; --ink:#ffffff;
+  --dim:rgba(255,255,255,.62);
+  --card:rgba(255,255,255,.07);
+  --line:rgba(255,255,255,.12);
+  --f:'Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--f);line-height:1.5;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+body{background:
+  radial-gradient(900px 500px at 15% -10%,color-mix(in srgb,var(--primary) 45%,transparent),transparent 60%),
+  radial-gradient(700px 500px at 100% 100%,color-mix(in srgb,var(--primary) 25%,transparent),transparent 60%),
+  var(--bg)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+#app{max-width:560px;margin:0 auto;padding:max(16px,env(safe-area-inset-top,0px)) 18px calc(28px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px;min-height:100vh}
+
+/* 상단 브랜드 */
+.brand{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding-top:6px}
+.logo{height:40px;display:flex;align-items:center;font-weight:900;font-size:20px;letter-spacing:.14em;color:var(--primary)}
+.logo img{height:40px;max-width:160px;object-fit:contain}
+.brand-name{font-size:14px;color:var(--dim)}
+.mute{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:16px}
+.mute[aria-pressed=true]{opacity:.5}
+
+/* 소개 */
+.intro{text-align:center}
+.intro h1{margin:14px 0 4px;font-size:clamp(26px,7vw,34px);font-weight:900;letter-spacing:-.02em;line-height:1.2}
+.intro p{margin:0;color:var(--dim);font-size:15px}
+.intro .hint{margin-top:10px;font-size:13px;color:var(--primary);font-weight:700}
+
+/* 상자 */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:6px 0}
+.grid.n4,.grid.n2{grid-template-columns:repeat(2,1fr)}
+.box{position:relative;aspect-ratio:1;display:grid;place-items:center;transition:transform .15s,opacity .3s,filter .3s;animation:bob 2.6s ease-in-out infinite}
+.box:nth-child(2n){animation-delay:-.9s}.box:nth-child(3n){animation-delay:-1.7s}
+.box:hover{transform:scale(1.06)}
+.box:active{transform:scale(.96)}
+.box svg{width:88%;height:88%;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+.grid.locked .box{pointer-events:none;animation:none}
+.grid.locked .box.dim{opacity:.18;filter:grayscale(1)}
+.box.shake{animation:shake .55s ease-in-out}
+.box.open .lid{animation:lidPop .55s cubic-bezier(.2,1.4,.4,1) forwards}
+.box.open .burst{animation:burst .6s ease-out forwards}
+.box.open .glow{animation:glow .7s ease-out forwards}
+@keyframes bob{50%{translate:0 -5px}}
+@keyframes shake{0%,100%{rotate:0deg}20%{rotate:-7deg}40%{rotate:7deg}60%{rotate:-5deg}80%{rotate:5deg}}
+@keyframes lidPop{to{translate:-6px -46px;rotate:-18deg;opacity:.9}}
+@keyframes burst{from{opacity:1;scale:.2}to{opacity:0;scale:2.2}}
+@keyframes glow{from{opacity:0}to{opacity:1}}
+.lid,.burst,.glow{transform-origin:center;transform-box:fill-box}
+.burst,.glow{opacity:0}
+
+/* 결과 */
+.result{display:flex;flex-direction:column;gap:12px;align-items:center;animation:rise .6s cubic-bezier(.2,1.2,.4,1)}
+@keyframes rise{from{opacity:0;translate:0 24px}}
+.card{width:100%;padding:22px 20px;border-radius:20px;background:var(--card);border:1px solid var(--line);text-align:center;backdrop-filter:blur(10px);box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.kicker{font-size:13px;letter-spacing:.14em;font-weight:700;color:var(--primary)}
+.prize{margin:8px 0 14px;font-size:clamp(26px,7.5vw,36px);font-weight:900;letter-spacing:-.02em;line-height:1.2}
+.card.lose .prize{color:var(--dim)}
+.coupon{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:14px;background:rgba(0,0,0,.28);border:1px dashed var(--line)}
+.coupon .lbl{font-size:12px;color:var(--dim)}
+.coupon b{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:clamp(22px,6.5vw,30px);letter-spacing:.08em;color:var(--primary)}
+.meta{margin-top:10px;font-size:12px;color:var(--dim)}
+.show{margin:12px 0 0;font-size:14px;font-weight:700}
+.again{padding:12px 22px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-weight:700}
+.result.done .card{border-color:var(--primary)}
+.done-note{font-size:13px;color:var(--dim);margin:0 0 6px}
+
+.foot{margin-top:auto;text-align:center;font-size:12px;color:var(--dim);white-space:pre-line}
+.preview{position:fixed;left:50%;top:8px;transform:translateX(-50%);padding:5px 10px;border-radius:999px;background:#ffcf5a;color:#3a2a00;font-size:12px;font-weight:700;z-index:5}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:4}
+
+@media (min-width:720px){
+  .grid{gap:18px}
+  .box svg{width:80%;height:80%}
+}

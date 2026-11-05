@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>즉석 복권</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+  <header class="brand">
+    <div class="logo" id="logo"></div>
+    <div class="brand-name" id="brandName"></div>
+    <button class="mute" id="btnMute" type="button" aria-pressed="false"></button>
+  </header>
+
+  <h1 id="title"></h1>
+  <p class="sub" id="subtitle"></p>
+
+  <section class="card" id="card">
+    <div class="prize" id="prize">
+      <div class="prize-kind" id="prizeKind"></div>
+      <div class="prize-label" id="prizeLabel"></div>
+    </div>
+    <canvas id="foil" aria-label="긁는 영역"></canvas>
+    <div class="hint" id="hint"></div>
+  </section>
+
+  <section class="result" id="result" hidden>
+    <div class="limit" id="limitBox" hidden><b id="limitTitle"></b><span id="limitSub"></span></div>
+    <div class="code-box" id="codeBox" hidden>
+      <span class="lbl" id="codeLbl"></span>
+      <b class="code" id="code"></b>
+    </div>
+    <div class="meta"><span id="timeLbl"></span> <b id="time"></b></div>
+    <p class="show" id="show"></p>
+  </section>
+
+  <footer class="foot" id="footer"></footer>
+</main>
+<canvas id="confetti"></canvas>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+/* 색은 config.js의 colors에서 들어옵니다 (app.js가 --primary 등을 채움). */
+:root{
+  --primary:#30a46c; --bg:#0f1016; --ink:#fff; --foil:#b8bcc8;
+  --dim:rgba(255,255,255,.6); --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.12);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:'Noto Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;line-height:1.5;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+body{background:radial-gradient(700px 500px at 20% 0%,color-mix(in srgb,var(--primary) 35%,transparent),transparent 60%),var(--bg);overscroll-behavior:none}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+
+#app{max-width:440px;margin:0 auto;padding:max(18px,env(safe-area-inset-top,0px)) 20px 32px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;min-height:100vh}
+.brand{width:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-bottom:8px}
+.logo{grid-column:2;display:grid;place-items:center;min-width:56px;height:56px;padding:0 14px;border-radius:16px;background:var(--primary);color:#fff;font-weight:900;font-size:18px;letter-spacing:.12em}
+.logo img{height:40px;max-width:160px;object-fit:contain}
+.brand-name{grid-column:1/-1;font-size:13px;color:var(--dim);letter-spacing:.08em}
+.mute{grid-column:3;justify-self:end;grid-row:1;font-size:12px;color:var(--dim);padding:6px 10px;border:1px solid var(--line);border-radius:999px}
+.mute[aria-pressed=true]{opacity:.45;text-decoration:line-through}
+h1{margin:4px 0 0;font-size:26px;font-weight:900;letter-spacing:-.02em}
+.sub{margin:0 0 8px;color:var(--dim);font-size:15px}
+
+/* the card: prize underneath, foil canvas on top */
+.card{position:relative;width:100%;aspect-ratio:5/3;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 85%,#000),color-mix(in srgb,var(--primary) 60%,#fff 10%));box-shadow:0 24px 60px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.18)}
+.prize{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:20px;color:#fff}
+.prize-kind{font-size:14px;letter-spacing:.2em;opacity:.85;font-weight:700}
+.prize-label{font-size:clamp(28px,8vw,40px);font-weight:900;line-height:1.15;text-shadow:0 4px 20px rgba(0,0,0,.35)}
+.card.lose{background:linear-gradient(135deg,#3a3d4a,#262833)}
+#foil{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair;transition:opacity .6s ease}
+#foil.fade{opacity:0;pointer-events:none}
+.hint{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:10px 16px;border-radius:999px;background:rgba(0,0,0,.45);color:#fff;font-size:14px;font-weight:700;pointer-events:none;animation:bob 1.4s ease-in-out infinite;backdrop-filter:blur(4px)}
+.hint.off{display:none}
+@keyframes bob{50%{transform:translate(-50%,-56%)}}
+
+/* result */
+.result{width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:6px;animation:up .35s ease-out}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+.limit{width:100%;padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:14px}
+.limit b{display:block;font-size:16px}
+.limit span{color:var(--dim);font-size:13px}
+.code-box{width:100%;padding:14px 16px;border-radius:16px;background:var(--card);border:1px dashed color-mix(in srgb,var(--primary) 70%,#fff);display:flex;flex-direction:column;gap:4px}
+.code-box .lbl{font-size:12px;color:var(--dim);letter-spacing:.1em}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:26px;letter-spacing:.08em;font-weight:700;color:#fff}
+.meta{font-size:13px;color:var(--dim)}
+.meta b{color:var(--ink);font-weight:700;margin-left:4px}
+.show{margin:0;font-size:14px;font-weight:700;color:var(--primary)}
+.foot{margin-top:auto;padding-top:20px;font-size:12px;color:var(--dim);white-space:pre-line}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9}
+
+@media (min-width:720px){
+  #app{padding-top:48px}
+  h1{font-size:32px}
+}
