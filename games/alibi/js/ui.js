@@ -23,7 +23,23 @@ const A = {
   ok() { this.tone(660, .12, 'sine', .22); this.tone(990, .18, 'sine', .2, 1, .09); },
   bad() { this.tone(180, .16, 'square', .07, .7); },
   win() { [523, 659, 784, 1046].forEach((f, i) => this.tone(f, .3, 'sine', .18, 1, i * .11)); },
-  lose() { this.tone(300, .4, 'sawtooth', .08, .5); }
+  lose() { this.tone(300, .4, 'sawtooth', .08, .5); },
+  /* ambient bed: two slow detuned pads through a wandering filter, plus sparse pentatonic plucks */
+  m: null,
+  musicOn: true,
+  startMusic() {
+    if (!this.c || this.m || !this.musicOn) return;
+    const c = this.c, g = c.createGain(), f = c.createBiquadFilter();
+    g.gain.value = 0; f.type = 'lowpass'; f.frequency.value = 500; f.Q.value = .7;
+    const pads = [55, 82.41, 110].map((fr, i) => { const o = c.createOscillator(); o.type = i ? 'triangle' : 'sawtooth'; o.frequency.value = fr; o.detune.value = i * 4 - 4; const og = c.createGain(); og.gain.value = i ? .5 : .25; o.connect(og); og.connect(f); o.start(); return o; });
+    const lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = .05; lg.gain.value = 260; lfo.connect(lg); lg.connect(f.frequency); lfo.start();
+    f.connect(g); g.connect(this.out); g.gain.setTargetAtTime(.07, c.currentTime, 2);
+    const scale = [220, 261.6, 293.7, 329.6, 392, 440, 523.3];
+    const pluck = () => { if (!this.m) return; if (!this.muted) { const n = scale[(Math.random() * scale.length) | 0], o = c.createOscillator(), pg = c.createGain(), t = c.currentTime; o.type = 'sine'; o.frequency.value = n; pg.gain.setValueAtTime(0, t); pg.gain.linearRampToValueAtTime(.06, t + .02); pg.gain.exponentialRampToValueAtTime(.0001, t + 2.2); o.connect(pg); pg.connect(this.out); o.start(t); o.stop(t + 2.3); } this.m.timer = setTimeout(pluck, 2500 + Math.random() * 4500); };
+    this.m = { g, pads, lfo, timer: setTimeout(pluck, 1500) };
+  },
+  stopMusic() { if (!this.m) return; const m = this.m; this.m = null; clearTimeout(m.timer); m.g.gain.setTargetAtTime(0, this.c.currentTime, .6); setTimeout(() => { m.pads.forEach(o => o.stop()); m.lfo.stop(); }, 2500); },
+  setMusic(on) { this.musicOn = on; if (on) this.startMusic(); else this.stopMusic(); }
 };
 function toast(text, cls) { const t = el('div', 'toast ' + (cls || ''), text); const box = $('toasts'); box.appendChild(t); while (box.children.length > 2) box.firstChild.remove(); setTimeout(() => t.remove(), 2600); }
 
@@ -64,10 +80,12 @@ function openIntro(i, daily) {
 let tab = 'chat', sel = null;
 function beginCase(i, daily) {
   startCase(i, daily); tab = 'chat'; sel = null;
+  coach = !S.coachDone && i === 0 ? 0 : -1;
+  A.startMusic();
   $('caseTitle').textContent = R.c.title; $('casePlace').textContent = R.c.place;
   renderCase(); show('case'); PORTAL.start();
 }
-function setTab(t) { tab = t; for (const b of document.querySelectorAll('.tabs button')) b.setAttribute('aria-selected', String(b.dataset.tab === t)); $('paneChat').hidden = t !== 'chat'; $('paneEvidence').hidden = t !== 'evidence'; $('paneSuspects').hidden = t !== 'suspects'; }
+function setTab(t) { tab = t; for (const b of document.querySelectorAll('.tabs button')) b.setAttribute('aria-selected', String(b.dataset.tab === t)); $('paneChat').hidden = t !== 'chat'; $('paneEvidence').hidden = t !== 'evidence'; $('paneSuspects').hidden = t !== 'suspects'; if (coach === 0 && t === 'evidence') coach = 1; if (coach === 1 && t === 'chat') coach = 2; renderCoach(); }
 for (const b of document.querySelectorAll('.tabs button')) b.addEventListener('click', () => { A.click(); setTab(b.dataset.tab); });
 function renderMeters() {
   $('lieMeter').textContent = tr('lies', R.found.size, lieCount(R.c));
@@ -107,6 +125,24 @@ function renderCase() {
   }
   setTab(tab); renderMeters();
 }
+/* the guide for the very first case: five steps, each pointing at the next thing to press */
+let coach = -1;
+function renderCoach() {
+  for (const e of document.querySelectorAll('.pulse')) e.classList.remove('pulse');
+  const box = $('coach');
+  if (coach < 0 || !R || R.state !== 'play') { box.hidden = true; return; }
+  const steps = tr('coach'), c = R.c, firstLie = c.chat.findIndex(m => m.lie);
+  if (coach === 2 && R.found.has(firstLie)) coach = 3;
+  if (coach === 3 && allLiesFound()) coach = 4;
+  if (coach === 4 && R.state !== 'play') coach = -1;
+  const st = steps[coach];
+  $('coachText').innerHTML = typeof st === 'function' ? st(nameOf(c, c.chat[firstLie].s)) : st;
+  box.hidden = false;
+  if (coach === 0) document.querySelector('.tabs button[data-tab=evidence]').classList.add('pulse');
+  if (coach === 1) document.querySelector('.tabs button[data-tab=chat]').classList.add('pulse');
+  if (coach === 2) { const row = document.querySelector(`.msg[data-k="${firstLie}"]`); if (row) row.classList.add('pulse'); }
+  if (coach === 4) $('btnAccuse').classList.add('pulse');
+}
 function openMarkSheet(k) {
   const m = R.c.chat[k], card = $('sheetCard'); card.innerHTML = '';
   card.append(el('h3', null, nameOf(R.c, m.s) + ' · ' + m.t), el('div', 'quote', m.m));
@@ -118,7 +154,7 @@ function closeSheet() { $('sheet').hidden = true; }
 $('sheet').addEventListener('click', e => { if (e.target === $('sheet')) { sel = null; closeSheet(); renderCase(); } });
 function doMark(k) {
   const r = mark(k); sel = null;
-  if (r === 'lie') { A.ok(); toast(tr('foundLie'), 'ok'); renderCase(); if (allLiesFound()) setTimeout(() => toast(tr('accuse') + ' →'), 600); }
+  if (r === 'lie') { A.ok(); renderCase(); const row = document.querySelector(`.msg[data-k="${k}"]`); if (row) { row.classList.add('just'); setTimeout(() => row.classList.remove('just'), 900); } if (allLiesFound() && coach < 0) setTimeout(() => toast(tr('accuse') + ' →'), 600); }
   else if (r === 'strike') {
     A.bad(); toast(tr('notLie'), 'bad'); renderCase();
     const row = document.querySelector(`.msg[data-k="${k}"]`); if (row) row.classList.add('wrong');
@@ -142,6 +178,7 @@ $('btnAccuse').addEventListener('click', () => {
 /* ---- results ---- */
 function showSolved(stars) {
   A.win(); PORTAL.happy(); PORTAL.stop();
+  if (coach >= 0) { S.coachDone = true; persist(); } coach = -1; $('coach').hidden = true;
   $('resBadge').textContent = tr('solved'); $('resTitle').textContent = R.c.title;
   const st = $('resStars'); st.innerHTML = ''; for (let k = 0; k < 3; k++) st.appendChild(el('span', k < stars ? '' : 'off', '★'));
   $('resBody').textContent = R.c.solve;
@@ -155,7 +192,7 @@ function showSolved(stars) {
   show('result');
 }
 function showFailed() {
-  A.lose(); PORTAL.stop();
+  A.lose(); PORTAL.stop(); $('coach').hidden = true;
   $('resBadge').textContent = tr('failed'); $('resTitle').textContent = R.c.title; $('resStars').innerHTML = ''; $('resBody').textContent = tr('failedSub'); $('resMeta').innerHTML = ''; $('btnResShare').hidden = true;
   $('btnResNext').textContent = tr('retry'); $('btnResNext').onclick = () => { A.click(); const d = R.daily; PORTAL.midgame().then(() => beginCase(R.i, d)); };
   show('result');
@@ -185,12 +222,13 @@ $('hintModal').addEventListener('click', e => { if (e.target === $('hintModal'))
 /* ---- navigation and settings ---- */
 $('btnStart').addEventListener('click', () => { A.init(); A.click(); renderList(); });
 $('btnListBack').addEventListener('click', () => { A.click(); renderTitle(); });
-$('btnCaseBack').addEventListener('click', () => { A.click(); PORTAL.stop(); renderList(); });
-function openSettings() { A.init(); $('optSound').checked = S.settings.sound; $('optLang').value = LANG; $('btnResetConfirm').hidden = true; $('settings').hidden = false; }
+$('btnCaseBack').addEventListener('click', () => { A.click(); PORTAL.stop(); $('coach').hidden = true; renderList(); });
+function openSettings() { A.init(); $('optSound').checked = S.settings.sound; $('optMusic').checked = S.settings.music !== false; $('optLang').value = LANG; $('btnResetConfirm').hidden = true; $('settings').hidden = false; }
 $('btnTitleSettings').addEventListener('click', openSettings); $('btnListSettings').addEventListener('click', openSettings);
 $('btnSettingsClose').addEventListener('click', () => { $('settings').hidden = true; });
 $('settings').addEventListener('click', e => { if (e.target === $('settings')) $('settings').hidden = true; });
 $('optSound').addEventListener('change', e => { S.settings.sound = e.target.checked; A.setMuted(!S.settings.sound); persist(); });
+$('optMusic').addEventListener('change', e => { S.settings.music = e.target.checked; A.setMusic(S.settings.music); persist(); });
 $('optLang').addEventListener('change', e => { persist(); setLang(e.target.value); });
 $('btnReset').addEventListener('click', () => { $('btnResetConfirm').hidden = false; });
 $('btnResetConfirm').addEventListener('click', () => { const st = S.settings; S = freshSave(); S.settings = st; persist(); $('settings').hidden = true; renderTitle(); });
@@ -201,7 +239,7 @@ function clock() { const d = new Date(); $('clock').textContent = d.getHours() +
 clock(); setInterval(clock, 15000);
 document.title = tr('title');
 for (const e of document.querySelectorAll('[data-i18n]')) e.textContent = tr(e.dataset.i18n);
-A.setMuted(!S.settings.sound);
+A.setMuted(!S.settings.sound); A.musicOn = S.settings.music !== false;
 PORTAL.onAd = p => { A.setMuted(p || !S.settings.sound); };
 PORTAL.ready.then(() => {
   if (PORTAL.store) { let raw = null; try { raw = PORTAL.store.getItem(SAVE_KEY); } catch (e) {} if (raw) { const s2 = loadSave(raw); if (Object.keys(s2.done).length >= Object.keys(S.done).length) S = s2; } persist(); }

@@ -2,7 +2,7 @@
 /* Progress and rules. No DOM. */
 const SAVE_KEY = 'alibi.save.v1';
 const MAX_STRIKES = 3;
-function freshSave() { return { v: 1, done: {}, stars: {}, best: {}, daily: {}, tutorialSeen: false, settings: { sound: true } }; }
+function freshSave() { return { v: 1, done: {}, stars: {}, best: {}, daily: {}, tutorialSeen: false, coachDone: false, settings: { sound: true, music: true } }; }
 function loadSave(raw) {
   const f = freshSave();
   try {
