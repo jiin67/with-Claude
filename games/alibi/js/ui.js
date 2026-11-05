@@ -43,6 +43,7 @@ const A = {
 };
 function toast(text, cls) { const t = el('div', 'toast ' + (cls || ''), text); const box = $('toasts'); box.appendChild(t); while (box.children.length > 2) box.firstChild.remove(); setTimeout(() => t.remove(), 2600); }
 
+const isWide = () => matchMedia('(min-width:900px) and (min-aspect-ratio:1/1)').matches;
 const SCREENS = ['title', 'list', 'case', 'result'];
 let screen = 'title';
 function show(id) { screen = id; for (const s of SCREENS) $(s).hidden = s !== id; }
@@ -56,36 +57,32 @@ function renderList() {
   const d = el('button', 'daily'); d.type = 'button';
   d.append(el('span', 'badge', tr('daily')), el('b', null, dc.title), el('span', null, dd ? tr('dailyDone', dd.stars, fmtTime(dd.time)) : tr('dailySub')));
   if (st) d.appendChild(el('span', 'streak', tr('streak', st)));
-  d.onclick = () => { A.init(); A.click(); openIntro(di, key); };
+  d.onclick = () => { A.init(); A.click(); beginCase(di, key); };
   box.appendChild(d);
   CL.forEach((c, i) => {
     const open = unlocked(i), b = el('button', 'case-card' + (open ? '' : ' locked')); b.type = 'button';
     const info = el('div'); info.append(el('b', null, c.title), el('span', null, open ? c.place + ' · ' + tr('diff')[c.difficulty - 1] : tr('locked')));
     const st = S.stars[c.id] || 0;
     b.append(el('div', 'no', open ? String(i + 1) : '🔒'), info, el('div', 'st', S.done[c.id] ? '★'.repeat(st) + '☆'.repeat(3 - st) + (S.best[c.id] ? '\n' + fmtTime(S.best[c.id]) : '') : ''));
-    b.onclick = () => { A.init(); if (!open) return; A.click(); openIntro(i); };
+    b.onclick = () => { A.init(); if (!open) return; A.click(); beginCase(i); };
     box.appendChild(b);
   });
   show('list');
 }
-function openIntro(i, daily) {
-  const c = CL[i];
-  $('introDiff').textContent = tr('diff')[c.difficulty - 1] + ' · ' + c.place; $('introTitle').textContent = c.title; $('introBody').textContent = c.intro;
-  $('introTut').hidden = S.tutorialSeen; $('introTut').innerHTML = tr('tutorial');
-  $('btnIntroGo').textContent = tr('start'); $('btnIntroGo').onclick = () => { $('intro').hidden = true; S.tutorialSeen = true; persist(); beginCase(i, daily); };
-  $('intro').hidden = false;
-}
+/* kept for callers: the brief now lives at the top of the chat, so this just starts the case */
+function openIntro(i, daily) { beginCase(i, daily); }
 
 /* ---- the case ---- */
 let tab = 'chat', sel = null;
 function beginCase(i, daily) {
   startCase(i, daily); tab = 'chat'; sel = null;
-  coach = !S.coachDone && i === 0 ? 0 : -1;
+  coach = !S.coachDone && i === 0 ? (isWide() ? 2 : 0) : -1;
+  S.tutorialSeen = true;
   A.startMusic();
   $('caseTitle').textContent = R.c.title; $('casePlace').textContent = R.c.place;
   renderCase(); show('case'); PORTAL.start();
 }
-function setTab(t) { tab = t; for (const b of document.querySelectorAll('.tabs button')) b.setAttribute('aria-selected', String(b.dataset.tab === t)); $('paneChat').hidden = t !== 'chat'; $('paneEvidence').hidden = t !== 'evidence'; $('paneSuspects').hidden = t !== 'suspects'; if (coach === 0 && t === 'evidence') coach = 1; if (coach === 1 && t === 'chat') coach = 2; renderCoach(); }
+function setTab(t) { tab = t; const w = isWide(); for (const b of document.querySelectorAll('.tabs button')) b.setAttribute('aria-selected', String(b.dataset.tab === t)); $('paneChat').hidden = !w && t !== 'chat'; $('paneEvidence').hidden = !w && t !== 'evidence'; $('paneSuspects').hidden = !w && t !== 'suspects'; if (coach === 0 && t === 'evidence') coach = 1; if (coach === 1 && t === 'chat') coach = 2; if (w && coach >= 0 && coach < 2) coach = 2; renderCoach(); }
 for (const b of document.querySelectorAll('.tabs button')) b.addEventListener('click', () => { A.click(); setTab(b.dataset.tab); });
 function renderMeters() {
   $('lieMeter').textContent = tr('lies', R.found.size, lieCount(R.c));
@@ -98,6 +95,7 @@ setInterval(() => { if (R && R.state === 'play' && screen === 'case') $('timeMet
 function renderCase() {
   const c = R.c;
   const chat = $('paneChat'); chat.innerHTML = '';
+  const brief = el('div', 'brief'); brief.append(el('b', null, tr('diff')[c.difficulty - 1] + ' · ' + c.place), c.intro); chat.appendChild(brief);
   c.chat.forEach((m, k) => {
     const row = el('button', 'msg' + (R.found.has(k) ? ' lie' : '') + (sel === k ? ' sel' : '')); row.type = 'button'; row.dataset.k = k;
     const av = el('div', 'av', nameOf(c, m.s)[0]); av.style.background = avColor(c, m.s);
@@ -108,9 +106,9 @@ function renderCase() {
     row.onclick = () => { A.init(); if (R.state !== 'play' || R.found.has(k)) return; A.click(); sel = k; openMarkSheet(k); };
     chat.appendChild(row);
   });
-  const ev = $('paneEvidence'); ev.innerHTML = '';
+  const ev = $('factList'); ev.innerHTML = '';
   for (const [ic, t] of c.facts) { const f = el('div', 'fact'); f.append(el('div', 'ic', ic), el('div', null, t)); ev.appendChild(f); }
-  const su = $('paneSuspects'); su.innerHTML = '';
+  const su = $('susList'); su.innerHTML = '';
   for (const [id, name, role] of c.suspects) {
     const s = el('div', 'sus'), av = el('div', 'av', name[0]); av.style.background = avColor(c, id);
     const info = el('div'); info.append(el('b', null, name), el('span', null, role));
@@ -147,16 +145,29 @@ function openMarkSheet(k) {
   const m = R.c.chat[k], card = $('sheetCard'); card.innerHTML = '';
   card.append(el('h3', null, nameOf(R.c, m.s) + ' · ' + m.t), el('div', 'quote', m.m));
   const yes = el('button', 'btn primary', tr('markLie')), no = el('button', 'btn ghost', tr('close'));
-  yes.onclick = () => { closeSheet(); doMark(k); }; no.onclick = () => { sel = null; closeSheet(); renderCase(); };
+  yes.onclick = () => openEvidenceSheet(k); no.onclick = () => { sel = null; closeSheet(); renderCase(); };
   card.append(yes, no); $('sheet').hidden = false;
+}
+/* second step: which fact does the message contradict? */
+function openEvidenceSheet(k) {
+  const m = R.c.chat[k], card = $('sheetCard'); card.innerHTML = '';
+  card.append(el('h3', null, tr('pickEv')), el('div', 'quote', m.m));
+  const list = el('div', 'list'), guide = coach === 2 && m.lie ? evOf(m)[0] : -1;
+  R.c.facts.forEach(([ic, t], i) => {
+    const b = el('button', 'evpick' + (i === guide ? ' pulse' : '')); b.type = 'button'; b.append(el('span', 'ic', ic), el('span', null, t));
+    b.onclick = () => { closeSheet(); doMark(k, i); };
+    list.appendChild(b);
+  });
+  const no = el('button', 'btn ghost', tr('back')); no.onclick = () => openMarkSheet(k);
+  card.append(list, no); $('sheet').hidden = false;
 }
 function closeSheet() { $('sheet').hidden = true; }
 $('sheet').addEventListener('click', e => { if (e.target === $('sheet')) { sel = null; closeSheet(); renderCase(); } });
-function doMark(k) {
-  const r = mark(k); sel = null;
+function doMark(k, ev) {
+  const r = mark(k, ev); sel = null;
   if (r === 'lie') { A.ok(); renderCase(); const row = document.querySelector(`.msg[data-k="${k}"]`); if (row) { row.classList.add('just'); setTimeout(() => row.classList.remove('just'), 900); } if (allLiesFound() && coach < 0) setTimeout(() => toast(tr('accuse') + ' →'), 600); }
-  else if (r === 'strike') {
-    A.bad(); toast(tr('notLie'), 'bad'); renderCase();
+  else if (r === 'strike' || r === 'wrongEv') {
+    A.bad(); toast(tr(r === 'wrongEv' ? 'wrongEv' : 'notLie'), 'bad'); renderCase();
     const row = document.querySelector(`.msg[data-k="${k}"]`); if (row) row.classList.add('wrong');
     if (R.state === 'failed') setTimeout(showFailed, 700);
   }
@@ -188,7 +199,7 @@ function showSolved(stars) {
   $('btnResShare').hidden = false;
   const last = R.i >= CL.length - 1;
   $('btnResNext').textContent = R.daily ? tr('toList') : last ? tr('allDone') : tr('next');
-  $('btnResNext').onclick = () => { A.click(); if (R.daily) PORTAL.midgame().then(renderList); else if (last) { toast(tr('allDoneSub')); renderList(); } else PORTAL.midgame().then(() => openIntro(R.i + 1)); };
+  $('btnResNext').onclick = () => { A.click(); if (R.daily) PORTAL.midgame().then(renderList); else if (last) { toast(tr('allDoneSub')); renderList(); } else PORTAL.midgame().then(() => beginCase(R.i + 1)); };
   show('result');
 }
 function showFailed() {
@@ -232,7 +243,8 @@ $('optMusic').addEventListener('change', e => { S.settings.music = e.target.chec
 $('optLang').addEventListener('change', e => { persist(); setLang(e.target.value); });
 $('btnReset').addEventListener('click', () => { $('btnResetConfirm').hidden = false; });
 $('btnResetConfirm').addEventListener('click', () => { const st = S.settings; S = freshSave(); S.settings = st; persist(); $('settings').hidden = true; renderTitle(); });
-addEventListener('keydown', e => { if (e.key === 'Escape') { $('settings').hidden = true; $('intro').hidden = true; if (!$('hintModal').hidden) closeHint(); closeSheet(); } });
+addEventListener('keydown', e => { if (e.key === 'Escape') { $('settings').hidden = true; if (!$('hintModal').hidden) closeHint(); closeSheet(); } });
+addEventListener('resize', () => { if (screen === 'case') setTab(tab); });
 
 /* ---- clock, start ---- */
 function clock() { const d = new Date(); $('clock').textContent = d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); }
@@ -241,9 +253,13 @@ document.title = tr('title');
 for (const e of document.querySelectorAll('[data-i18n]')) e.textContent = tr(e.dataset.i18n);
 A.setMuted(!S.settings.sound); A.musicOn = S.settings.music !== false;
 PORTAL.onAd = p => { A.setMuted(p || !S.settings.sound); };
+/* a new player is inside case 1 with no clicks; a returning player lands on the case files */
+function boot() { if (!S.tutorialSeen && !Object.keys(S.done).length) beginCase(0); else renderList(); }
 PORTAL.ready.then(() => {
   if (PORTAL.store) { let raw = null; try { raw = PORTAL.store.getItem(SAVE_KEY); } catch (e) {} if (raw) { const s2 = loadSave(raw); if (Object.keys(s2.done).length >= Object.keys(S.done).length) S = s2; } persist(); }
-  A.setMuted(!S.settings.sound); renderTitle(); PORTAL.loaded();
+  /* the portal knows the player's country better than the browser does; follow it unless the player chose a language */
+  try { const chosen = localStorage.getItem(LANG_KEY), want = PORTAL.country === 'KR' ? 'ko' : PORTAL.country ? 'en' : null; if (!chosen && want && want !== LANG && !sessionStorage.getItem('alibi.langflip')) { sessionStorage.setItem('alibi.langflip', '1'); setLang(want); return; } } catch (e) {}
+  A.setMuted(!S.settings.sound); if (screen === 'title') boot(); PORTAL.loaded();
 });
 renderTitle();
 window.__al = { get S() { return S; }, get R() { return R; }, beginCase, renderList };

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>ALIBI</title>
-<meta name="description" content="Deduction game: read a group chat, compare it with the evidence, catch the lies and accuse the culprit. Six cases, 3–5 minutes each.">
+<meta name="description" content="Deduction game: read a group chat, compare it with the evidence, catch the lies and accuse the culprit. 16+ cases plus a daily case, 3–5 minutes each.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
@@ -37,8 +37,8 @@
     <div class="meter"><span id="lieMeter"></span><span id="timeMeter"></span><span id="strikeMeter"></span></div>
     <nav class="tabs"><button data-tab="chat" aria-selected="true" data-i18n="tabChat"></button><button data-tab="evidence" aria-selected="false" data-i18n="tabEvidence"></button><button data-tab="suspects" aria-selected="false" data-i18n="tabSuspects"></button></nav>
     <div class="pane" id="paneChat"></div>
-    <div class="pane" id="paneEvidence" hidden></div>
-    <div class="pane" id="paneSuspects" hidden></div>
+    <div class="pane side" id="paneEvidence" hidden><h4 class="pane-title" data-i18n="tabEvidence"></h4><div id="factList"></div></div>
+    <div class="pane side" id="paneSuspects" hidden><h4 class="pane-title" data-i18n="tabSuspects"></h4><div id="susList"></div></div>
     <div class="coach" id="coach" hidden><span id="coachText"></span></div>
     <div class="bottom"><button class="btn primary wide" id="btnAccuse" disabled data-i18n="accuse"></button></div>
     <div class="sheet" id="sheet" hidden><div class="sheet-card" id="sheetCard"></div></div>
@@ -58,7 +58,6 @@
   </section>
 </div>
 
-<div class="modal" id="intro" hidden><div class="card"><div class="badge" id="introDiff"></div><h2 id="introTitle"></h2><p id="introBody"></p><p class="tip" id="introTut" hidden></p><button class="btn primary" id="btnIntroGo"></button></div></div>
 <div class="modal" id="hintModal" hidden><div class="card"><h2 data-i18n="hint"></h2><p id="hintText"></p><div class="row"><button class="btn primary" id="btnHintTake"></button><button class="btn ghost" id="btnHintClose" data-i18n="close"></button></div></div></div>
 <div class="modal" id="settings" hidden><div class="card">
   <h2 data-i18n="settings"></h2>
@@ -76,6 +75,8 @@
 <script src="js/cases-c.js"></script>
 <script src="js/cases-d.js"></script>
 <script src="js/cases-e.js"></script>
+<script src="js/cases-f.js"></script>
+<script src="js/cases-g.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/portal.js"></script>
 <script src="js/game.js"></script>

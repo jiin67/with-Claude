@@ -36,13 +36,17 @@ en.forEach((c, i) => {
       if (!sids.includes(m.s)) bad(x.id, `${lang}: chat[${j}] speaker "${m.s}" is not a suspect`);
       if (!/^\d{1,2}:\d{2}$/.test(m.t)) bad(x.id, `${lang}: chat[${j}] time "${m.t}" is not HH:MM`);
       if (m.lie !== undefined && (typeof m.lie !== 'string' || m.lie.length < 15)) bad(x.id, `${lang}: chat[${j}] lie reason too short`);
+      if (m.lie) {
+        const ev = Array.isArray(m.ev) ? m.ev : [m.ev];
+        if (m.ev === undefined || !ev.length || ev.some(e => !Number.isInteger(e) || e < 0 || e >= x.facts.length)) bad(x.id, `${lang}: chat[${j}] ev must index facts (0..${x.facts.length - 1})`);
+      } else if (m.ev !== undefined) bad(x.id, `${lang}: chat[${j}] has ev but is not a lie`);
       if (!m.m || !m.m.trim()) bad(x.id, `${lang}: chat[${j}] empty message`);
     });
     for (const key of ['title', 'place', 'intro', 'solve']) if (!x[key] || !x[key].trim()) bad(x.id, `${lang}: missing ${key}`);
   }
   /* structure must match across languages so the same taps work */
   if (c.chat.length !== k.chat.length) bad(c.id, `chat length differs (en ${c.chat.length}, ko ${k.chat.length})`);
-  else c.chat.forEach((m, j) => { if (!!m.lie !== !!k.chat[j].lie) bad(c.id, `chat[${j}] lie flag differs between languages`); if (m.s !== k.chat[j].s) bad(c.id, `chat[${j}] speaker differs between languages`); });
+  else c.chat.forEach((m, j) => { if (!!m.lie !== !!k.chat[j].lie) bad(c.id, `chat[${j}] lie flag differs between languages`); if (m.s !== k.chat[j].s) bad(c.id, `chat[${j}] speaker differs between languages`); if (JSON.stringify(m.ev) !== JSON.stringify(k.chat[j].ev)) bad(c.id, `chat[${j}] ev differs between languages`); });
   if (c.culprit !== k.culprit) bad(c.id, 'culprit differs between languages');
   if (c.suspects.map(s => s[0]).join() !== k.suspects.map(s => s[0]).join()) bad(c.id, 'suspect ids differ between languages');
   if (c.difficulty !== k.difficulty) bad(c.id, 'difficulty differs between languages');

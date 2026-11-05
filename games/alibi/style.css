@@ -8,7 +8,7 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.45;overflow:hidden;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.45;overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 body{background:radial-gradient(900px 600px at 20% 0%,rgba(255,106,61,.18),transparent 60%),radial-gradient(800px 600px at 90% 100%,rgba(90,110,255,.16),transparent 60%),var(--bg)}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none;padding:0}
@@ -139,3 +139,40 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .coach{position:absolute;left:14px;right:14px;bottom:76px;padding:12px 14px;border-radius:14px;background:var(--accent);color:#fff;font-size:14px;line-height:1.4;box-shadow:0 12px 30px rgba(255,106,61,.4);animation:up .25s ease-out;z-index:4}
 .coach::after{content:"";position:absolute;left:50%;bottom:-7px;width:14px;height:14px;background:var(--accent);transform:translateX(-50%) rotate(45deg)}
 .coach b{font-weight:800}
+
+/* case brief pinned at the top of the chat; evidence pick in the sheet */
+.brief{padding:12px 14px;border-radius:14px;background:rgba(255,106,61,.1);border:1px solid rgba(255,106,61,.35);font-size:13px;line-height:1.5;margin:0 0 12px}
+.brief b{display:block;color:var(--accent);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+.pane-title{display:none;margin:0 0 8px 2px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.evpick{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start;text-align:left;padding:10px 12px;border-radius:12px;background:var(--card-2);border:1px solid var(--line);font-size:13px;line-height:1.4}
+.evpick:hover{border-color:var(--accent)}
+.evpick .ic{font-size:20px;line-height:1}
+.sheet-card .list{display:flex;flex-direction:column;gap:6px;max-height:48vh;overflow:auto}
+.cases.wide{display:grid;grid-template-columns:1fr 1fr;align-content:start}
+.cases.wide .daily{grid-column:1/-1}
+
+/* ---- landscape desktop: no phone frame; chat left, evidence and suspects right ---- */
+@media (min-width:900px) and (min-aspect-ratio:1/1){
+  #phone{width:min(1320px,100vw - 32px);height:min(860px,100vh - 32px);border-radius:28px}
+  .status{display:none}
+  .hero{max-width:640px;margin:0 auto;align-items:flex-start}
+  .cases{max-width:860px;width:100%;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:10px}
+  .cases .daily{grid-column:1/-1}
+  #case{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);grid-template-rows:auto auto minmax(0,1fr) minmax(0,1fr) auto;column-gap:0}
+  #case .top{grid-column:1/-1}
+  #case .meter{grid-column:1/-1;padding-top:10px}
+  #case .tabs{display:none}
+  #paneChat{grid-column:1;grid-row:3/5;padding:14px 16px 90px;border-right:1px solid var(--line)}
+  #paneEvidence{grid-column:2;grid-row:3;padding:14px 16px 8px}
+  #paneSuspects{grid-column:2;grid-row:4;padding:8px 16px 90px;border-top:1px solid var(--line)}
+  .pane.side[hidden]{display:block!important}
+  .pane-title{display:block}
+  #case .bottom{grid-column:1;grid-row:5;position:static;padding:10px 16px 16px;background:none}
+  .coach{left:16px;right:auto;width:min(520px,52%);bottom:84px}
+  .coach::after{left:40px}
+  .msg{max-width:720px}
+}
+@media (min-width:900px) and (min-aspect-ratio:1/1){
+  .sheet{align-items:center;justify-content:center}
+  .sheet-card{max-width:620px;border-radius:24px;padding:22px}
+}

@@ -13,9 +13,9 @@ CASES.en.push(
     ],
     chat: [
       { s: 'yun', t: '07:12', m: 'The tomatoes are all gone?? Who did this' },
-      { s: 'mo', t: '07:15', m: 'Calm down, it was the wind. It was blowing hard all night, snapped them right off.', lie: 'The weather report says the wind was calm all night, and the photo shows clean angled cuts, not snapped stems.' },
+      { s: 'mo', t: '07:15', m: 'Calm down, it was the wind. It was blowing hard all night, snapped them right off.', ev: [1, 2], lie: 'The weather report says the wind was calm all night, and the photo shows clean angled cuts, not snapped stems.' },
       { s: 'yun', t: '07:16', m: 'I watered them at 8 last night and they were fine.' },
-      { s: 'gus', t: '07:20', m: 'Don\'t look at me. I haven\'t been up on that roof in weeks.', lie: 'The fob log shows Gus opening the roof door at 23:40.' },
+      { s: 'gus', t: '07:20', m: 'Don\'t look at me. I haven\'t been up on that roof in weeks.', ev: 0, lie: 'The fob log shows Gus opening the roof door at 23:40.' },
       { s: 'gus', t: '07:21', m: 'And for the record, I said at the meeting the garden should go. Legally. With a vote.' },
       { s: 'mo', t: '07:24', m: 'The shed was open this morning, I\'ll admit I may have left it unlocked.' },
       { s: 'yun', t: '07:25', m: 'So someone took the shears from the shed. In the rain.' },
@@ -36,10 +36,10 @@ CASES.en.push(
     ],
     chat: [
       { s: 'ren', t: '09:31', m: 'It\'s online. The whole episode. Before we even cut the ad reads.' },
-      { s: 'sae', t: '09:33', m: 'Nobody touched the master until I opened it on my phone this morning. I checked.', lie: 'The drive log shows "Tom-Laptop" downloading the master at 19:20 last night.' },
+      { s: 'sae', t: '09:33', m: 'Nobody touched the master until I opened it on my phone this morning. I checked.', ev: 0, lie: 'The drive log shows "Tom-Laptop" downloading the master at 19:20 last night.' },
       { s: 'tom', t: '09:35', m: 'The log says my laptop? I wasn\'t even in the building. Dentist at 4:30, then home.' },
       { s: 'tom', t: '09:36', m: 'Vi picked it up for me last night, it was still on my desk.' },
-      { s: 'vi', t: '09:38', m: 'I left right after we finished recording and never went back to the studio.', lie: 'The screenshot shows Vi agreeing at 18:30 to pick up Tom\'s laptop from the studio, after the 16:00 end of recording.' },
+      { s: 'vi', t: '09:38', m: 'I left right after we finished recording and never went back to the studio.', ev: 3, lie: 'The screenshot shows Vi agreeing at 18:30 to pick up Tom\'s laptop from the studio, after the 16:00 end of recording.' },
       { s: 'ren', t: '09:40', m: 'Then who used Tom\'s laptop at 7:20?' },
       { s: 'vi', t: '09:41', m: 'Maybe it got hacked. Those things happen.' },
       { s: 'sae', t: '09:42', m: 'The sticky note had the password on it. Anyone who had the laptop had the file.' }
@@ -61,9 +61,9 @@ CASES.ko.push(
     ],
     chat: [
       { s: 'yun', t: '07:12', m: '토마토가 다 없어졌어요?? 누가 이랬어요' },
-      { s: 'mo', t: '07:15', m: '진정해요, 바람이에요. 밤새 세게 불어서 뚝뚝 부러진 거예요.', lie: '기상 기록에 바람은 밤새 잔잔했고, 사진의 줄기는 부러진 게 아니라 비스듬히 깔끔하게 잘렸다.' },
+      { s: 'mo', t: '07:15', m: '진정해요, 바람이에요. 밤새 세게 불어서 뚝뚝 부러진 거예요.', ev: [1, 2], lie: '기상 기록에 바람은 밤새 잔잔했고, 사진의 줄기는 부러진 게 아니라 비스듬히 깔끔하게 잘렸다.' },
       { s: 'yun', t: '07:16', m: '어젯밤 8시에 물 줄 때는 멀쩡했어요.' },
-      { s: 'gus', t: '07:20', m: '나 보지 마요. 옥상 안 올라간 지 몇 주 됐어요.', lie: '태그 기록에 구 씨가 23:40에 옥상 문을 연 것으로 남아 있다.' },
+      { s: 'gus', t: '07:20', m: '나 보지 마요. 옥상 안 올라간 지 몇 주 됐어요.', ev: 0, lie: '태그 기록에 구 씨가 23:40에 옥상 문을 연 것으로 남아 있다.' },
       { s: 'gus', t: '07:21', m: '그리고 분명히 말하는데, 회의에서 텃밭 없애자고 한 건 맞아요. 합법적으로. 표결로.' },
       { s: 'mo', t: '07:24', m: '아침에 창고가 열려 있던데, 제가 안 잠갔을 수도 있다는 건 인정합니다.' },
       { s: 'yun', t: '07:25', m: '그럼 누가 창고에서 가위를 꺼낸 거네요. 비 오는데.' },
@@ -84,10 +84,10 @@ CASES.ko.push(
     ],
     chat: [
       { s: 'ren', t: '09:31', m: '올라왔어요. 에피소드 통째로. 광고 부분 자르기도 전에.' },
-      { s: 'sae', t: '09:33', m: '제가 오늘 아침 폰으로 열기 전까지 아무도 마스터 안 건드렸어요. 확인했어요.', lie: '드라이브 기록에 어젯밤 19:20 "Tom-Laptop"이 마스터를 다운로드한 것으로 남아 있다.' },
+      { s: 'sae', t: '09:33', m: '제가 오늘 아침 폰으로 열기 전까지 아무도 마스터 안 건드렸어요. 확인했어요.', ev: 0, lie: '드라이브 기록에 어젯밤 19:20 "Tom-Laptop"이 마스터를 다운로드한 것으로 남아 있다.' },
       { s: 'tom', t: '09:35', m: '기록이 제 노트북이라고요? 저 건물에 있지도 않았어요. 4시 반 치과, 그다음 집.' },
       { s: 'tom', t: '09:36', m: '비가 어젯밤에 대신 챙겨 줬어요. 책상에 그대로 있었거든요.' },
-      { s: 'vi', t: '09:38', m: '저는 녹음 끝나자마자 나갔고 스튜디오에 다시 간 적 없어요.', lie: '캡처에 비가 18:30에 톰의 노트북을 스튜디오에서 챙기기로 한 것이 남아 있다. 녹음이 끝난 16:00 이후다.' },
+      { s: 'vi', t: '09:38', m: '저는 녹음 끝나자마자 나갔고 스튜디오에 다시 간 적 없어요.', ev: 3, lie: '캡처에 비가 18:30에 톰의 노트북을 스튜디오에서 챙기기로 한 것이 남아 있다. 녹음이 끝난 16:00 이후다.' },
       { s: 'ren', t: '09:40', m: '그럼 7시 20분에 톰 노트북은 누가 쓴 거예요?' },
       { s: 'vi', t: '09:41', m: '해킹당한 거 아닐까요. 그런 일 있잖아요.' },
       { s: 'sae', t: '09:42', m: '포스트잇에 비번이 있었어요. 노트북만 있으면 파일은 누구나 받을 수 있었던 거죠.' }

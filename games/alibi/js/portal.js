@@ -25,6 +25,7 @@ const PORTAL = (() => {
     rewarded: false,
     onAd: null, /* (true) when an ad starts, (false) when it ends — the UI mutes and pauses */
     store: null, /* localStorage-like account storage, when the portal has one */
+    country: null, /* ISO country code from the portal, when it tells us */
     ready: null
   };
 
@@ -46,6 +47,7 @@ const PORTAL = (() => {
         await timeout(sdk.init(), 8000);
         api.rewarded = sdk.environment !== 'disabled';
         if (sdk.data && sdk.environment !== 'disabled') api.store = sdk.data;
+        try { const si = sdk.user && sdk.user.systemInfo; const info = si && typeof si.then === 'function' ? await si : si; if (info && info.countryCode) api.country = String(info.countryCode).toUpperCase(); } catch (e) {}
         try { sdk.game.loadingStart(); } catch (e) {}
       } else if (name === 'poki') {
         await timeout(loadScript(SDK_URL.poki), 8000);

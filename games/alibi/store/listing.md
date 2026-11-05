@@ -5,16 +5,16 @@
 - 한국어: **알리바이 ALIBI — 거짓말을 잡아라**
 
 ## 짧은 설명
-- EN: Read the group chat, check it against the evidence, mark the lies and accuse the culprit. Sixteen cases, five minutes each, plus a daily case.
-- KO: 단체 채팅을 읽고 증거와 대조해 거짓말을 표시하고 범인을 지목하세요. 사건 16개, 하나에 5분. 오늘의 사건도.
+- EN: Read the group chat, check it against the evidence, mark the lies and accuse the culprit. Twenty cases, five minutes each, plus a daily case.
+- KO: 단체 채팅을 읽고 증거와 대조해 거짓말을 표시하고 범인을 지목하세요. 사건 20개, 하나에 5분. 오늘의 사건도.
 
 ## 긴 설명 — English
 Everyone in the chat has a story. The evidence only agrees with some of them.
 
-ALIBI is a deduction game played on a detective's phone. Each case gives you a group chat, a handful of facts (badge logs, receipts, CCTV, weather) and a few suspects. Tap a message that doesn't match the evidence and mark it as a lie. Find every lie, then accuse. Three mistakes and the case starts over.
+ALIBI is a deduction game played on a detective's phone. Each case gives you a group chat, a handful of facts (badge logs, receipts, CCTV, weather) and a few suspects. Tap a message that doesn't match the evidence, then pick the fact it contradicts. Find every lie, then accuse. Three mistakes and the case starts over.
 
 **Features**
-- 16 cases with rising difficulty: an office kitchen, an apartment, a startup leak, a school festival, a hotel, a game guild, a library, a wedding, a rooftop garden, a podcast studio, a bakery, a late train, a drained pool, a leaked answer key, an open gate, a gallery blackout
+- 20 cases with rising difficulty: an office kitchen, an apartment, a startup leak, a school festival, a hotel, a game guild, a library, a wedding, a rooftop garden, a podcast studio, a bakery, a late train, a drained pool, a leaked answer key, an open gate, a gallery blackout, a gym locker, a crashed drone, a karaoke room, a dropped database
 - Ambient music and a hands-on guide for your first case
 - A daily case with a timer and a streak
 - Every lie is contradicted by something in the case: no guessing, no outside knowledge
@@ -24,17 +24,17 @@ ALIBI is a deduction game played on a detective's phone. Each case gives you a g
 - Progress is saved
 
 **Controls**
-- Tap a message, then "Mark as a lie"
+- Tap a message, "Mark as a lie", then pick the evidence it contradicts
 - Switch between Chat, Evidence and Suspects
 - Press ? for a hint
 
 ## 긴 설명 — 한국어
 채팅방의 모두에게 할 말이 있다. 증거는 그중 일부만 편든다.
 
-알리바이는 탐정의 휴대폰에서 하는 추리 게임입니다. 사건마다 단체 채팅, 몇 가지 사실(출입 기록, 영수증, CCTV, 날씨), 용의자 몇 명이 주어져요. 증거와 어긋나는 말을 눌러 거짓말로 표시하세요. 거짓말을 다 찾으면 범인을 지목합니다. 실수 세 번이면 처음부터.
+알리바이는 탐정의 휴대폰에서 하는 추리 게임입니다. 사건마다 단체 채팅, 몇 가지 사실(출입 기록, 영수증, CCTV, 날씨), 용의자 몇 명이 주어져요. 증거와 어긋나는 말을 누르고, 어느 증거와 어긋나는지 고르세요. 거짓말을 다 찾으면 범인을 지목합니다. 실수 세 번이면 처음부터.
 
 **특징**
-- 점점 어려워지는 사건 16개: 사무실, 아파트, 스타트업, 학교 축제, 호텔, 게임 길드, 도서관, 결혼식, 옥상 텃밭, 팟캐스트, 빵집, 막차, 수영장, 정답지, 대문, 갤러리
+- 점점 어려워지는 사건 20개: 사무실, 아파트, 스타트업, 학교 축제, 호텔, 게임 길드, 도서관, 결혼식, 옥상 텃밭, 팟캐스트, 빵집, 막차, 수영장, 정답지, 대문, 갤러리, 헬스장 사물함, 드론 추락, 노래방, 데이터베이스 삭제
 - 배경 음악과 첫 사건 단계별 안내
 - 타이머와 연속 기록이 있는 오늘의 사건
 - 모든 거짓말은 사건 안의 무언가와 어긋납니다. 찍기도, 바깥 지식도 필요 없어요

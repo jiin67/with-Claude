@@ -37,14 +37,16 @@ function dailyIndex(key) { let h = 0; for (const ch of key) h = (h * 31 + ch.cha
 function dailyStreak() { let n = 0; const d = new Date(); for (;;) { const k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); if (!S.daily[k]) break; n++; d.setDate(d.getDate() - 1); } return n; }
 const lieCount = c => c.chat.filter(m => m.lie).length;
 const nameOf = (c, id) => (c.suspects.find(s => s[0] === id) || [])[1] || id;
-/* mark a chat message: returns 'lie' | 'strike' | 'already' */
-function mark(k) {
+/* mark a chat message together with the fact it contradicts: 'lie' | 'wrongEv' | 'strike' | 'already' */
+const evOf = m => Array.isArray(m.ev) ? m.ev : [m.ev];
+function mark(k, ev) {
   const m = R.c.chat[k];
   if (R.found.has(k)) return 'already';
-  if (m.lie) { R.found.add(k); return 'lie'; }
+  if (m.lie && evOf(m).includes(ev)) { R.found.add(k); return 'lie'; }
   R.marked.add(k); R.strikes++;
+  const r = m.lie ? 'wrongEv' : 'strike';
   if (R.strikes >= MAX_STRIKES) { R.state = 'failed'; R.time = (Date.now() - R.t0) / 1000; }
-  return 'strike';
+  return r;
 }
 const allLiesFound = () => R.found.size >= lieCount(R.c);
 function accuse(id) {

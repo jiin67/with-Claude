@@ -14,8 +14,8 @@ CASES.en.push(
     ],
     chat: [
       { s: 'wren', t: '16:22', m: 'Got him back at 1:40 and locked the gate behind me. Code and everything, it beeped.' },
-      { s: 'otis', t: '16:24', m: 'I wasn\'t even on that street today, my route was the north side.', lie: 'The doorbell camera shows Otis at the door at 10:05 and the utility slip has the meter read at 10:06.' },
-      { s: 'lia', t: '16:26', m: 'I just left some treats at the front door around 3:30. Never went into the yard.', lie: 'The gate was unlocked with Lia\'s code at 15:32, two minutes after the doorbell saw her.' },
+      { s: 'otis', t: '16:24', m: 'I wasn\'t even on that street today, my route was the north side.', ev: [0, 3], lie: 'The doorbell camera shows Otis at the door at 10:05 and the utility slip has the meter read at 10:06.' },
+      { s: 'lia', t: '16:26', m: 'I just left some treats at the front door around 3:30. Never went into the yard.', ev: 1, lie: 'The gate was unlocked with Lia\'s code at 15:32, two minutes after the doorbell saw her.' },
       { s: 'wren', t: '16:27', m: 'Did anyone go back after me? The lock keeps a log.' },
       { s: 'lia', t: '16:28', m: 'Maybe the latch is broken. It sticks sometimes.' },
       { s: 'otis', t: '16:30', m: 'If the gate was open the collar will show when he left.' },
@@ -38,11 +38,11 @@ CASES.en.push(
     ],
     chat: [
       { s: 'nell', t: '21:40', m: 'The piece in the back room is a print. Someone swapped Blue Hour tonight. When?' },
-      { s: 'hugo', t: '21:42', m: 'Honestly? It was a print all evening. No plaque on that frame when I walked in at 6:40.', lie: 'The insurance photo at 17:10 shows the original on the wall with its brass plaque; the plaque was there before Hugo arrived.' },
-      { s: 'bea', t: '21:44', m: 'I was serving inside through the toast and the whole blackout. Nobody went into the back room.', lie: 'The catering van left the lot at 20:01, a three-minute walk away, so Bea was outside during the lights-down.' },
-      { s: 'kai', t: '21:45', m: 'During the projection I was up in the booth helping Nell with the slides.', lie: 'The booth door log shows only Nell entering, at 19:55, and no one else all night.' },
+      { s: 'hugo', t: '21:42', m: 'Honestly? It was a print all evening. No plaque on that frame when I walked in at 6:40.', ev: 4, lie: 'The insurance photo at 17:10 shows the original on the wall with its brass plaque; the plaque was there before Hugo arrived.' },
+      { s: 'bea', t: '21:44', m: 'I was serving inside through the toast and the whole blackout. Nobody went into the back room.', ev: 3, lie: 'The catering van left the lot at 20:01, a three-minute walk away, so Bea was outside during the lights-down.' },
+      { s: 'kai', t: '21:45', m: 'During the projection I was up in the booth helping Nell with the slides.', ev: 2, lie: 'The booth door log shows only Nell entering, at 19:55, and no one else all night.' },
       { s: 'nell', t: '21:46', m: 'The booth has a door log. It was just me in there.' },
-      { s: 'hugo', t: '21:48', m: 'I was standing right next to the painting during the blackout. I would have seen anyone.', lie: 'The timeline puts Hugo at the microphone at the front of the main room from 19:58 to 20:02, not in the back room.' },
+      { s: 'hugo', t: '21:48', m: 'I was standing right next to the painting during the blackout. I would have seen anyone.', ev: 1, lie: 'The timeline puts Hugo at the microphone at the front of the main room from 19:58 to 20:02, not in the back room.' },
       { s: 'kai', t: '21:50', m: 'Then it must have happened before the lights went down.' },
       { s: 'nell', t: '21:52', m: 'The projector ran two minutes. That\'s the only window the room was dark.' }
     ],
@@ -64,8 +64,8 @@ CASES.ko.push(
     ],
     chat: [
       { s: 'wren', t: '16:22', m: '1시 40분에 데려다주고 대문 잠갔어요. 코드 누르고 삑 소리까지 확인했어요.' },
-      { s: 'otis', t: '16:24', m: '저 오늘 그 길은 가지도 않았어요. 북쪽 구역 돌았어요.', lie: '초인종 카메라에 오티스가 10:05에 현관 앞에 있는 모습이 찍혔고, 검침 전표에도 10:06 검침이 적혀 있다.' },
-      { s: 'lia', t: '16:26', m: '3시 반쯤 현관에 간식만 두고 갔어요. 마당엔 들어간 적 없어요.', lie: '초인종이 리아를 본 2분 뒤인 15:32에 대문이 리아의 코드로 열렸다.' },
+      { s: 'otis', t: '16:24', m: '저 오늘 그 길은 가지도 않았어요. 북쪽 구역 돌았어요.', ev: [0, 3], lie: '초인종 카메라에 오티스가 10:05에 현관 앞에 있는 모습이 찍혔고, 검침 전표에도 10:06 검침이 적혀 있다.' },
+      { s: 'lia', t: '16:26', m: '3시 반쯤 현관에 간식만 두고 갔어요. 마당엔 들어간 적 없어요.', ev: 1, lie: '초인종이 리아를 본 2분 뒤인 15:32에 대문이 리아의 코드로 열렸다.' },
       { s: 'wren', t: '16:27', m: '제 다음에 누가 또 왔어요? 잠금장치에 기록 남잖아요.' },
       { s: 'lia', t: '16:28', m: '걸쇠가 고장 났을 수도 있어요. 가끔 걸리던데.' },
       { s: 'otis', t: '16:30', m: '대문이 열려 있었으면 목걸이에 언제 나갔는지 나오겠네요.' },
@@ -88,11 +88,11 @@ CASES.ko.push(
     ],
     chat: [
       { s: 'nell', t: '21:40', m: '뒷방에 걸린 건 인쇄본이에요. 오늘 밤 누가 블루 아워를 바꿔치기했어요. 언제죠?' },
-      { s: 'hugo', t: '21:42', m: '솔직히요? 저녁 내내 인쇄본이었어요. 6시 40분에 들어왔을 때 액자에 명판 없었어요.', lie: '17:10 보험용 사진에 원본이 황동 명판과 함께 벽에 걸려 있다. 휴고가 오기 전부터 명판은 있었다.' },
-      { s: 'bea', t: '21:44', m: '건배사부터 소등 내내 안에서 서빙하고 있었어요. 뒷방에 들어간 사람 없었어요.', lie: '케이터링 밴은 걸어서 3분 거리의 주차장에서 20:01에 나갔다. 소등 시간에 베아는 밖에 있었다.' },
-      { s: 'kai', t: '21:45', m: '상영 동안 저는 부스에 올라가서 넬 슬라이드 넘기는 거 도왔어요.', lie: '부스 출입 기록에는 19:55에 들어간 넬뿐이고, 밤새 다른 사람은 없다.' },
+      { s: 'hugo', t: '21:42', m: '솔직히요? 저녁 내내 인쇄본이었어요. 6시 40분에 들어왔을 때 액자에 명판 없었어요.', ev: 4, lie: '17:10 보험용 사진에 원본이 황동 명판과 함께 벽에 걸려 있다. 휴고가 오기 전부터 명판은 있었다.' },
+      { s: 'bea', t: '21:44', m: '건배사부터 소등 내내 안에서 서빙하고 있었어요. 뒷방에 들어간 사람 없었어요.', ev: 3, lie: '케이터링 밴은 걸어서 3분 거리의 주차장에서 20:01에 나갔다. 소등 시간에 베아는 밖에 있었다.' },
+      { s: 'kai', t: '21:45', m: '상영 동안 저는 부스에 올라가서 넬 슬라이드 넘기는 거 도왔어요.', ev: 2, lie: '부스 출입 기록에는 19:55에 들어간 넬뿐이고, 밤새 다른 사람은 없다.' },
       { s: 'nell', t: '21:46', m: '부스에 출입 기록 있어요. 안에는 저 혼자였어요.' },
-      { s: 'hugo', t: '21:48', m: '소등 때 저는 그림 바로 옆에 서 있었어요. 누가 왔으면 봤을 거예요.', lie: '타임라인상 휴고는 19:58부터 20:02까지 메인 홀 앞쪽 마이크 앞에 있었다. 뒷방이 아니다.' },
+      { s: 'hugo', t: '21:48', m: '소등 때 저는 그림 바로 옆에 서 있었어요. 누가 왔으면 봤을 거예요.', ev: 1, lie: '타임라인상 휴고는 19:58부터 20:02까지 메인 홀 앞쪽 마이크 앞에 있었다. 뒷방이 아니다.' },
       { s: 'kai', t: '21:50', m: '그럼 조명 꺼지기 전에 일어난 일이겠네요.' },
       { s: 'nell', t: '21:52', m: '영상은 2분 돌았어요. 방이 어두웠던 건 그때뿐이에요.' }
     ],
