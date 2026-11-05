@@ -6,6 +6,7 @@
    Rules of fairness: every lie is contradicted by a fact or photo in the
    same case, and the culprit is the only suspect the facts pin down.
    ========================================================================== */
+const OUTRO = { en: {}, ko: {} };   /* filled by outro-*.js: chat lines after the accusation */
 const CASES = {
   en: [
     {

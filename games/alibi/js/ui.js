@@ -6,6 +6,27 @@ const $ = id => document.getElementById(id);
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
 const AV = ['#ff6a3d', '#5b8cff', '#3ddc97', '#c66bff', '#ffcf5a', '#ff4d6d'];
 const avColor = (c, id) => AV[c.suspects.findIndex(s => s[0] === id) % AV.length];
+/* a flat vector face, chosen deterministically from the suspect id so the same person always looks the same */
+function faceSVG(id) {
+  let h = 7; for (const ch of id) h = (h * 131 + ch.charCodeAt(0)) >>> 0;
+  const pick = (n, k) => (h >>> k) % n;
+  const skin = ['#f3c9a8', '#e0a884', '#c68a62', '#9c6540', '#6f4529', '#f7d7c4'][pick(6, 2)];
+  const hairC = ['#1d1b1f', '#3b2a21', '#6b3f22', '#b5742f', '#d8b26e', '#8a8f9c', '#b23a3a', '#2c4a9a'][pick(8, 5)];
+  const bg = ['#ffd3c2', '#cfe0ff', '#cff5e6', '#ead9ff', '#fff0b8', '#ffd0da'][pick(6, 8)];
+  const hair = pick(6, 11), glasses = pick(3, 14) === 0, beard = pick(4, 16) === 0 && hair !== 5, mouth = pick(3, 18), brow = pick(2, 20);
+  const hairs = [
+    `<path d="M14 26c0-12 8-18 18-18s18 6 18 18v6c-6-6-12-8-18-8s-12 2-18 8z" fill="${hairC}"/>`,
+    `<path d="M12 30c0-14 9-22 20-22s20 8 20 22v14c-4 0-6-8-6-14-5 2-9 3-14 3s-9-1-14-3c0 6-2 14-6 14z" fill="${hairC}"/>`,
+    `<path d="M14 27c1-11 8-17 18-17s17 6 18 17c-4-4-10-6-18-6s-14 2-18 6z" fill="${hairC}"/><rect x="30" y="8" width="4" height="6" rx="2" fill="${hairC}"/>`,
+    `<path d="M11 30c0-15 9-24 21-24s21 9 21 24v10l-5-4v-8c-5 3-10 4-16 4s-11-1-16-4v8l-5 4z" fill="${hairC}"/>`,
+    `<path d="M14 24c3-10 10-14 18-14s15 4 18 14c-5-2-11-3-18-3s-13 1-18 3z" fill="${hairC}"/><circle cx="20" cy="26" r="5" fill="${hairC}"/><circle cx="44" cy="26" r="5" fill="${hairC}"/>`,
+    ``
+  ];
+  const mouths = ['<path d="M26 44q6 4 12 0" stroke="#5a2a1a" stroke-width="2" fill="none" stroke-linecap="round"/>', '<path d="M27 44h10" stroke="#5a2a1a" stroke-width="2" stroke-linecap="round"/>', '<path d="M26 45q6-3 12 0" stroke="#5a2a1a" stroke-width="2" fill="none" stroke-linecap="round"/>'][mouth];
+  const brows = brow ? '<path d="M22 30l8 1M34 31l8-1" stroke="#3a2a22" stroke-width="2" stroke-linecap="round"/>' : '<path d="M22 31l8-1M34 30l8 1" stroke="#3a2a22" stroke-width="2" stroke-linecap="round"/>';
+  return `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="${bg}"/><path d="M12 64c0-12 9-18 20-18s20 6 20 18z" fill="${hairC === '#d8b26e' ? '#4b5b8f' : '#3d4a6b'}"/><circle cx="32" cy="32" r="16" fill="${skin}"/>${beard ? `<path d="M18 36c2 10 8 14 14 14s12-4 14-14c-3 6-8 9-14 9s-11-3-14-9z" fill="${hairC}"/>` : ''}${hairs[hair]}${brows}<circle cx="26" cy="35" r="2" fill="#2b1d16"/><circle cx="38" cy="35" r="2" fill="#2b1d16"/>${mouths}${glasses ? '<g fill="none" stroke="#1d1b1f" stroke-width="1.6"><circle cx="26" cy="35" r="5"/><circle cx="38" cy="35" r="5"/><path d="M31 35h2"/></g>' : ''}</svg>`;
+}
+const face = (e, id) => { e.innerHTML = faceSVG((R ? R.c.id + ':' : '') + id); return e; };
 
 /* ---- sounds ---- */
 const A = {
@@ -22,6 +43,7 @@ const A = {
   click() { this.tone(900, .04, 'triangle', .1); },
   ok() { this.tone(660, .12, 'sine', .22); this.tone(990, .18, 'sine', .2, 1, .09); },
   bad() { this.tone(180, .16, 'square', .07, .7); },
+  msg() { this.tone(1046, .08, 'sine', .14); this.tone(1318, .1, 'sine', .12, 1, .07); },
   win() { [523, 659, 784, 1046].forEach((f, i) => this.tone(f, .3, 'sine', .18, 1, i * .11)); },
   lose() { this.tone(300, .4, 'sawtooth', .08, .5); },
   /* ambient bed: two slow detuned pads through a wandering filter, plus sparse pentatonic plucks */
@@ -98,7 +120,7 @@ function renderCase() {
   const brief = el('div', 'brief'); brief.append(el('b', null, tr('diff')[c.difficulty - 1] + ' · ' + c.place), c.intro); chat.appendChild(brief);
   c.chat.forEach((m, k) => {
     const row = el('button', 'msg' + (R.found.has(k) ? ' lie' : '') + (sel === k ? ' sel' : '')); row.type = 'button'; row.dataset.k = k;
-    const av = el('div', 'av', nameOf(c, m.s)[0]); av.style.background = avColor(c, m.s);
+    const av = face(el('div', 'av'), m.s);
     const b = el('div', 'b'), who = el('div', 'who', nameOf(c, m.s)); who.appendChild(el('span', null, m.t));
     b.append(who, el('div', 'bub', m.m));
     if (R.found.has(k)) b.appendChild(el('div', 'why', m.lie));
@@ -110,7 +132,7 @@ function renderCase() {
   for (const [ic, t] of c.facts) { const f = el('div', 'fact'); f.append(el('div', 'ic', ic), el('div', null, t)); ev.appendChild(f); }
   const su = $('susList'); su.innerHTML = '';
   for (const [id, name, role] of c.suspects) {
-    const s = el('div', 'sus'), av = el('div', 'av', name[0]); av.style.background = avColor(c, id);
+    const s = el('div', 'sus'), av = face(el('div', 'av'), id);
     const info = el('div'); info.append(el('b', null, name), el('span', null, role));
     const n = c.chat.filter((m, k) => m.s === id && R.found.has(k)).length;
     if (n) info.appendChild(el('div', 'lies', tr('foundLie') + ' × ' + n));
@@ -177,14 +199,35 @@ $('btnAccuse').addEventListener('click', () => {
   const card = $('sheetCard'); card.innerHTML = ''; card.appendChild(el('h3', null, tr('accuseWho')));
   for (const [id, name, role] of R.c.suspects) {
     const p = el('button', 'pick'); p.type = 'button';
-    const av = el('div', 'av', name[0]); av.style.background = avColor(R.c, id);
+    const av = face(el('div', 'av'), id);
     const info = el('div'); info.append(el('b', null, name), el('span', null, role)); p.append(av, info);
-    p.onclick = () => { closeSheet(); const stars = accuse(id); if (stars) showSolved(stars); else { A.bad(); toast(tr('wrongAccuse'), 'bad'); renderMeters(); if (R.state === 'failed') setTimeout(showFailed, 700); } };
+    p.onclick = () => { closeSheet(); const stars = accuse(id); if (stars) playOutro(id, stars); else { A.bad(); toast(tr('wrongAccuse'), 'bad'); renderMeters(); if (R.state === 'failed') setTimeout(showFailed, 700); } };
     card.appendChild(p);
   }
   const no = el('button', 'btn ghost', tr('close')); no.onclick = closeSheet; card.appendChild(no);
   $('sheet').hidden = false;
 });
+
+/* the payoff: the detective names the culprit in the chat, the room reacts, the culprit cracks */
+function playOutro(id, stars) {
+  const c = R.c, lines = (OUTRO[LANG] && OUTRO[LANG][c.id]) || [], chat = $('paneChat');
+  $('coach').hidden = true; $('btnAccuse').disabled = true; $('btnAccuse').classList.remove('pulse');
+  if (!isWide()) setTab('chat');
+  const add = (who, text, cls) => {
+    const row = el('div', 'msg ' + cls), av = who === 'me' ? el('div', 'av', '🔎') : face(el('div', 'av'), who);
+    const b = el('div', 'b'), w = el('div', 'who', who === 'me' ? tr('me') : nameOf(c, who));
+    b.append(w, el('div', 'bub', text)); row.append(av, b); chat.appendChild(row); chat.scrollTop = chat.scrollHeight; return row;
+  };
+  add('me', tr('accuseLine', nameOf(c, id)), 'me'); A.ok();
+  let i = 0;
+  const step = () => {
+    if (i >= lines.length) { setTimeout(() => showSolved(stars), 900); return; }
+    const l = lines[i++], last = i === lines.length, confess = l.s === c.culprit && i >= lines.length - 1;
+    const ty = add(l.s, '…', 'typing');
+    setTimeout(() => { ty.remove(); add(l.s, l.m, l.s === c.culprit ? (confess ? 'confess' : 'accused') : ''); A.msg ? A.msg() : A.click(); if (last) A.win(); step(); }, 500 + Math.min(1500, l.m.length * 22));
+  };
+  setTimeout(step, 600);
+}
 
 /* ---- results ---- */
 function showSolved(stars) {
