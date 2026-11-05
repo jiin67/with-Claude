@@ -15,6 +15,7 @@ ALIBI is a deduction game played on a detective's phone. Each case gives you a g
 
 **Features**
 - 20 cases with rising difficulty: an office kitchen, an apartment, a startup leak, a school festival, a hotel, a game guild, a library, a wedding, a rooftop garden, a podcast studio, a bakery, a late train, a drained pool, a leaked answer key, an open gate, a gallery blackout, a gym locker, a crashed drone, a karaoke room, a dropped database
+- Every suspect has a face; name the culprit and watch the chat turn: pushback, the decisive fact, a confession
 - Ambient music and a hands-on guide for your first case
 - A daily case with a timer and a streak
 - Every lie is contradicted by something in the case: no guessing, no outside knowledge
@@ -35,6 +36,7 @@ ALIBI is a deduction game played on a detective's phone. Each case gives you a g
 
 **특징**
 - 점점 어려워지는 사건 20개: 사무실, 아파트, 스타트업, 학교 축제, 호텔, 게임 길드, 도서관, 결혼식, 옥상 텃밭, 팟캐스트, 빵집, 막차, 수영장, 정답지, 대문, 갤러리, 헬스장 사물함, 드론 추락, 노래방, 데이터베이스 삭제
+- 용의자마다 얼굴이 있고, 범인을 지목하면 채팅이 뒤집힙니다: 반박, 결정적 증거, 자백
 - 배경 음악과 첫 사건 단계별 안내
 - 타이머와 연속 기록이 있는 오늘의 사건
 - 모든 거짓말은 사건 안의 무언가와 어긋납니다. 찍기도, 바깥 지식도 필요 없어요

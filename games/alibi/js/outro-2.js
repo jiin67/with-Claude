@@ -55,7 +55,7 @@ Object.assign(OUTRO.en, {
   drone: [
     { s: 'vera', m: 'A parking receipt. You\'re going to hang this on a parking receipt.' },
     { s: 'gil', m: 'And the loan sheet with your signature, and a takeoff from that exact lot at 22:14 while your car was in it.' },
-    { s: 'vera', m: 'He undercut me on every contract for two years and bragged about it. I wanted one night where his glass came down. I didn\'t think about the plants underneath.' },
+    { s: 'vera', m: 'He undercut me on every contract for two years and bragged about it. I wanted one night where his glass came down. I never thought about the plants.' },
     { s: 'ren', m: 'I said it was windy because I\'d cancelled a shoot and wanted the excuse to sound real. There wasn\'t any wind. Sorry, Gil.' },
     { s: 'gil', m: 'I\'m the registered owner, so the greenhouse bill comes to me first. Vera, it\'s going to you second, with a lawyer attached.' }
   ],
