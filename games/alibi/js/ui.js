@@ -240,9 +240,9 @@ function playOutro(id, stars) {
     if (i >= lines.length) { setTimeout(() => showSolved(stars), 900); return; }
     const l = lines[i++], last = i === lines.length, confess = l.s === c.culprit && i >= lines.length - 1;
     const ty = add(l.s, '…', 'typing');
-    setTimeout(() => { ty.remove(); add(l.s, l.m, l.s === c.culprit ? (confess ? 'confess' : 'accused') : ''); A.msg ? A.msg() : A.click(); if (last) A.win(); step(); }, 500 + Math.min(1500, l.m.length * 22));
+    setTimeout(() => { ty.remove(); add(l.s, l.m, l.s === c.culprit ? (confess ? 'confess' : 'accused') : ''); A.msg ? A.msg() : A.click(); if (last) A.win(); step(); }, window.__al && window.__al.fast ? 20 : 500 + Math.min(1500, l.m.length * 22));
   };
-  setTimeout(step, 600);
+  setTimeout(step, window.__al && window.__al.fast ? 20 : 600);
 }
 
 /* ---- results ---- */
@@ -322,4 +322,4 @@ PORTAL.ready.then(() => {
   A.setMuted(!S.settings.sound); if (screen === 'title') boot(); PORTAL.loaded();
 });
 renderTitle();
-window.__al = { get S() { return S; }, get R() { return R; }, beginCase, renderList };
+window.__al = { fast: false, get S() { return S; }, get R() { return R; }, beginCase, renderList };
