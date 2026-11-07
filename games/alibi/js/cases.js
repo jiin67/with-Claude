@@ -25,12 +25,12 @@ const CASES = {
         { s: 'jun', t: '15:55', m: 'WHO ate the cake' },
         { s: 'jun', t: '15:56', m: 'I stepped out of my call at quarter past to put it in, it was fine then' },
         { s: 'mia', t: '15:57', m: 'Not me. I haven\'t been in the kitchen all afternoon.', ev: 2, lie: 'The badge log shows Mia entering the kitchen at 15:39, a minute before the fridge opened.' },
-        { s: 'theo', t: '15:58', m: 'Wasn\'t me either, it was strawberry anyway and I\'m allergic', ev: 0, lie: 'The receipt says chocolate. Theo never saw the cake, so he is guessing to sound innocent.' },
+        { s: 'theo', t: '15:58', m: 'Wasn\'t me. I saw Mia open the fridge at quarter past three, right after she badged in.', ev: [1, 2], lie: 'The 15:12 fridge opening was Jun\'s — the badge log has Jun at 15:12 and Mia at 15:39, a minute before the 15:40 opening. Theo swapped the two openings to blame Mia.' },
         { s: 'mia', t: '15:59', m: 'Maybe the cleaning crew?' },
         { s: 'jun', t: '16:00', m: 'They come at 7. Someone here is lying.' }
       ],
       culprit: 'mia',
-      solve: 'Mia badged into the kitchen at 15:39 and the fridge opened at 15:40. Theo lied about the flavor to seem uninvolved, but only Mia was there when the cake disappeared.'
+      solve: 'Mia badged into the kitchen at 15:39 and the fridge opened at 15:40. Theo claimed he saw Mia open it at quarter past three — but the 15:12 opening was Jun\'s, putting the cake in. Theo swapped the two openings to point at Mia.'
     },
     {
       id: 'vase', title: 'The Broken Vase', place: 'Apartment 7B · 7:30 pm', difficulty: 2,
@@ -45,8 +45,8 @@ const CASES = {
       ],
       chat: [
         { s: 'rafa', t: '19:42', m: 'Courier here. I set the parcel down at 6:02 and left. Never touched the door.' },
-        { s: 'dana', t: '19:44', m: 'Ro, I never came by tonight. Haven\'t left my flat since dinner.', ev: 0, lie: 'The hallway camera shows Dana at Ro\'s door at 19:15, knocking, and leaving at 19:17.' },
-        { s: 'sol', t: '19:45', m: 'grandma I was at taekwondo until 8!! just got home', ev: [1, 4], lie: 'The smart lock opened with Sol\'s code at 18:30, and class ends at 18:00 anyway.' },
+        { s: 'dana', t: '19:44', m: 'Ro, I never came by tonight. I don\'t even have a code — the lock would prove I never got in.', ev: 0, lie: 'The hallway camera shows Dana at Ro\'s door at 19:15, knocking, and leaving at 19:17. Her lock claim is true — she never got in — but the visit itself is the lie.' },
+        { s: 'sol', t: '19:45', m: 'grandma I was at taekwondo until 8!! just got home', ev: [0, 1, 4], lie: 'The smart lock opened with Sol\'s code at 18:30, and class ends at 18:00 anyway. The hallway camera also has Sol coming in at 18:30.' },
         { s: 'rafa', t: '19:47', m: 'Dana, the camera has you at the door at quarter past seven. Why say you weren\'t there?' },
         { s: 'dana', t: '19:48', m: 'That camera is wrong half the time. Whatever it shows, I had no reason to be there.' },
         { s: 'sol', t: '19:49', m: 'she knocks on our door all the time about the TV volume. she was probably mad again' },
@@ -55,7 +55,7 @@ const CASES = {
         { s: 'sol', t: '19:53', m: 'see, she\'s changing her story' }
       ],
       culprit: 'sol',
-      solve: 'Dana lied about not coming by, and the camera catches her at the door at 19:15. But the same camera shows her knocking and leaving, and the lock never opened for her: the facts that expose her lie also prove she never got inside. Sol\'s code opened the door at 18:30, class had ended at 18:00, it was raining, and the small wet prints run from the door to the vase. Dana only lied because she had come to ask Ro for a loan and was too embarrassed to say so.'
+      solve: 'Dana lied about not coming by — hiding behind the true claim that the lock never opened for her — and the camera catches her at the door at 19:15. But the same camera shows her knocking and leaving: the facts that expose her lie also prove she never got inside. Sol\'s code opened the door at 18:30, class had ended at 18:00, it was raining, and the small wet prints run from the door to the vase. Dana only lied because she had come to ask Ro for a loan and was too embarrassed to say so.'
     },
     {
       id: 'draft', title: 'The Leaked Draft', place: 'Startup office · 11:40 pm', difficulty: 2,
@@ -137,14 +137,14 @@ const CASES = {
       chat: [
         { s: 'nyx', t: '08:02', m: 'Treasury is empty. Log says Oak. Explain.' },
         { s: 'oak', t: '08:05', m: 'I was asleep. I haven\'t logged in since 11pm, I swear.' },
-        { s: 'quill', t: '08:06', m: 'Can\'t have been 2am anyway, the server was down for maintenance then.', ev: 3, lie: 'Maintenance was 03:00–04:00. At 02:14 the server was up.' },
-        { s: 'pix', t: '08:07', m: 'I didn\'t message anyone last night, I was raiding.', ev: 2, lie: 'The DM log shows Pix sent Oak a phishing link at 01:40.' },
+        { s: 'quill', t: '08:06', m: 'The log says 02:14, but the server was down for maintenance then.', ev: [0, 3], lie: 'Maintenance was 03:00–04:00. At 02:14 the server was up — the treasury log\'s timestamp stands.' },
+        { s: 'pix', t: '08:07', m: 'Oak logged in himself at 2:10, from his own phone. Check the login log.', ev: [1, 2], lie: 'Oak\'s usual device was offline since 23:00, so the 02:10 new-device sign-in was not his. It came thirty minutes after Pix\'s 01:40 phishing link.' },
         { s: 'oak', t: '08:08', m: 'wait, I did click something from Pix before bed. a skin thing.' },
         { s: 'pix', t: '08:09', m: 'That wasn\'t me, my account must have been hacked too' },
         { s: 'nyx', t: '08:10', m: 'Somebody is lying and it\'s not the log.' }
       ],
       culprit: 'pix',
-      solve: 'Oak\'s account was phished: Pix sent the link at 01:40, a "new device" signed in as Oak at 02:10 and emptied the treasury. Quill\'s maintenance claim was just wrong; Pix\'s denial was the real lie.'
+      solve: 'Oak\'s account was phished: Pix sent the link at 01:40, a "new device" signed in as Oak at 02:10 and emptied the treasury. Quill\'s maintenance claim fails — maintenance was 03:00–04:00, so the server was up at 02:14. Pix\'s login story hides the phishing chain.'
     }
   ],
   ko: [
@@ -164,12 +164,12 @@ const CASES = {
         { s: 'jun', t: '15:55', m: '케이크 누가 먹었어요' },
         { s: 'jun', t: '15:56', m: '3시 15분에 통화 잠깐 빠져나와서 넣었는데 그땐 멀쩡했어요' },
         { s: 'mia', t: '15:57', m: '저 아니에요. 오후 내내 탕비실 근처도 안 갔어요.', ev: 2, lie: '출입 기록에 미아가 15:39에 탕비실에 들어간 것으로 남아 있다. 냉장고가 열리기 1분 전이다.' },
-        { s: 'theo', t: '15:58', m: '저도 아님, 어차피 딸기 케이크였잖아요 저 딸기 알레르기', ev: 0, lie: '영수증에는 초콜릿 케이크다. 테오는 케이크를 본 적도 없으면서 결백해 보이려고 지어냈다.' },
+        { s: 'theo', t: '15:58', m: '저도 아니에요. 3시 15분에 미아가 출입증 찍고 냉장고 여는 거 봤어요.', ev: [1, 2], lie: '15:12 냉장고 열림은 준의 것이다. 출입 기록에 준 15:12, 미아 15:39가 있고, 냉장고는 15:40에 열렸다. 테오는 두 번의 열림을 바꿔치기해 미아에게 뒤집어씌웠다.' },
         { s: 'mia', t: '15:59', m: '청소하시는 분들 아닐까요?' },
         { s: 'jun', t: '16:00', m: '청소는 7시예요. 여기 누군가 거짓말하고 있어요.' }
       ],
       culprit: 'mia',
-      solve: '미아는 15:39에 탕비실에 들어갔고 냉장고는 15:40에 열렸다. 테오는 무관해 보이려고 케이크 맛을 꾸며 냈지만, 케이크가 사라질 때 그 자리에 있던 사람은 미아뿐이다.'
+      solve: '미아는 15:39에 탕비실에 들어갔고 냉장고는 15:40에 열렸다. 테오는 3시 15분에 미아가 여는 걸 봤다고 했지만, 15:12 열림은 케이크를 넣던 준의 것이다. 테오는 두 번의 열림을 바꿔치기해 미아를 가리켰다.'
     },
     {
       id: 'vase', title: '깨진 화병', place: '아파트 7B · 오후 7:30', difficulty: 2,
@@ -184,8 +184,8 @@ const CASES = {
       ],
       chat: [
         { s: 'rafa', t: '19:42', m: '택배입니다. 6시 2분에 문 앞에 두고 갔어요. 문엔 손도 안 댔습니다.' },
-        { s: 'dana', t: '19:44', m: '로 여사님, 저 오늘 밤에 간 적 없어요. 저녁 먹고 집 밖에 안 나갔어요.', ev: 0, lie: '복도 카메라에 다나가 19:15에 로 여사님 집 문을 두드리고 19:17에 돌아가는 모습이 찍혀 있다.' },
-        { s: 'sol', t: '19:45', m: '할머니 나 8시까지 태권도장에 있었어!! 지금 막 왔어', ev: [1, 4], lie: '도어락은 18:30에 솔의 비밀번호로 열렸고, 수업도 18:00에 끝난다.' },
+        { s: 'dana', t: '19:44', m: '로 여사님, 저 오늘 밤에 간 적 없어요. 비밀번호도 없잖아요. 도어락이 제가 들어간 적 없다는 걸 증명할 거예요.', ev: 0, lie: '복도 카메라에 다나가 19:15에 로 여사님 집 문을 두드리고 19:17에 돌아가는 모습이 찍혀 있다. 도어락 이야기는 맞다. 들어간 적은 없다. 하지만 간 것 자체가 거짓말이다.' },
+        { s: 'sol', t: '19:45', m: '할머니 나 8시까지 태권도장에 있었어!! 지금 막 왔어', ev: [0, 1, 4], lie: '도어락은 18:30에 솔의 비밀번호로 열렸고, 수업도 18:00에 끝난다. 복도 카메라에도 솔이 18:30에 들어가는 모습이 찍혀 있다.' },
         { s: 'rafa', t: '19:47', m: '다나 씨, 카메라에 7시 15분에 문 앞에 계신 게 찍혔는데요. 왜 안 왔다고 하세요?' },
         { s: 'dana', t: '19:48', m: '그 카메라 맨날 틀려요. 뭐가 찍혔든 저는 거기 갈 이유가 없었어요.' },
         { s: 'sol', t: '19:49', m: '아줌마 맨날 TV 소리 때문에 우리 집 두드려. 또 화나서 왔겠지' },
@@ -194,7 +194,7 @@ const CASES = {
         { s: 'sol', t: '19:53', m: '봐, 말이 계속 바뀌잖아' }
       ],
       culprit: 'sol',
-      solve: '다나는 안 왔다고 거짓말했고, 카메라는 19:15에 문 앞의 다나를 잡아낸다. 하지만 같은 카메라에 노크하고 돌아가는 모습이 찍혀 있고, 도어락은 다나에게 열린 적이 없다. 거짓말을 깨는 바로 그 증거가 다나가 안에 들어간 적 없다는 걸 증명한다. 솔의 비밀번호로 18:30에 문이 열렸고, 수업은 18:00에 끝났고, 비가 왔고, 작은 젖은 발자국이 현관에서 화병까지 이어진다. 다나는 돈을 빌리러 왔다가 창피해서 거짓말했을 뿐이다.'
+      solve: '다나는 안 왔다고 거짓말했고 — 도어락이 열리지 않았다는 맞는 말 뒤에 숨었다 — 카메라는 19:15에 문 앞의 다나를 잡아낸다. 하지만 같은 카메라에 노크하고 돌아가는 모습이 찍혀 있고, 도어락은 다나에게 열린 적이 없다. 거짓말을 깨는 바로 그 증거가 다나가 안에 들어간 적 없다는 걸 증명한다. 솔의 비밀번호로 18:30에 문이 열렸고, 수업은 18:00에 끝났고, 비가 왔고, 작은 젖은 발자국이 현관에서 화병까지 이어진다. 다나는 돈을 빌리러 왔다가 창피해서 거짓말했을 뿐이다.'
     },
     {
       id: 'draft', title: '유출된 초안', place: '스타트업 사무실 · 오후 11:40', difficulty: 2,
@@ -276,14 +276,14 @@ const CASES = {
       chat: [
         { s: 'nyx', t: '08:02', m: '금고 비었어. 기록은 오크래. 설명해.' },
         { s: 'oak', t: '08:05', m: '저 자고 있었어요. 11시 이후로 접속한 적 없어요, 진짜로.' },
-        { s: 'quill', t: '08:06', m: '어차피 2시엔 불가능해요. 그때 서버 점검이었잖아요.', ev: 3, lie: '점검은 03:00–04:00이었다. 02:14에는 서버가 켜져 있었다.' },
-        { s: 'pix', t: '08:07', m: '저 어젯밤에 아무한테도 귓속말 안 했어요. 레이드 중이었어요.', ev: 2, lie: '귓속말 기록에 픽스가 01:40에 오크에게 피싱 링크를 보낸 것이 남아 있다.' },
+        { s: 'quill', t: '08:06', m: '기록은 02:14래요, 근데 그때 서버 점검 중이었잖아요.', ev: [0, 3], lie: '점검은 03:00–04:00이었다. 02:14에는 서버가 켜져 있었다.' },
+        { s: 'pix', t: '08:07', m: '오크가 2시 10분에 자기 폰으로 직접 로그인했어요. 로그인 기록 보세요.', ev: [1, 2], lie: '오크의 평소 기기는 23:00부터 오프라인이었다. 02:10 새 기기 로그인은 오크 것이 아니고, 픽스의 01:40 링크 30분 뒤다.' },
         { s: 'oak', t: '08:08', m: '잠깐, 자기 전에 픽스가 보낸 거 누르긴 했어요. 스킨 뭐라고.' },
         { s: 'pix', t: '08:09', m: '그거 제가 아니에요, 제 계정도 해킹당한 거겠죠' },
         { s: 'nyx', t: '08:10', m: '누군가 거짓말하고 있고, 그건 기록이 아니야.' }
       ],
       culprit: 'pix',
-      solve: '오크의 계정은 피싱당했다. 픽스가 01:40에 링크를 보냈고, "새 기기"가 02:10에 오크로 로그인해 금고를 비웠다. 퀼의 점검 이야기는 그냥 틀린 말이었고, 픽스의 부인이 진짜 거짓말이었다.'
+      solve: '오크의 계정은 피싱당했다. 픽스가 01:40에 링크를 보냈고, "새 기기"가 02:10에 오크로 로그인해 금고를 비웠다. 퀼의 점검 주장은 틀렸다. 점검은 03:00–04:00이라 02:14에 서버는 켜져 있었다. 오크가 직접 로그인했다는 픽스의 말은 피싱 연결고리를 숨긴 것이다.'
     }
   ]
 };

@@ -105,9 +105,9 @@ function renderList() {
 function openIntro(i, daily) { beginCase(i, daily); }
 
 /* ---- the case ---- */
-let tab = 'chat', sel = null;
+let tab = 'chat', sel = null, recoverAnnounced = false;
 function beginCase(i, daily) {
-  startCase(i, daily); tab = 'chat'; sel = null;
+  startCase(i, daily); tab = 'chat'; sel = null; recoverAnnounced = false;
   coach = !S.coachDone && i === 0 ? (isWide() ? 2 : 0) : -1;
   S.tutorialSeen = true;
   A.startMusic();
@@ -121,6 +121,28 @@ function renderMeters() {
   const sm = $('strikeMeter'); sm.innerHTML = ''; sm.append(tr('strikes') + ' ');
   for (let k = 0; k < MAX_STRIKES; k++) sm.appendChild(k < R.strikes ? el('b', null, '✕') : el('span', null, '·'));
   $('btnAccuse').disabled = !allLiesFound();
+  /* strike recovery: shown whenever 2 strikes are banked, once per case, in
+     every build — the old code also required PORTAL.rewarded, so ad-free
+     builds never saw the button at all. Rewarded builds pay with an ad;
+     ad-free builds pay with one hint (see recoverStrikeFree in game.js).
+     While the portal SDK is still answering, the button shows disabled
+     rather than hidden, so it can never be tapped in the wrong mode. */
+  const rb = $('btnRecoverStrike');
+  if (rb) {
+    const show = !!(R && R.state === 'play' && canRecoverStrike());
+    rb.hidden = !show;
+    if (show) {
+      rb.textContent = PORTAL.rewarded ? tr('recoverStrike') : tr('recoverStrikeFree');
+      rb.disabled = PORTAL.settled === false;
+      rb.classList.add('pulse');
+      /* announce once, but only once the portal has answered: the free/ad
+         wording depends on whether this build can show rewarded ads */
+      if (!recoverAnnounced && PORTAL.settled !== false) { recoverAnnounced = true; toast(PORTAL.rewarded ? tr('recoverHint') : tr('recoverHintFree')); }
+    } else {
+      rb.classList.remove('pulse');
+      rb.disabled = false;
+    }
+  }
   $('timeMeter').textContent = fmtTime(elapsed());
 }
 setInterval(() => { if (R && R.state === 'play' && screen === 'case') $('timeMeter').textContent = fmtTime(elapsed()); }, 1000);
@@ -209,7 +231,11 @@ function openEvidenceSheet(k) {
   card.append(el('h3', null, tr('pickEv')), el('div', 'quote', m.m));
   const list = el('div', 'list'), guide = coach === 2 && m.lie ? evOf(m)[0] : -1;
   R.c.facts.forEach(([ic, t, photo], i) => {
-    const b = el('button', 'evpick' + (i === guide ? ' pulse' : '')); b.type = 'button'; const tx = el('span', null, t); if (photo) { const z = el('div', 'zoom small'); for (const d of photo) z.appendChild(el('span', null, d)); tx.appendChild(z); } b.append(el('span', 'ic', ic), tx);
+    const tried = R.triedEv[k] && R.triedEv[k].has(i);
+    const b = el('button', 'evpick' + (i === guide ? ' pulse' : '') + (tried ? ' tried' : '')); b.type = 'button'; b.disabled = !!tried;
+    const tx = el('span', null, t); if (photo) { const z = el('div', 'zoom small'); for (const d of photo) z.appendChild(el('span', null, d)); tx.appendChild(z); }
+    if (tried) tx.appendChild(el('span', 'tried-tag', ' · ' + tr('triedEv')));
+    b.append(el('span', 'ic', ic), tx);
     b.onclick = () => { closeSheet(); doMark(k, i); };
     list.appendChild(b);
   });
@@ -221,6 +247,7 @@ $('sheet').addEventListener('click', e => { if (e.target === $('sheet')) { sel =
 function doMark(k, ev) {
   const r = mark(k, ev); sel = null;
   if (r === 'lie') { A.ok(); renderCase(); const row = document.querySelector(`.msg[data-k="${k}"]`); if (row) { row.classList.add('just'); setTimeout(() => row.classList.remove('just'), 900); } if (allLiesFound() && coach < 0) setTimeout(() => toast(tr('accuse') + ' →'), 600); }
+  else if (r === 'wrongEvFree') { A.click(); toast(tr('wrongEvFree')); sel = k; openEvidenceSheet(k); }
   else if (r === 'strike' || r === 'wrongEv') {
     A.bad(); toast(tr(r === 'wrongEv' ? 'wrongEv' : 'notLie'), 'bad'); renderCase();
     const row = document.querySelector(`.msg[data-k="${k}"]`); if (row) row.classList.add('wrong');
@@ -265,6 +292,11 @@ function playOutro(id, stars) {
 /* ---- results ---- */
 function showSolved(stars) {
   A.win(); PORTAL.happy(); PORTAL.stop();
+  /* the one interstitial for a solved case: on entering the result screen.
+     The Next button no longer shows one, so a solved case costs exactly one
+     midgame slot at most (and the cap/cooldown in portal.js may skip it). */
+  PORTAL.midgame();
+  $('btnResResumeAd').hidden = true;
   if (coach >= 0) { S.coachDone = true; persist(); } coach = -1; $('coach').hidden = true;
   $('resBadge').textContent = tr('solved'); $('resTitle').textContent = R.c.title;
   const rf = $('resFace'); rf.hidden = false; rf.innerHTML = faceSVG(R.c.id + ':' + R.c.culprit); rf.dataset.stamp = tr('confessed'); $('resName').textContent = nameOf(R.c, R.c.culprit) + ' · ' + (R.c.suspects.find(s => s[0] === R.c.culprit) || [])[2];
@@ -273,16 +305,29 @@ function showSolved(stars) {
   const meta = $('resMeta'); meta.innerHTML = '';
   meta.append(el('span', null, tr('time') + ' ' + fmtTime(R.time)), el('span', null, tr('strikes') + ' ' + R.strikes), el('span', null, tr('hint') + ' ' + R.hints));
   if (R.daily) meta.appendChild(el('span', null, tr('daily')));
-  $('btnResShare').hidden = false;
+  $('btnResShare').hidden = false; $('btnResRestart').hidden = true;
   const last = R.i >= CL.length - 1;
   $('btnResNext').textContent = R.daily ? tr('toList') : last ? tr('allDone') : tr('next');
-  $('btnResNext').onclick = () => { A.click(); if (R.daily) PORTAL.midgame().then(renderList); else if (last) { toast(tr('allDoneSub')); renderList(); } else PORTAL.midgame().then(() => beginCase(R.i + 1)); };
+  $('btnResNext').onclick = () => { A.click(); if (R.daily) renderList(); else if (last) { toast(tr('allDoneSub')); renderList(); } else beginCase(R.i + 1); };
   show('result');
 }
 function showFailed() {
   A.lose(); PORTAL.stop(); $('coach').hidden = true;
   $('resBadge').textContent = tr('failed'); $('resTitle').textContent = R.c.title; $('resStars').innerHTML = ''; $('resFace').hidden = true; $('resName').textContent = ''; $('resBody').textContent = tr('failedSub'); $('resMeta').innerHTML = ''; $('btnResShare').hidden = true;
-  $('btnResNext').textContent = tr('retry'); $('btnResNext').onclick = () => { A.click(); const d = R.daily; PORTAL.midgame().then(() => beginCase(R.i, d)); };
+  /* free resume: one interstitial (the failure slot), then back in at 1 strike.
+     Ad resume: a rewarded ad instead of the interstitial, then back in at 0.
+     Restart: the same interstitial slot as before. At most one ad per choice. */
+  $('btnResNext').textContent = tr('resume'); $('btnResNext').onclick = () => { A.click(); PORTAL.midgame().then(() => { resumeCase(); renderCase(); show('case'); PORTAL.start(); }); };
+  const ra = $('btnResResumeAd'); ra.hidden = !PORTAL.rewarded; ra.textContent = tr('resumeAd');
+  ra.onclick = () => {
+    A.click(); ra.disabled = true;
+    PORTAL.reward().then(ok => {
+      ra.disabled = false;
+      if (!ok) { toast(tr('adFail'), 'bad'); return; }
+      resumeCase(true); renderCase(); show('case'); PORTAL.start();
+    });
+  };
+  const rs = $('btnResRestart'); rs.hidden = false; rs.textContent = tr('restart'); rs.onclick = () => { A.click(); const d = R.daily; PORTAL.midgame().then(() => beginCase(R.i, d)); };
   show('result');
 }
 $('btnResList').addEventListener('click', () => { A.click(); renderList(); });
@@ -303,6 +348,24 @@ $('btnHintTake').addEventListener('click', () => {
   if (!PORTAL.rewarded) { give(); return; }
   PORTAL.reward().then(ok => { if (ok) give(); else { toast(tr('adFail'), 'bad'); b.disabled = false; } });
 });
+/* undo one strike, once per case, only at 2 strikes. Rewarded builds pay
+   with an ad; ad-free builds pay with one hint instead (no ad to watch),
+   so the button is usable in every build. */
+$('btnRecoverStrike').addEventListener('click', () => {
+  if (!canRecoverStrike()) return;
+  const b = $('btnRecoverStrike'); b.disabled = true;
+  if (!PORTAL.rewarded) {
+    if (recoverStrikeFree()) { A.ok(); toast(tr('recoverDoneFree'), 'ok'); renderMeters(); }
+    else b.disabled = false;
+    return;
+  }
+  PORTAL.reward().then(ok => {
+    b.disabled = false;
+    if (ok && recoverStrike()) { A.ok(); toast(tr('recoverDone'), 'ok'); renderMeters(); }
+    else toast(tr('adFail'), 'bad');
+  });
+});
+
 const closeHint = () => { $('hintModal').hidden = true; if (screen === 'case') PORTAL.start(); };
 $('btnHintClose').addEventListener('click', closeHint);
 $('hintModal').addEventListener('click', e => { if (e.target === $('hintModal')) closeHint(); });
@@ -337,6 +400,9 @@ PORTAL.ready.then(() => {
   /* the portal knows the player's country better than the browser does; follow it unless the player chose a language */
   try { const chosen = localStorage.getItem(LANG_KEY), want = PORTAL.country === 'KR' ? 'ko' : PORTAL.country ? 'en' : null; if (!chosen && want && want !== LANG && !sessionStorage.getItem('alibi.langflip')) { sessionStorage.setItem('alibi.langflip', '1'); setLang(want); return; } } catch (e) {}
   A.setMuted(!S.settings.sound); if (screen === 'title') boot(); PORTAL.loaded();
+  /* the rewarded flag is only known once the SDK answers; refresh the
+     strike-recovery button in case a case is already on screen */
+  if (screen === 'case' && R) renderMeters();
 });
 renderTitle();
 window.__al = { fast: false, get S() { return S; }, get R() { return R; }, beginCase, renderList };

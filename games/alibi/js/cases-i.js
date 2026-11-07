@@ -2,8 +2,8 @@
 /* ALIBI — case pack I: the conflicting-evidence case.
    Two facts disagree (camera still vs badge log); a third (the IT note) says which to trust. */
 CASES.en.push({
-  id: 'clock', title: 'Fifteen Minutes Slow', place: 'Coworking Loft, 3F · 9:15 pm', difficulty: 2,
-  intro: 'A laptop vanished from the quiet room between 20:50 and 21:10. The camera says one thing, the badge log says another. Only one of them is right.',
+  id: 'clock', title: 'The Laptop in the Quiet Room', place: 'Coworking Loft, 3F · 9:15 pm', difficulty: 2,
+  intro: 'A laptop vanished from the quiet room between 20:50 and 21:10. The camera and the badge log tell different stories — and both look right.',
   suspects: [['ira', 'Ira', 'Member'], ['ben', 'Ben', 'Night receptionist'], ['suki', 'Suki', 'Cleaner']],
   facts: [
     ['📷', 'Lobby camera still, timestamp 20:48: Ira walking out the front door.'],
@@ -15,7 +15,7 @@ CASES.en.push({
   ],
   chat: [
     { s: 'ben', t: '21:15', m: 'The laptop in the quiet room is gone. Owner says it was there at 8:50. Who was still on the floor?' },
-    { s: 'ira', t: '21:17', m: 'Not me. I was out of the building by ten to nine, check the lobby camera.', ev: 1, lie: 'The badge log has Ira leaving at 21:03. The camera\'s 20:48 is the same moment: the recorder runs 15 minutes slow.' },
+    { s: 'ira', t: '21:17', m: 'Not me. I was out by 8:48 — the lobby camera has me leaving at 8:48.', ev: [1, 2], lie: 'The badge log has Ira leaving at 21:03. The camera\'s 20:48 is the same moment: the recorder runs 15 minutes slow, so 20:48 on screen is 21:03.' },
     { s: 'suki', t: '21:18', m: 'I only get to the quiet room at half nine. Already empty, so I called it in.' },
     { s: 'ben', t: '21:19', m: 'I never left the desk all night. Nobody walked past me with a laptop.', ev: 5, lie: 'The back-door still shows Ben outside with a coffee at 20:35 on the slow clock, which is 20:50 real time.' },
     { s: 'ira', t: '21:21', m: 'Then it went out the back. Cleaners use that door.' },
@@ -25,11 +25,11 @@ CASES.en.push({
     { s: 'suki', t: '21:26', m: 'IT taped a note on the recorder on Monday. Read it.' }
   ],
   culprit: 'ira',
-  solve: 'The recorder runs 15 minutes slow, so the 20:48 still of Ira leaving is really 21:03, exactly what the badge log says, two minutes after the quiet-room door opened at 21:01. Ben did slip out for a coffee (20:35 on the slow clock is 20:50) but was back at the desk signing in a courier at 20:56, and Suki arrived at 21:25, after the laptop was gone.'
+  solve: 'Ira said she was out by 8:48, but that 20:48 timestamp is on the slow recorder: add 15 minutes and it is 21:03, exactly what the badge log says — inside the 20:50–21:10 window, two minutes after the quiet-room door opened at 21:01. Ben slipped out for a coffee but was back at the desk by 20:56, before the door opened, and Suki arrived at 21:25, after the laptop was gone. Only Ira was still inside when it vanished.'
 });
 CASES.ko.push({
-  id: 'clock', title: '15분 느린 시계', place: '코워킹 로프트 3층 · 오후 9:15', difficulty: 2,
-  intro: '20:50에서 21:10 사이에 집중실의 노트북이 사라졌다. 카메라는 이렇게 말하고, 출입 기록은 저렇게 말한다. 둘 중 하나만 맞다.',
+  id: 'clock', title: '집중실의 노트북', place: '코워킹 로프트 3층 · 오후 9:15', difficulty: 2,
+  intro: '20:50에서 21:10 사이에 집중실의 노트북이 사라졌다. 카메라와 출입 기록은 서로 다른 이야기를 한다. 둘 다 맞는 것처럼 보인다.',
   suspects: [['ira', '이라', '회원'], ['ben', '벤', '야간 안내 데스크'], ['suki', '수키', '청소']],
   facts: [
     ['📷', '로비 카메라 정지 화면, 표시 시각 20:48: 이라가 정문으로 나가는 모습.'],
@@ -41,7 +41,7 @@ CASES.ko.push({
   ],
   chat: [
     { s: 'ben', t: '21:15', m: '집중실 노트북이 없어졌어요. 주인은 8시 50분까지 있었대요. 그 뒤에 층에 남아 있던 분?' },
-    { s: 'ira', t: '21:17', m: '저 아니에요. 9시 10분 전에 건물 나갔어요. 로비 카메라 보세요.', ev: 1, lie: '출입 기록에 이라의 퇴장은 21:03이다. 카메라의 20:48은 같은 순간이다. 녹화기가 15분 느리다.' },
+    { s: 'ira', t: '21:17', m: '저 아니에요. 8시 48분에 나갔어요. 로비 카메라에 8시 48분에 나가는 게 찍혀 있어요.', ev: [1, 2], lie: '출입 기록에 이라의 퇴장은 21:03이다. 카메라의 20:48은 같은 순간이다. 녹화기가 15분 느리니 화면의 20:48이 실제 21:03이다.' },
     { s: 'suki', t: '21:18', m: '저는 9시 반에야 집중실에 가요. 이미 비어 있어서 바로 신고했어요.' },
     { s: 'ben', t: '21:19', m: '저는 밤새 데스크를 떠난 적이 없어요. 노트북 들고 지나간 사람도 없었고요.', ev: 5, lie: '후문 화면에 벤이 커피를 들고 밖에 있는 모습이 느린 시계로 20:35, 실제로는 20:50에 찍혀 있다.' },
     { s: 'ira', t: '21:21', m: '그럼 뒷문으로 나간 거네요. 청소하시는 분들이 그 문 쓰잖아요.' },
@@ -51,7 +51,7 @@ CASES.ko.push({
     { s: 'suki', t: '21:26', m: '월요일에 IT가 녹화기에 메모 붙여 놨어요. 읽어 보세요.' }
   ],
   culprit: 'ira',
-  solve: '녹화기가 15분 느리다. 이라가 나가는 20:48 화면은 실제로 21:03이고, 출입 기록과 정확히 일치한다. 집중실 문이 21:01에 열린 2분 뒤다. 벤은 커피를 사러 잠깐 나갔지만(느린 시계의 20:35는 실제 20:50) 20:56에는 데스크에서 택배 기사를 등록하고 있었고, 수키는 노트북이 사라진 뒤인 21:25에 도착했다.'
+  solve: '이라는 8시 48분에 나갔다고 했지만, 그 20:48은 느린 녹화기의 시각이다. 15분을 더하면 21:03으로 출입 기록과 정확히 일치하고, 도난 시간대(20:50–21:10) 안이며 집중실 문이 열린 21:01의 2분 뒤다. 벤은 커피를 사러 잠깐 나갔지만 20:56에는 데스크에 돌아와 있었고, 수키는 노트북이 사라진 뒤인 21:25에 도착했다. 노트북이 사라질 때 안에 남아 있던 사람은 이라뿐이다.'
 });
 Object.assign(OUTRO.en, {
   clock: [

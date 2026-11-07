@@ -14,7 +14,7 @@ Everyone in the chat has a story. The evidence only agrees with some of them.
 ALIBI is a deduction game played on a detective's phone. Each case gives you a group chat, a handful of facts (badge logs, receipts, CCTV, weather) and a few suspects. Tap a message that doesn't match the evidence, then pick the fact it contradicts. Find every lie, then accuse. Three mistakes and the case starts over.
 
 **Features**
-- 23 cases with rising difficulty: an office kitchen, an apartment, a startup leak, a school festival, a hotel, a game guild, a library, a wedding, a rooftop garden, a podcast studio, a bakery, a late train, a drained pool, a leaked answer key, an open gate, a gallery blackout, a gym locker, a crashed drone, a karaoke room, a dropped database, a café photo, a slow camera clock, a stolen e-bike
+- 23 cases with rising difficulty: an office kitchen, an apartment, a startup leak, a school festival, a hotel, a game guild, a library, a wedding, a rooftop garden, a podcast studio, a bakery, a late train, a drained pool, a leaked answer key, an open gate, a gallery blackout, a gym locker, a crashed drone, a karaoke room, a dropped database, a café photo, a disputed camera timestamp, a stolen e-bike
 - Not every case is the same puzzle: study an actual photo and recognize who is in it, decide which of two conflicting records to trust, and spot the lie that actually clears someone
 - Every suspect has a face; name the culprit and watch the chat turn: pushback, the decisive fact, a confession
 - Ambient music and a hands-on guide for your first case
@@ -36,7 +36,7 @@ ALIBI is a deduction game played on a detective's phone. Each case gives you a g
 알리바이는 탐정의 휴대폰에서 하는 추리 게임입니다. 사건마다 단체 채팅, 몇 가지 사실(출입 기록, 영수증, CCTV, 날씨), 용의자 몇 명이 주어져요. 증거와 어긋나는 말을 누르고, 어느 증거와 어긋나는지 고르세요. 거짓말을 다 찾으면 범인을 지목합니다. 실수 세 번이면 처음부터.
 
 **특징**
-- 점점 어려워지는 사건 23개: 사무실, 아파트, 스타트업, 학교 축제, 호텔, 게임 길드, 도서관, 결혼식, 옥상 텃밭, 팟캐스트, 빵집, 막차, 수영장, 정답지, 대문, 갤러리, 헬스장 사물함, 드론 추락, 노래방, 데이터베이스 삭제, 카페 사진, 느린 카메라 시계, 전기자전거
+- 점점 어려워지는 사건 23개: 사무실, 아파트, 스타트업, 학교 축제, 호텔, 게임 길드, 도서관, 결혼식, 옥상 텃밭, 팟캐스트, 빵집, 막차, 수영장, 정답지, 대문, 갤러리, 헬스장 사물함, 드론 추락, 노래방, 데이터베이스 삭제, 카페 사진, 엇갈리는 카메라 기록, 전기자전거
 - 매번 같은 풀이가 아닙니다: 사진 속 세부를 읽고, 엇갈리는 두 기록 중 믿을 쪽을 고르고, 사람을 결백하게 만드는 거짓말을 알아보세요
 - 용의자마다 얼굴이 있고, 범인을 지목하면 채팅이 뒤집힙니다: 반박, 결정적 증거, 자백
 - 배경 음악과 첫 사건 단계별 안내

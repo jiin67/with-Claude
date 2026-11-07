@@ -19,10 +19,21 @@ const PORTAL = (() => {
     poki: 'https://game-cdn.poki.com/scripts/v2/poki-sdk.js'
   };
   let sdk = null, playing = false, busy = false;
+  /* interstitial budget: at most 6 midgame ads per session, at least 90 s apart.
+     Past the cap (or inside the cooldown) midgame() silently skips and the game
+     carries on — an ad must never block play. Counts only ads actually shown
+     (a 'none' build never reaches the counter). Applies to debug fake ads too,
+     so the cap can be tested locally with ?portal=debug. */
+  const MIDGAME_MAX_PER_SESSION = 6;
+  const MIDGAME_MIN_INTERVAL_MS = 90 * 1000;
+  let midgameCount = 0, lastMidgameAt = 0;
   const api = {
     name,
     /* true when this build can show rewarded ads (the reward buttons appear only then) */
     rewarded: false,
+    /* true once the portal SDK has answered (or failed): until then `rewarded`
+       is still unknown, so the UI shows reward buttons disabled, never hidden */
+    settled: false,
     onAd: null, /* (true) when an ad starts, (false) when it ends — the UI mutes and pauses */
     store: null, /* localStorage-like account storage, when the portal has one */
     country: null, /* ISO country code from the portal, when it tells us */
@@ -61,6 +72,7 @@ const PORTAL = (() => {
       /* ad blocker or offline: run as an ad-free build */
       sdk = null; api.store = null; api.rewarded = name === 'debug';
     }
+    api.settled = true;
   })();
 
   /* call once the first screen is interactive */
@@ -98,10 +110,17 @@ const PORTAL = (() => {
     });
   }
 
+  /* how much of the interstitial budget this session has used (for the UI / tests) */
+  api.midgameStats = () => ({ count: midgameCount, max: MIDGAME_MAX_PER_SESSION, cooldownMs: MIDGAME_MIN_INTERVAL_MS, lastAt: lastMidgameAt });
+
   /* interstitial at a natural break; resolves when the game may continue */
   api.midgame = async () => {
     await api.ready;
     if (busy || !sdk && name !== 'debug') return;
+    const now = Date.now();
+    if (midgameCount >= MIDGAME_MAX_PER_SESSION) return;
+    if (lastMidgameAt && now - lastMidgameAt < MIDGAME_MIN_INTERVAL_MS) return;
+    midgameCount++; lastMidgameAt = now;
     busy = true; api.stop();
     try {
       if (name === 'debug') { adStart(); await fakeAd(1.2); }

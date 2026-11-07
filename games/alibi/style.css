@@ -50,7 +50,8 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .case-card.locked .no{color:var(--dim)}
 
 /* case */
-.meter{display:flex;justify-content:space-between;padding:8px 16px 0;font-size:12px;font-weight:600;color:var(--dim)}
+.meter{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 16px 0;font-size:12px;font-weight:600;color:var(--dim)}
+.meter .btn{padding:5px 9px;font-size:12px;border-radius:10px;white-space:nowrap}
 #strikeMeter{letter-spacing:.1em}
 #strikeMeter b{color:var(--bad)}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);padding:8px 12px 0;gap:6px}
@@ -148,6 +149,9 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .pane-title{display:none;margin:0 0 8px 2px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 .evpick{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start;text-align:left;padding:10px 12px;border-radius:12px;background:var(--card-2);border:1px solid var(--line);font-size:13px;line-height:1.4}
 .evpick:hover{border-color:var(--accent)}
+.evpick.tried{opacity:.45}
+.evpick:disabled{cursor:default}
+.evpick .tried-tag{color:var(--dim);font-size:12px}
 .evpick .ic{font-size:20px;line-height:1}
 .sheet-card .list{display:flex;flex-direction:column;gap:6px;max-height:48vh;overflow:auto}
 .cases.wide{display:grid;grid-template-columns:1fr 1fr;align-content:start}

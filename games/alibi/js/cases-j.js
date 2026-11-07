@@ -13,8 +13,8 @@ CASES.en.push({
   ],
   chat: [
     { s: 'lin', t: '22:46', m: 'My bike is GONE. It was locked on the rack at 10. Who was in the hallway?' },
-    { s: 'dae', t: '22:48', m: 'Not me. I was home studying all night, door closed, headphones on. Didn\'t hear a thing.', ev: [3, 4], lie: 'The cinema scanned Dae\'s ticket across town at 21:40 and his bus card tapped back at 22:40. He was nowhere near the rack, and not studying either.' },
-    { s: 'owen', t: '22:50', m: 'I was out on deliveries. My scooter was charging in the lobby the whole time, check the charger.', ev: 1, lie: 'The charger log shows the scooter unplugged at 22:05, at 9%, and never plugged back in.' },
+    { s: 'dae', t: '22:48', m: 'Not me. I was home studying all night, door closed, headphones on. Didn\'t hear a thing.', ev: [0, 3, 4], lie: 'The cinema scanned Dae\'s ticket across town at 21:40 and his bus card tapped back at 22:40. He was nowhere near the rack, and not studying either. The stairwell log also has him coming in at 22:52, so he was out until late.' },
+    { s: 'owen', t: '22:50', m: 'I was out on deliveries all night. That 22:20 pickup? Did it on my scooter — the app has the whole route.', ev: [1, 2], lie: 'The charger log shows the scooter unplugged at 22:05 at 9% and never plugged back in — it could not have made a 3 km pickup at 22:20. The door log has Owen out at 22:12, on something else.' },
     { s: 'piper', t: '22:51', m: 'I came in at 22:40 from the parking side. Rack was already empty by then.' },
     { s: 'lin', t: '22:53', m: 'Dae, you literally walked in two minutes ago. "Home all night"?' },
     { s: 'dae', t: '22:54', m: 'I went out for air. Briefly. It\'s not a crime.' },
@@ -38,8 +38,8 @@ CASES.ko.push({
   ],
   chat: [
     { s: 'lin', t: '22:46', m: '자전거 없어졌어. 10시에 거치대에 잠가 뒀는데. 복도에 누구 있었어?' },
-    { s: 'dae', t: '22:48', m: '난 아냐. 밤새 집에서 공부했어, 문 닫고 이어폰 끼고. 아무 소리도 못 들었어.', ev: [3, 4], lie: '영화관에서 21:40에 시내 반대편에서 대현의 티켓을 스캔했고, 버스 카드는 22:40에 돌아오는 태그가 찍혔다. 거치대 근처에 없었고, 공부도 안 했다.' },
-    { s: 'owen', t: '22:50', m: '저는 배달 나가 있었어요. 스쿠터는 내내 로비에서 충전 중이었고요, 충전기 확인해 보세요.', ev: 1, lie: '충전기 기록에 스쿠터가 22:05에 9%로 분리됐고 다시 연결되지 않았다.' },
+    { s: 'dae', t: '22:48', m: '난 아냐. 밤새 집에서 공부했어, 문 닫고 이어폰 끼고. 아무 소리도 못 들었어.', ev: [0, 3, 4], lie: '영화관에서 21:40에 시내 반대편에서 대현의 티켓을 스캔했고, 버스 카드는 22:40에 돌아오는 태그가 찍혔다. 거치대 근처에 없었고, 공부도 안 했다. 계단실 문 기록에도 대현이 22:52에 들어온 것으로 남아 있어, 늦게까지 밖에 있었다.' },
+    { s: 'owen', t: '22:50', m: '저는 밤새 배달 나갔어요. 22:20 픽업이요? 스쿠터로 갔다 왔어요. 앱에 경로 다 있어요.', ev: [1, 2], lie: '충전기 기록에 스쿠터가 22:05에 9%로 분리됐고 다시 연결되지 않았다. 9%로 22:20에 3km 픽업은 못 간다. 문 기록에 오웬은 22:12에 나갔다. 스쿠터가 아닌 다른 것을 타고.' },
     { s: 'piper', t: '22:51', m: '저는 22:40에 주차장 쪽으로 들어왔어요. 그때 거치대는 이미 비어 있었어요.' },
     { s: 'lin', t: '22:53', m: '대현아 너 2분 전에 들어왔잖아. "밤새 집"?' },
     { s: 'dae', t: '22:54', m: '바람 쐬러 잠깐 나갔어. 잠깐. 그게 죄야?' },
