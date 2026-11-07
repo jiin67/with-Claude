@@ -4,7 +4,7 @@ CASES.en.push(
   {
     id: 'bakery', title: 'The Cold Oven', place: 'Bakery Lune · 6:10 am', difficulty: 2,
     intro: 'The overnight croissant batch is raw: someone switched the oven off while the shop was closed. Three people could get in last night, and two records disagree about one of them.',
-    suspects: [['nia', 'Nia', 'Night baker'], ['sam', 'Sam', 'Owner\'s son, closes up'], ['kiro', 'Kiro', 'Flour delivery, has a key']],
+    suspects: [['nia', 'Nia', 'Night baker', 'f'], ['sam', 'Sam', 'Owner\'s son, closes up', 'm'], ['kiro', 'Kiro', 'Flour delivery, has a key', 'm']],
     facts: [
       ['🔥', 'Oven controller log: ON 22:00 · OFF 23:48. No power interruption recorded.'],
       ['🚨', 'Back-door alarm log: armed 23:10 (Sam\'s code) · disarmed 23:40 (delivery code) · re-armed 23:55 (delivery code).'],
@@ -30,7 +30,7 @@ CASES.en.push(
   {
     id: 'train', title: 'The 23:05 to Harbor', place: 'Last train · 11:50 pm', difficulty: 3,
     intro: 'A commuter\'s laptop bag vanished between Central and Harbor on the last train. The transit officer put everyone who was in carriage 3 into one chat.',
-    suspects: [['mara', 'Mara', 'Commuter'], ['dell', 'Dell', 'Conductor'], ['yoon', 'Yoon', 'Student, similar bag'], ['bram', 'Bram', 'Busker']],
+    suspects: [['mara', 'Mara', 'Commuter', 'f'], ['dell', 'Dell', 'Conductor', 'n'], ['yoon', 'Yoon', 'Student, similar bag', 'm'], ['bram', 'Bram', 'Busker', 'm']],
     facts: [
       ['🚆', 'Stop times: Central 23:05 · Riverside 23:14 · Oakfield 23:22 · Harbor 23:31 (terminus). The bag was missed at Harbor.'],
       ['📷', 'Platform CCTV, Oakfield 23:22: one passenger alights from carriage 3 carrying two bags, hood up, face not visible.'],
@@ -57,7 +57,7 @@ CASES.ko.push(
   {
     id: 'bakery', title: '식은 오븐', place: '베이커리 룬 · 오전 6:10', difficulty: 2,
     intro: '밤새 구워야 할 크루아상이 날것 그대로다. 가게가 닫힌 사이 누군가 오븐을 껐다. 어젯밤 들어올 수 있었던 사람은 셋. 그중 한 명에 대해 두 기록이 서로 다른 말을 한다.',
-    suspects: [['nia', '니아', '야간 제빵사'], ['sam', '샘', '사장 아들, 마감 담당'], ['kiro', '키로', '밀가루 배송, 열쇠 보유']],
+    suspects: [['nia', '니아', '야간 제빵사', 'f'], ['sam', '샘', '사장 아들, 마감 담당', 'm'], ['kiro', '키로', '밀가루 배송, 열쇠 보유', 'm']],
     facts: [
       ['🔥', '오븐 컨트롤러 기록: 켜짐 22:00 · 꺼짐 23:48. 정전 기록 없음.'],
       ['🚨', '뒷문 경보 기록: 설정 23:10(샘 코드) · 해제 23:40(배송 코드) · 재설정 23:55(배송 코드).'],
@@ -83,7 +83,7 @@ CASES.ko.push(
   {
     id: 'train', title: '23:05 하버행', place: '막차 · 오후 11:50', difficulty: 3,
     intro: '막차에서 센트럴과 하버 사이 어딘가에 한 승객의 노트북 가방이 사라졌다. 교통 담당관이 3호차에 있던 사람들을 한 채팅방에 모았다.',
-    suspects: [['mara', '마라', '통근자'], ['dell', '델', '승무원'], ['yoon', '윤', '학생, 비슷한 가방'], ['bram', '브람', '버스킹 연주자']],
+    suspects: [['mara', '마라', '통근자', 'f'], ['dell', '델', '승무원', 'n'], ['yoon', '윤', '학생, 비슷한 가방', 'm'], ['bram', '브람', '버스킹 연주자', 'm']],
     facts: [
       ['🚆', '정차 시각: 센트럴 23:05 · 리버사이드 23:14 · 오크필드 23:22 · 하버 23:31(종점). 가방이 없어진 걸 안 곳은 하버.'],
       ['📷', '오크필드 승강장 CCTV, 23:22: 3호차에서 가방 두 개를 든 승객 한 명 하차, 후드를 써서 얼굴 안 보임.'],

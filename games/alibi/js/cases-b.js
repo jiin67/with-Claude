@@ -4,7 +4,7 @@ CASES.en.push(
   {
     id: 'rooftop', title: 'The Rooftop Garden', place: 'Apartment rooftop · 7:10 am', difficulty: 2,
     intro: 'Every tomato plant in the shared rooftop garden was cut down overnight. The roof door needs a key fob. Three people have one.',
-    suspects: [['gus', 'Gus', 'Neighbor, 5th floor'], ['mo', 'Mo', 'Building manager'], ['yun', 'Yun', 'Student, waters the plants']],
+    suspects: [['gus', 'Gus', 'Neighbor, 5th floor', 'm'], ['mo', 'Mo', 'Building manager', 'n'], ['yun', 'Yun', 'Student, waters the plants', 'n']],
     facts: [
       ['🔐', 'Roof door fob log: Yun 20:10 · Gus 23:40. No other entries until morning.'],
       ['🌧️', 'Weather report: rain 22:00–01:00, wind calm all night (under 10 km/h).'],
@@ -27,7 +27,7 @@ CASES.en.push(
   {
     id: 'podcast', title: 'The Leaked Episode', place: 'Studio Nine · 9:30 am', difficulty: 3,
     intro: 'An unreleased episode went up on a file-sharing site last night. The drive log points at one laptop. Four people had something to do with that laptop.',
-    suspects: [['ren', 'Ren', 'Host'], ['sae', 'Sae', 'Producer'], ['tom', 'Tom', 'Audio editor'], ['vi', 'Vi', 'Guest']],
+    suspects: [['ren', 'Ren', 'Host', 'n'], ['sae', 'Sae', 'Producer', 'n'], ['tom', 'Tom', 'Audio editor', 'm'], ['vi', 'Vi', 'Guest', 'n']],
     facts: [
       ['☁️', 'Cloud drive log: master file downloaded 19:20 by device "Tom-Laptop" · opened 09:00 today by "Sae-Phone".'],
       ['🌐', 'The leak was uploaded to the sharing site at 21:05.'],
@@ -36,7 +36,7 @@ CASES.en.push(
     ],
     chat: [
       { s: 'ren', t: '09:31', m: 'It\'s online. The whole episode. Before we even cut the ad reads.' },
-      { s: 'sae', t: '09:33', m: 'Nobody touched the master until I opened it on my phone this morning. I checked.', ev: 0, lie: 'The drive log shows "Tom-Laptop" downloading the master at 19:20 last night.' },
+      { s: 'sae', t: '09:33', m: 'Nobody touched the master until I opened it on my phone this morning. I checked.', ev: [0, 1], lie: 'The drive log shows "Tom-Laptop" downloading the master at 19:20 last night. The leak was already uploaded to the sharing site at 21:05, so the master had been taken before this morning.' },
       { s: 'tom', t: '09:35', m: 'The log says my laptop? I wasn\'t even in the building. Dentist at 4:30, then home.' },
       { s: 'tom', t: '09:36', m: 'Vi picked it up for me last night, it was still on my desk.' },
       { s: 'vi', t: '09:38', m: 'I left right after we finished recording and never went back to the studio.', ev: 3, lie: 'The screenshot shows Vi agreeing at 18:30 to pick up Tom\'s laptop from the studio, after the 16:00 end of recording.' },
@@ -52,7 +52,7 @@ CASES.ko.push(
   {
     id: 'rooftop', title: '옥상 텃밭', place: '아파트 옥상 · 오전 7:10', difficulty: 2,
     intro: '공용 옥상 텃밭의 토마토가 밤사이 전부 잘려 나갔다. 옥상 문은 열쇠 태그가 있어야 열린다. 태그를 가진 사람은 셋.',
-    suspects: [['gus', '구 씨', '5층 주민'], ['mo', '모 소장', '관리소장'], ['yun', '윤', '학생, 물 주는 담당']],
+    suspects: [['gus', '구 씨', '5층 주민', 'm'], ['mo', '모 소장', '관리소장', 'n'], ['yun', '윤', '학생, 물 주는 담당', 'n']],
     facts: [
       ['🔐', '옥상 문 태그 기록: 윤 20:10 · 구 씨 23:40. 아침까지 다른 출입 없음.'],
       ['🌧️', '기상 기록: 22:00–01:00 비, 바람은 밤새 잔잔함(시속 10km 미만).'],
@@ -75,7 +75,7 @@ CASES.ko.push(
   {
     id: 'podcast', title: '유출된 에피소드', place: '스튜디오 나인 · 오전 9:30', difficulty: 3,
     intro: '미공개 에피소드가 어젯밤 파일 공유 사이트에 올라왔다. 드라이브 기록은 노트북 하나를 가리킨다. 그 노트북에 얽힌 사람은 넷.',
-    suspects: [['ren', '렌', '진행자'], ['sae', '새', '프로듀서'], ['tom', '톰', '오디오 편집자'], ['vi', '비', '게스트']],
+    suspects: [['ren', '렌', '진행자', 'n'], ['sae', '새', '프로듀서', 'n'], ['tom', '톰', '오디오 편집자', 'm'], ['vi', '비', '게스트', 'n']],
     facts: [
       ['☁️', '클라우드 기록: 마스터 파일 19:20 "Tom-Laptop" 기기에서 다운로드 · 오늘 09:00 "Sae-Phone"에서 열람.'],
       ['🌐', '유출본은 21:05에 공유 사이트에 업로드됨.'],
@@ -84,7 +84,7 @@ CASES.ko.push(
     ],
     chat: [
       { s: 'ren', t: '09:31', m: '올라왔어요. 에피소드 통째로. 광고 부분 자르기도 전에.' },
-      { s: 'sae', t: '09:33', m: '제가 오늘 아침 폰으로 열기 전까지 아무도 마스터 안 건드렸어요. 확인했어요.', ev: 0, lie: '드라이브 기록에 어젯밤 19:20 "Tom-Laptop"이 마스터를 다운로드한 것으로 남아 있다.' },
+      { s: 'sae', t: '09:33', m: '제가 오늘 아침 폰으로 열기 전까지 아무도 마스터 안 건드렸어요. 확인했어요.', ev: [0, 1], lie: '드라이브 기록에 어젯밤 19:20 "Tom-Laptop"이 마스터를 다운로드한 것으로 남아 있다. 유출본은 이미 21:05에 공유 사이트에 올라가 있었으니, 마스터는 오늘 아침 전에 이미 빠져나간 것이다.' },
       { s: 'tom', t: '09:35', m: '기록이 제 노트북이라고요? 저 건물에 있지도 않았어요. 4시 반 치과, 그다음 집.' },
       { s: 'tom', t: '09:36', m: '비가 어젯밤에 대신 챙겨 줬어요. 책상에 그대로 있었거든요.' },
       { s: 'vi', t: '09:38', m: '저는 녹음 끝나자마자 나갔고 스튜디오에 다시 간 적 없어요.', ev: 3, lie: '캡처에 비가 18:30에 톰의 노트북을 스튜디오에서 챙기기로 한 것이 남아 있다. 녹음이 끝난 16:00 이후다.' },

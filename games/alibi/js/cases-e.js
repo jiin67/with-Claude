@@ -4,7 +4,7 @@ CASES.en.push(
   {
     id: 'dog', title: 'The Open Gate', place: 'Maple Court · 4:20 pm', difficulty: 2,
     intro: 'Biscuit the beagle was found two streets away at ten past four. The yard is fenced and the gate has a smart lock. The doorbell camera caught one still that afternoon. Look closely.',
-    suspects: [['wren', 'Wren', 'Dog walker'], ['otis', 'Otis', 'Meter reader'], ['lia', 'Lia', 'Neighbor, 15']],
+    suspects: [['wren', 'Wren', 'Dog walker', 'n'], ['otis', 'Otis', 'Meter reader', 'm'], ['lia', 'Lia', 'Neighbor, 15', 'f']],
     facts: [
       ['🔔', 'Doorbell camera still, 15:33.', ['timestamp', 'person on the path', 'side gate latch', 'the dog', 'the street']],
       ['🔐', 'Gate smart lock: locked 13:41 (Wren\'s code) · unlocked 15:32 (Lia\'s code) · "gate left open" alert 15:34. Never re-locked.'],
@@ -28,7 +28,7 @@ CASES.en.push(
   {
     id: 'gallery', title: 'Blue Hour', place: 'Vireo Gallery · 9:40 pm', difficulty: 3,
     intro: 'Sometime tonight the painting Blue Hour was swapped for a print. The lights went down for a two-minute projection during the toast. Four people were close enough.',
-    suspects: [['nell', 'Nell', 'Gallery assistant'], ['hugo', 'Hugo', 'Collector, sponsor'], ['bea', 'Bea', 'Caterer'], ['kai', 'Kai', 'Artist\'s partner']],
+    suspects: [['nell', 'Nell', 'Gallery assistant', 'f'], ['hugo', 'Hugo', 'Collector, sponsor', 'm'], ['bea', 'Bea', 'Caterer', 'f'], ['kai', 'Kai', 'Artist\'s partner', 'n']],
     facts: [
       ['🧥', 'Coat check: #12 Hugo in 18:40, out 20:15 · #19 Kai in 19:05, out 21:30. Catering staff checked no coats.'],
       ['⏱️', 'AV booth timeline: 19:58 toast by sponsor Hugo at the microphone, front of the main room · 20:00 lights down for the projection · 20:02 lights up. Hugo kept the mic until 20:02.'],
@@ -54,7 +54,7 @@ CASES.ko.push(
   {
     id: 'dog', title: '열린 대문', place: '메이플 코트 · 오후 4:20', difficulty: 2,
     intro: '비글 비스킷이 4시 10분에 두 블록 떨어진 곳에서 발견됐다. 마당은 울타리로 막혀 있고 대문엔 스마트 잠금장치가 있다. 그날 오후 초인종 카메라가 사진 한 장을 남겼다. 자세히 보라.',
-    suspects: [['wren', '렌', '도그워커'], ['otis', '오티스', '검침원'], ['lia', '리아', '옆집, 15살']],
+    suspects: [['wren', '렌', '도그워커', 'n'], ['otis', '오티스', '검침원', 'm'], ['lia', '리아', '옆집, 15살', 'f']],
     facts: [
       ['🔔', '초인종 카메라 사진, 15:33.', ['타임스탬프', '길 위의 사람', '옆문 걸쇠', '강아지', '길']],
       ['🔐', '대문 스마트 잠금: 13:41 잠김(렌의 코드) · 15:32 열림(리아의 코드) · 15:34 "대문 열림" 경고. 이후 다시 잠긴 적 없음.'],
@@ -78,7 +78,7 @@ CASES.ko.push(
   {
     id: 'gallery', title: '블루 아워', place: '비레오 갤러리 · 오후 9:40', difficulty: 3,
     intro: '오늘 밤 어느 순간 그림 "블루 아워"가 인쇄본으로 바뀌었다. 건배사 도중 2분짜리 영상 상영으로 조명이 꺼졌다. 가까이 있던 사람은 넷.',
-    suspects: [['nell', '넬', '갤러리 어시스턴트'], ['hugo', '휴고', '수집가, 후원자'], ['bea', '베아', '케이터링'], ['kai', '카이', '작가의 파트너']],
+    suspects: [['nell', '넬', '갤러리 어시스턴트', 'f'], ['hugo', '휴고', '수집가, 후원자', 'm'], ['bea', '베아', '케이터링', 'f'], ['kai', '카이', '작가의 파트너', 'n']],
     facts: [
       ['🧥', '코트 보관: #12 휴고 18:40 맡김, 20:15 찾음 · #19 카이 19:05 맡김, 21:30 찾음. 케이터링 직원은 맡긴 코트 없음.'],
       ['⏱️', 'AV 부스 타임라인: 19:58 후원자 휴고의 건배사, 메인 홀 앞쪽 마이크 · 20:00 상영을 위해 소등 · 20:02 점등. 휴고는 20:02까지 마이크를 잡고 있었음.'],

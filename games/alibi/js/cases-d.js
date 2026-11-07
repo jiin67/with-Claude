@@ -4,7 +4,7 @@ CASES.en.push(
   {
     id: 'pool', title: 'The Empty Pool', place: 'Community pool · 6:40 am', difficulty: 2,
     intro: 'The swim team arrives at seven. The pool is a tiled hole. Someone opened the maintenance valve in the middle of the night, and three people are in the chat.',
-    suspects: [['dax', 'Dax', 'Lifeguard'], ['rin', 'Rin', 'Maintenance tech'], ['hal', 'Hal', 'Swim-team parent']],
+    suspects: [['dax', 'Dax', 'Lifeguard', 'm'], ['rin', 'Rin', 'Maintenance tech', 'n'], ['hal', 'Hal', 'Swim-team parent', 'm']],
     facts: [
       ['🔐', 'Valve-room keypad log: maintenance code 4471 entered at 21:30 and again at 02:10. No other codes that night.'],
       ['📉', 'Depth sensor: pool full until 02:12, draining from 02:15, empty at 04:30.'],
@@ -28,7 +28,7 @@ CASES.en.push(
   {
     id: 'exam', title: 'The Answer Key', place: 'Faculty office 3B · 9:00 pm', difficulty: 3,
     intro: 'A photo of tomorrow\'s answer key is in the class chat. The badge log for office 3B names one person. The photo says something else.',
-    suspects: [['ana', 'Ana', 'Teaching assistant'], ['bo', 'Bo', 'Department secretary'], ['cy', 'Cy', 'Student, part-time cleaner'], ['dov', 'Dov', 'Visiting lecturer']],
+    suspects: [['ana', 'Ana', 'Teaching assistant', 'f'], ['bo', 'Bo', 'Department secretary', 'f'], ['cy', 'Cy', 'Student, part-time cleaner', 'm'], ['dov', 'Dov', 'Visiting lecturer', 'm']],
     facts: [
       ['🪪', 'Office 3B badge log: Bo in 08:00, out 17:05 · Ana in 17:40, out 17:52 · Cy in 19:00, out 19:35. The door locks by itself.'],
       ['🖨️', 'Copier log, office 3B: "FINAL EXAM — ANSWER KEY", 1 copy, 17:45, Ana\'s account.'],
@@ -56,7 +56,7 @@ CASES.ko.push(
   {
     id: 'pool', title: '텅 빈 수영장', place: '주민 수영장 · 오전 6:40', difficulty: 2,
     intro: '수영팀은 7시에 온다. 수영장은 타일 바닥이 드러난 구덩이다. 누군가 한밤중에 배수 밸브를 열었고, 채팅방에는 세 사람이 있다.',
-    suspects: [['dax', '도윤', '안전요원'], ['rin', '린', '시설 기사'], ['hal', '한수', '수영팀 학부모']],
+    suspects: [['dax', '도윤', '안전요원', 'm'], ['rin', '린', '시설 기사', 'n'], ['hal', '한수', '수영팀 학부모', 'm']],
     facts: [
       ['🔐', '밸브실 키패드 기록: 시설 코드 4471 입력 21:30, 02:10. 그날 밤 다른 코드 없음.'],
       ['📉', '수심 센서: 02:12까지 가득 참, 02:15부터 배수, 04:30 비어 있음.'],
@@ -80,7 +80,7 @@ CASES.ko.push(
   {
     id: 'exam', title: '정답지', place: '교수실 3B · 오후 9:00', difficulty: 3,
     intro: '내일 시험 정답지 사진이 수업 단톡방에 올라왔다. 3B 출입 기록은 한 사람을 가리킨다. 사진은 다른 말을 한다.',
-    suspects: [['ana', '안나', '조교'], ['bo', '보라', '학과 사무원'], ['cy', '시우', '근로 학생, 청소 담당'], ['dov', '도현', '초빙 강사']],
+    suspects: [['ana', '안나', '조교', 'f'], ['bo', '보라', '학과 사무원', 'f'], ['cy', '시우', '근로 학생, 청소 담당', 'm'], ['dov', '도현', '초빙 강사', 'm']],
     facts: [
       ['🪪', '3B 출입 기록: 보라 08:00 입실, 17:05 퇴실 · 안나 17:40 입실, 17:52 퇴실 · 시우 19:00 입실, 19:35 퇴실. 문은 자동 잠금.'],
       ['🖨️', '3B 복사기 기록: "기말고사 — 정답지", 1부, 17:45, 안나 계정.'],

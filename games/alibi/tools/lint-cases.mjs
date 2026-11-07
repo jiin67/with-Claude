@@ -24,6 +24,7 @@ en.forEach((c, i) => {
     const sids = x.suspects.map(s => s[0]);
     if (!sids.includes(x.culprit)) bad(x.id, `${lang}: culprit "${x.culprit}" is not a suspect`);
     if (x.suspects.length < 3) bad(x.id, `${lang}: fewer than 3 suspects`);
+    x.suspects.forEach(s => { if (!['f', 'm', 'n'].includes(s[3])) bad(x.id, `${lang}: suspect "${s[0]}" needs a gender hint 'f'/'m'/'n' (4th element)`); });
     if (x.facts.length < 3) bad(x.id, `${lang}: fewer than 3 facts`);
     x.facts.forEach((f, i) => { if (!Array.isArray(f) || typeof f[0] !== 'string' || typeof f[1] !== 'string') bad(x.id, `${lang}: facts[${i}] must be [icon, text, details?]`); if (f[2] !== undefined && (!Array.isArray(f[2]) || f[2].length < 2 || f[2].some(d => typeof d !== 'string'))) bad(x.id, `${lang}: facts[${i}] photo details must be 2+ strings`); });
     if (x.chat.length < 6) bad(x.id, `${lang}: chat shorter than 6 messages`);

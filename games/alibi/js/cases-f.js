@@ -6,7 +6,7 @@ CASES.en.push(
   {
     id: 'locker', title: 'Locker 22', place: 'Northside Gym · 7:05 pm', difficulty: 3,
     intro: 'Vic came out of spin class to find locker 22 open and his watch gone. Three people were in the building for that hour. A member\'s selfie by the water fountain shows more than she meant it to.',
-    suspects: [['pam', 'Pam', 'Front desk'], ['theo', 'Theo', 'Spin instructor'], ['nell', 'Nell', 'Member, locker 23']],
+    suspects: [['pam', 'Pam', 'Front desk', 'f'], ['theo', 'Theo', 'Spin instructor', 'm'], ['nell', 'Nell', 'Member, locker 23', 'f']],
     facts: [
       ['📷', 'Member selfie by the water fountain, 18:31. Posted with "halfway through spin 💦".', ['wall clock', 'front desk', 'key hook', 'locker-room door', 'desk surface']],
       ['🚪', 'Locker-room turnstile log (member cards only): Vic in 17:55 · Nell in 18:02, out 18:08 · Vic out 19:05. Staff use the staff door, which keeps no log.'],
@@ -31,7 +31,7 @@ CASES.en.push(
   {
     id: 'drone', title: 'Through the Glass', place: 'Orchard Lane greenhouse · 11:00 pm', difficulty: 3,
     intro: 'A drone came through the greenhouse roof at twenty past ten. The registration traces to one person. Two records say Vera was in two places at once; a third says which one to believe.',
-    suspects: [['gil', 'Gil', 'Hobbyist, registered owner'], ['ren', 'Ren', 'Real-estate photographer'], ['jay', 'Jay', 'Teenager'], ['vera', 'Vera', 'Greenhouse owner\'s rival']],
+    suspects: [['gil', 'Gil', 'Hobbyist, registered owner', 'm'], ['ren', 'Ren', 'Real-estate photographer', 'n'], ['jay', 'Jay', 'Teenager', 'n'], ['vera', 'Vera', 'Greenhouse owner\'s rival', 'f']],
     facts: [
       ['🛩️', 'Flight log recovered from the wreck: takeoff 22:14 from the gravel lot on Mill Road, 600 m from the greenhouse · crash 22:21.'],
       ['📍', 'Vera\'s phone location history, which she sent to the group herself: "Home, 21:30–23:00."'],
@@ -42,7 +42,7 @@ CASES.en.push(
     ],
     chat: [
       { s: 'gil', t: '23:02', m: 'The greenhouse owner just called the club. A drone went through his roof and the registration traces to ME.' },
-      { s: 'gil', t: '23:03', m: 'It\'s been in my garage all week. Somebody must have stolen it.', ev: 4, lie: 'The club loan sheet, signed by Gil himself, shows the drone loaned to Vera on Thursday.' },
+      { s: 'gil', t: '23:03', m: 'It\'s been in my garage all week. Somebody must have stolen it.', ev: [0, 4], lie: 'The club loan sheet, signed by Gil himself, shows the drone loaned to Vera on Thursday. The flight log recovered from the wreck also has it taking off at 22:14 from the Mill Road lot, not sitting in a garage.' },
       { s: 'vera', t: '23:05', m: 'I was home all night. My phone\'s location history proves it, I\'ll send it right now.', ev: 2, lie: 'Her car was parked in the Mill Road lot from 22:05 to 22:30, paid from her own account. The phone history only shows where the phone was, and the phone sat untouched at home from 21:40 to 22:52.' },
       { s: 'ren', t: '23:07', m: 'Probably a gust took it. It was blowing hard tonight, I cancelled a shoot because of the wind.', ev: 5, lie: 'The weather station recorded calm air at 4 km/h, and the flight log shows no wind correction.' },
       { s: 'jay', t: '23:08', m: 'I only fly at the park and never after dark. My dad would end me.' },
@@ -59,7 +59,7 @@ CASES.ko.push(
   {
     id: 'locker', title: '22번 사물함', place: '노스사이드 헬스장 · 오후 7:05', difficulty: 3,
     intro: '빅이 스피닝 수업을 마치고 나오니 22번 사물함이 열려 있고 시계가 사라졌다. 그 한 시간 동안 건물에 있던 사람은 셋. 어느 회원이 정수기 앞에서 찍은 셀카에는 본인이 의도한 것보다 많은 것이 찍혀 있다.',
-    suspects: [['pam', '팸', '프런트 직원'], ['theo', '테오', '스피닝 강사'], ['nell', '넬', '회원, 23번 사물함']],
+    suspects: [['pam', '팸', '프런트 직원', 'f'], ['theo', '테오', '스피닝 강사', 'm'], ['nell', '넬', '회원, 23번 사물함', 'f']],
     facts: [
       ['📷', '회원 셀카, 정수기 앞, 18:31. "스피닝 절반 완료 💦"와 함께 게시.', ['벽시계', '프런트 데스크', '키 걸이', '탈의실 문', '데스크 위']],
       ['🚪', '탈의실 회전문 기록(회원 카드만): 빅 입장 17:55 · 넬 입장 18:02, 퇴장 18:08 · 빅 퇴장 19:05. 직원은 기록이 남지 않는 직원용 문을 쓴다.'],
@@ -84,7 +84,7 @@ CASES.ko.push(
   {
     id: 'drone', title: '유리를 뚫고', place: '오처드 레인 온실 · 오후 11:00', difficulty: 3,
     intro: '10시 20분쯤 드론 하나가 온실 지붕을 뚫고 떨어졌다. 등록 정보는 한 사람을 가리킨다. 두 기록은 베라가 동시에 두 곳에 있었다고 말하고, 세 번째 기록이 어느 쪽을 믿을지 알려 준다.',
-    suspects: [['gil', '길', '취미 비행, 등록 소유자'], ['ren', '렌', '부동산 사진가'], ['jay', '제이', '10대'], ['vera', '베라', '온실 주인의 경쟁자']],
+    suspects: [['gil', '길', '취미 비행, 등록 소유자', 'm'], ['ren', '렌', '부동산 사진가', 'n'], ['jay', '제이', '10대', 'n'], ['vera', '베라', '온실 주인의 경쟁자', 'f']],
     facts: [
       ['🛩️', '잔해에서 복구한 비행 기록: 이륙 22:14, 밀 로드 자갈 주차장(온실에서 600m) · 추락 22:21.'],
       ['📍', '베라가 직접 단체방에 보낸 휴대폰 위치 기록: "집, 21:30–23:00."'],
@@ -95,7 +95,7 @@ CASES.ko.push(
     ],
     chat: [
       { s: 'gil', t: '23:02', m: '온실 주인이 방금 동호회에 전화했어요. 드론이 지붕을 뚫었는데 등록 조회하니 제 이름이래요.' },
-      { s: 'gil', t: '23:03', m: '일주일 내내 제 차고에 있었어요. 누가 훔쳐 간 게 분명해요.', ev: 4, lie: '길 본인이 서명한 동호회 대여 장부에 목요일에 베라에게 빌려준 것으로 남아 있다.' },
+      { s: 'gil', t: '23:03', m: '일주일 내내 제 차고에 있었어요. 누가 훔쳐 간 게 분명해요.', ev: [0, 4], lie: '길 본인이 서명한 동호회 대여 장부에 목요일에 베라에게 빌려준 것으로 남아 있다. 잔해에서 복구한 비행 기록에도 22:14에 밀 로드 주차장에서 이륙한 것으로 남아 있어, 차고에 있던 게 아니다.' },
       { s: 'vera', t: '23:05', m: '저는 밤새 집에 있었어요. 휴대폰 위치 기록이 증명해요, 지금 바로 보낼게요.', ev: 2, lie: '베라의 차는 22:05부터 22:30까지 밀 로드 주차장에 있었고 베라 계정으로 결제됐다. 위치 기록은 휴대폰이 있던 곳일 뿐이고, 그 휴대폰은 21:40부터 22:52까지 집에서 아무도 건드리지 않았다.' },
       { s: 'ren', t: '23:07', m: '돌풍에 휩쓸린 거겠죠. 오늘 바람 엄청 셌어요, 저도 바람 때문에 촬영 취소했어요.', ev: 5, lie: '기상 관측은 풍속 4km/h의 잔잔한 밤이었고, 비행 기록에도 바람 보정이 없다.' },
       { s: 'jay', t: '23:08', m: '저는 공원에서만 날리고 밤엔 절대 안 해요. 아빠한테 죽어요.' },

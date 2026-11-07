@@ -5,14 +5,14 @@ Object.assign(OUTRO.en, {
     { s: 'mia', m: 'Me? Based on what, a badge log? Those things glitch all the time.' },
     { s: 'jun', m: 'It had you in the kitchen at 15:39. The fridge opened at 15:40. That\'s not a glitch, Mia.' },
     { s: 'mia', m: 'Fine. I skipped lunch for the deadline and it was just sitting there. I only meant to take a corner. Then there was no corner left.' },
-    { s: 'theo', m: 'For the record I said strawberry because I didn\'t want to look like I\'d been anywhere near it. I hadn\'t.' },
+    { s: 'theo', m: 'For the record, I said I saw Mia at quarter past because I wanted it to be anyone but me. I wasn\'t even in the kitchen.' },
     { s: 'jun', m: 'New rule: the 4pm cake lives in my desk drawer.' }
   ],
   vase: [
     { s: 'sol', m: 'Grandma it wasn\'t me!! Dana\'s the one who lied, you all saw it' },
     { s: 'rafa', m: 'She lied about knocking. The lock says she never came in. Your code opened the door at 6:30, Sol, and class ends at 6.' },
     { s: 'sol', m: '…I came in with wet shoes and slid. It just fell. I thought you\'d be madder about the shoes than the vase.' },
-    { s: 'dana', m: 'And I said I wasn\'t there because I\'d come to ask Ro for a loan. I didn\'t want the whole building reading that.' },
+    { s: 'dana', m: 'And I did come by — I knocked and left, that\'s all. I didn\'t want the whole building reading into that.' },
     { s: 'rafa', m: 'Nobody\'s reading anything. Sol, glue. Dana, come by tomorrow, Ro\'s putting the kettle on.' }
   ],
   draft: [
@@ -79,14 +79,14 @@ Object.assign(OUTRO.ko, {
     { s: 'mia', m: '제가요? 근거가 뭔데요, 출입 기록요? 그거 맨날 오류 나잖아요.' },
     { s: 'jun', m: '15:39에 탕비실, 15:40에 냉장고. 그건 오류가 아니에요, 미아 씨.' },
     { s: 'mia', m: '네, 알았어요. 마감 때문에 점심도 걸렀는데 거기 그냥 있었어요. 귀퉁이만 먹으려고 했어요. 그러다 귀퉁이가 안 남았어요.' },
-    { s: 'theo', m: '참고로 저 딸기라고 한 건 근처에도 안 간 것처럼 보이고 싶어서였어요. 진짜 안 갔고요.' },
+    { s: 'theo', m: '참고로 저 3시 15분에 미아 봤다고 한 건, 저만 아니면 됐거든요. 저 탕비실 근처도 안 갔어요.' },
     { s: 'jun', m: '새 규칙. 4시 케이크는 제 서랍에서 삽니다.' }
   ],
   vase: [
     { s: 'sol', m: '할머니 나 아니라니까!! 거짓말한 건 다나 아줌마잖아, 다들 봤지' },
     { s: 'rafa', m: '다나 씨는 노크한 걸 숨겼지. 도어락은 안 들어왔다고 해. 솔, 6시 반에 네 비밀번호로 문이 열렸고 수업은 6시에 끝나.' },
     { s: 'sol', m: '…젖은 신발로 들어오다가 미끄러졌어. 그냥 떨어졌어. 화병보다 신발 때문에 더 혼날 줄 알았단 말이야.' },
-    { s: 'dana', m: '저는 로 여사님께 돈 좀 빌리러 왔던 거예요. 그걸 온 동네가 읽을까 봐 안 왔다고 했어요.' },
+    { s: 'dana', m: '저도 문 앞에 왔었어요. 노크하고 돌아갔을 뿐이에요. 그걸 온 동네가 읽을까 봐 안 왔다고 했어요.' },
     { s: 'rafa', m: '아무도 안 읽어요. 솔은 접착제. 다나 씨는 내일 오세요, 로 여사님이 차 끓여 놓으신대요.' }
   ],
   draft: [

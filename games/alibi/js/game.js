@@ -91,9 +91,17 @@ function accuse(id) {
     R.state = 'solved'; R.time = (Date.now() - R.t0) / 1000;
     let stars = R.strikes === 0 && R.hints === 0 ? 3 : R.strikes <= 1 && R.hints <= 1 ? 2 : 1;
     if (R.failedOnce) stars = Math.min(stars, 2); /* a run that failed once can earn at most ★2 */
-    S.done[R.c.id] = true; S.stars[R.c.id] = Math.max(S.stars[R.c.id] || 0, stars);
-    S.best[R.c.id] = Math.min(S.best[R.c.id] || Infinity, Math.floor(R.time));
-    if (R.daily) S.daily[R.daily] = { stars, time: Math.floor(R.time) };
+    /* a daily run is scored on its own: it must not touch the main case's
+       records — no best time, no stars, and no marking the case done (which
+       would also unlock the next case out of order). The daily result lives
+       only in S.daily, keyed by date. Older saves may already hold a best
+       time set by a daily run; that cannot be told apart afterwards, so
+       there is no migration for it — from here on the two never mix. */
+    if (R.daily) { S.daily[R.daily] = { stars, time: Math.floor(R.time) }; }
+    else {
+      S.done[R.c.id] = true; S.stars[R.c.id] = Math.max(S.stars[R.c.id] || 0, stars);
+      S.best[R.c.id] = Math.min(S.best[R.c.id] || Infinity, Math.floor(R.time));
+    }
     persist();
     return stars;
   }

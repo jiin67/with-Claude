@@ -3,7 +3,7 @@
 CASES.en.push({
   id: 'bike', title: 'The Missing E-Bike', place: 'Maple Court, 3rd-floor hallway · 10:45 pm', difficulty: 2,
   intro: 'Lin\'s electric bike vanished from the hallway rack between 22:00 and 22:30. Four people had the hallway that evening.',
-  suspects: [['dae', 'Dae', 'Lin\'s roommate'], ['lin', 'Lin', 'Bike owner'], ['owen', 'Owen', 'Delivery rider, 3C'], ['piper', 'Piper', 'Building super']],
+  suspects: [['dae', 'Dae', 'Lin\'s roommate', 'm'], ['lin', 'Lin', 'Bike owner', 'n'], ['owen', 'Owen', 'Delivery rider, 3C', 'm'], ['piper', 'Piper', 'Building super', 'n']],
   facts: [
     ['🚪', 'Stairwell door log: Owen out 22:12 (delivery jacket on the camera) · Piper in 22:40 · Dae in 22:52. No other exits 22:00–22:30.'],
     ['🔌', 'Lobby scooter charger: Owen\'s scooter plugged in 21:30 at 4% · unplugged 22:05 at 9% · never plugged back in.'],
@@ -28,7 +28,7 @@ CASES.en.push({
 CASES.ko.push({
   id: 'bike', title: '사라진 전기자전거', place: '메이플 코트 3층 복도 · 오후 10:45', difficulty: 2,
   intro: '린의 전기자전거가 22:00에서 22:30 사이 복도 거치대에서 사라졌다. 그날 저녁 복도를 지난 사람은 넷.',
-  suspects: [['dae', '대현', '린의 룸메이트'], ['lin', '린', '자전거 주인'], ['owen', '오웬', '배달 기사, 3C호'], ['piper', '파이퍼', '관리인']],
+  suspects: [['dae', '대현', '린의 룸메이트', 'm'], ['lin', '린', '자전거 주인', 'n'], ['owen', '오웬', '배달 기사, 3C호', 'm'], ['piper', '파이퍼', '관리인', 'n']],
   facts: [
     ['🚪', '계단실 문 기록: 오웬 22:12 나감(카메라에 배달 조끼) · 파이퍼 22:40 들어옴 · 대현 22:52 들어옴. 22:00–22:30 사이 다른 출입 없음.'],
     ['🔌', '로비 스쿠터 충전기: 오웬 스쿠터 21:30 연결(4%) · 22:05 분리(9%) · 이후 다시 연결 안 됨.'],

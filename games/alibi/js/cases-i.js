@@ -4,7 +4,7 @@
 CASES.en.push({
   id: 'clock', title: 'The Laptop in the Quiet Room', place: 'Coworking Loft, 3F · 9:15 pm', difficulty: 2,
   intro: 'A laptop vanished from the quiet room between 20:50 and 21:10. The camera and the badge log tell different stories — and both look right.',
-  suspects: [['ira', 'Ira', 'Member'], ['ben', 'Ben', 'Night receptionist'], ['suki', 'Suki', 'Cleaner']],
+  suspects: [['ira', 'Ira', 'Member', 'f'], ['ben', 'Ben', 'Night receptionist', 'm'], ['suki', 'Suki', 'Cleaner', 'f']],
   facts: [
     ['📷', 'Lobby camera still, timestamp 20:48: Ira walking out the front door.'],
     ['🪪', 'Badge log: Ira out 21:03 · Suki in 21:25. Desk console: Ben signed in a courier at 20:56 and logged a call at 21:00.'],
@@ -30,7 +30,7 @@ CASES.en.push({
 CASES.ko.push({
   id: 'clock', title: '집중실의 노트북', place: '코워킹 로프트 3층 · 오후 9:15', difficulty: 2,
   intro: '20:50에서 21:10 사이에 집중실의 노트북이 사라졌다. 카메라와 출입 기록은 서로 다른 이야기를 한다. 둘 다 맞는 것처럼 보인다.',
-  suspects: [['ira', '이라', '회원'], ['ben', '벤', '야간 안내 데스크'], ['suki', '수키', '청소']],
+  suspects: [['ira', '이라', '회원', 'f'], ['ben', '벤', '야간 안내 데스크', 'm'], ['suki', '수키', '청소', 'f']],
   facts: [
     ['📷', '로비 카메라 정지 화면, 표시 시각 20:48: 이라가 정문으로 나가는 모습.'],
     ['🪪', '출입 기록: 이라 퇴장 21:03 · 수키 입장 21:25. 데스크 콘솔: 벤이 20:56 택배 기사 등록, 21:00 전화 응대 기록.'],

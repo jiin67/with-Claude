@@ -12,7 +12,7 @@ const CASES = {
     {
       id: 'cake', title: 'The Missing Cake', place: 'Office kitchen · 3:55 pm', difficulty: 1,
       intro: 'A chocolate cake for the team vanished from the office fridge. Three people were around. Read the chat, find what doesn\'t add up, then accuse.',
-      suspects: [['jun', 'Jun', 'Account manager'], ['mia', 'Mia', 'Designer'], ['theo', 'Theo', 'Developer']],
+      suspects: [['jun', 'Jun', 'Account manager', 'm'], ['mia', 'Mia', 'Designer', 'f'], ['theo', 'Theo', 'Developer', 'm']],
       facts: [
         ['🧾', 'Receipt, 14:50 — Bakery Mori: 1 chocolate cake.'],
         ['❄️', 'Fridge sensor: door opened at 15:12 and 15:40.'],
@@ -23,7 +23,7 @@ const CASES = {
         { s: 'jun', t: '15:05', m: 'Cake\'s in the fridge for the 4pm thing. Don\'t touch 🙏' },
         { s: 'theo', t: '15:06', m: 'no promises' },
         { s: 'jun', t: '15:55', m: 'WHO ate the cake' },
-        { s: 'jun', t: '15:56', m: 'I stepped out of my call at quarter past to put it in, it was fine then' },
+        { s: 'jun', t: '15:56', m: 'I stepped out of my call at about twelve past three to put it in, it was fine then' },
         { s: 'mia', t: '15:57', m: 'Not me. I haven\'t been in the kitchen all afternoon.', ev: 2, lie: 'The badge log shows Mia entering the kitchen at 15:39, a minute before the fridge opened.' },
         { s: 'theo', t: '15:58', m: 'Wasn\'t me. I saw Mia open the fridge at quarter past three, right after she badged in.', ev: [1, 2], lie: 'The 15:12 fridge opening was Jun\'s — the badge log has Jun at 15:12 and Mia at 15:39, a minute before the 15:40 opening. Theo swapped the two openings to blame Mia.' },
         { s: 'mia', t: '15:59', m: 'Maybe the cleaning crew?' },
@@ -35,7 +35,7 @@ const CASES = {
     {
       id: 'vase', title: 'The Broken Vase', place: 'Apartment 7B · 7:30 pm', difficulty: 2,
       intro: 'Grandma Ro\'s vase is in pieces by the door. Three people were in the hallway tonight, and the loudest one is lying. That might not mean what it seems.',
-      suspects: [['rafa', 'Rafa', 'Courier'], ['sol', 'Sol', 'Grandson, 12'], ['dana', 'Dana', 'Neighbor']],
+      suspects: [['rafa', 'Rafa', 'Courier', 'n'], ['sol', 'Sol', 'Grandson, 12', 'm'], ['dana', 'Dana', 'Neighbor', 'f']],
       facts: [
         ['📷', 'Hallway CCTV: Rafa 18:02, parcel left at the door · Sol 18:30, in · Dana 19:15, knocking, then leaving at 19:17.'],
         ['🔐', 'Smart lock, 7B: opened by Sol\'s code 18:30 · locked 18:31 · no openings until Ro\'s code at 19:40.'],
@@ -55,12 +55,12 @@ const CASES = {
         { s: 'sol', t: '19:53', m: 'see, she\'s changing her story' }
       ],
       culprit: 'sol',
-      solve: 'Dana lied about not coming by — hiding behind the true claim that the lock never opened for her — and the camera catches her at the door at 19:15. But the same camera shows her knocking and leaving: the facts that expose her lie also prove she never got inside. Sol\'s code opened the door at 18:30, class had ended at 18:00, it was raining, and the small wet prints run from the door to the vase. Dana only lied because she had come to ask Ro for a loan and was too embarrassed to say so.'
+      solve: 'Dana lied about not coming by — hiding behind the true claim that the lock never opened for her — and the camera catches her at the door at 19:15. But the same camera shows her knocking and leaving: the facts that expose her lie also prove she never got inside. Sol\'s code opened the door at 18:30, class had ended at 18:00, it was raining, and the small wet prints run from the door to the vase. All Dana hid was the fact that she had come to the door; the evidence says nothing about why she lied.'
     },
     {
       id: 'draft', title: 'The Leaked Draft', place: 'Startup office · 11:40 pm', difficulty: 2,
       intro: 'A competitor posted your unreleased product page an hour after the draft was finished. Four people had access.',
-      suspects: [['ava', 'Ava', 'Design lead'], ['ben', 'Ben', 'Engineer'], ['cleo', 'Cleo', 'Product manager'], ['dev', 'Dev', 'Intern']],
+      suspects: [['ava', 'Ava', 'Design lead', 'f'], ['ben', 'Ben', 'Engineer', 'm'], ['cleo', 'Cleo', 'Product manager', 'f'], ['dev', 'Dev', 'Intern', 'n']],
       facts: [
         ['📄', 'Document log: opened by Ben 22:10 (office) · Dev 22:31 (external IP) · Cleo 20:15 (office).'],
         ['📶', 'IT ticket: office Wi-Fi was down from 21:30 to 23:30.'],
@@ -82,7 +82,7 @@ const CASES = {
     {
       id: 'festival', title: 'The Festival Cash Box', place: 'School festival · 5:50 pm', difficulty: 2,
       intro: 'The ticket desk cash box was full at five. At quarter to six it was empty. Three students were on duty, and one of them took a selfie at exactly the wrong moment.',
-      suspects: [['hana', 'Hana', 'Food stall'], ['ian', 'Ian', 'Band'], ['jae', 'Jae', 'Ticket desk']],
+      suspects: [['hana', 'Hana', 'Food stall', 'f'], ['ian', 'Ian', 'Band', 'm'], ['jae', 'Jae', 'Ticket desk', 'n']],
       facts: [
         ['🤳', 'Hana\'s selfie at the food stall, 17:20, posted to the class chat.', ['gym clock', 'ticket desk chair', 'cash box', 'jacket on the chair', 'stage']],
         ['💰', 'Teacher Kim counted the box at 17:00: full, lid closed.'],
@@ -105,7 +105,7 @@ const CASES = {
     {
       id: 'hotel', title: 'Room 1204', place: 'Hotel Marin · 2:30 pm', difficulty: 3,
       intro: 'A guest returned to room 1204 to find the door ajar and his watch gone. Three staff and guests were on the twelfth floor today.',
-      suspects: [['lee', 'Lee', 'Housekeeping'], ['oren', 'Oren', 'Guest, room 1206'], ['pat', 'Pat', 'Bell staff']],
+      suspects: [['lee', 'Lee', 'Housekeeping', 'n'], ['oren', 'Oren', 'Guest, room 1206', 'm'], ['pat', 'Pat', 'Bell staff', 'n']],
       facts: [
         ['🔑', 'Keycard log, room 1204: housekeeping 10:05 · guest 14:20. No other entries.'],
         ['🛠️', 'Maintenance ticket 13:30: door closer on 1204 broken, door does not latch on its own.'],
@@ -127,7 +127,7 @@ const CASES = {
     {
       id: 'guild', title: 'The Guild Treasury', place: 'Online · 2:14 am', difficulty: 3,
       intro: '10,000 gold left the guild treasury in the middle of the night. The log blames one account. The chat tells a different story.',
-      suspects: [['nyx', 'Nyx', 'Guild leader'], ['oak', 'Oak', 'Treasurer'], ['pix', 'Pix', 'Recruiter'], ['quill', 'Quill', 'Raid lead']],
+      suspects: [['nyx', 'Nyx', 'Guild leader', 'n'], ['oak', 'Oak', 'Treasurer', 'm'], ['pix', 'Pix', 'Recruiter', 'n'], ['quill', 'Quill', 'Raid lead', 'n']],
       facts: [
         ['🏦', 'Treasury log: 10,000 gold withdrawn at 02:14 by account Oak.'],
         ['💻', 'Login log: Oak signed in at 02:10 from a new device. Oak\'s usual device was offline since 23:00.'],
@@ -151,7 +151,7 @@ const CASES = {
     {
       id: 'cake', title: '사라진 케이크', place: '사무실 탕비실 · 오후 3:55', difficulty: 1,
       intro: '팀 회의용 초콜릿 케이크가 냉장고에서 사라졌다. 근처에 있던 사람은 셋. 채팅을 읽고, 앞뒤가 안 맞는 말을 찾은 뒤, 범인을 지목하라.',
-      suspects: [['jun', '준', '영업 담당'], ['mia', '미아', '디자이너'], ['theo', '테오', '개발자']],
+      suspects: [['jun', '준', '영업 담당', 'm'], ['mia', '미아', '디자이너', 'f'], ['theo', '테오', '개발자', 'm']],
       facts: [
         ['🧾', '영수증, 14:50 — 베이커리 모리: 초콜릿 케이크 1개.'],
         ['❄️', '냉장고 센서: 문 열림 15:12, 15:40.'],
@@ -162,7 +162,7 @@ const CASES = {
         { s: 'jun', t: '15:05', m: '4시 회의용 케이크 냉장고에 넣어 둘게요. 손대지 마세요 🙏' },
         { s: 'theo', t: '15:06', m: '약속은 못 함' },
         { s: 'jun', t: '15:55', m: '케이크 누가 먹었어요' },
-        { s: 'jun', t: '15:56', m: '3시 15분에 통화 잠깐 빠져나와서 넣었는데 그땐 멀쩡했어요' },
+        { s: 'jun', t: '15:56', m: '3시 12분쯤 통화 잠깐 빠져나와서 넣었는데 그땐 멀쩡했어요' },
         { s: 'mia', t: '15:57', m: '저 아니에요. 오후 내내 탕비실 근처도 안 갔어요.', ev: 2, lie: '출입 기록에 미아가 15:39에 탕비실에 들어간 것으로 남아 있다. 냉장고가 열리기 1분 전이다.' },
         { s: 'theo', t: '15:58', m: '저도 아니에요. 3시 15분에 미아가 출입증 찍고 냉장고 여는 거 봤어요.', ev: [1, 2], lie: '15:12 냉장고 열림은 준의 것이다. 출입 기록에 준 15:12, 미아 15:39가 있고, 냉장고는 15:40에 열렸다. 테오는 두 번의 열림을 바꿔치기해 미아에게 뒤집어씌웠다.' },
         { s: 'mia', t: '15:59', m: '청소하시는 분들 아닐까요?' },
@@ -174,7 +174,7 @@ const CASES = {
     {
       id: 'vase', title: '깨진 화병', place: '아파트 7B · 오후 7:30', difficulty: 2,
       intro: '로 할머니의 화병이 현관 앞에서 산산조각 났다. 오늘 밤 복도에 있던 사람은 셋. 가장 큰 목소리로 거짓말하는 사람이 있지만, 그게 보이는 대로의 뜻은 아닐 수 있다.',
-      suspects: [['rafa', '라파', '택배 기사'], ['sol', '솔', '손자, 12살'], ['dana', '다나', '옆집']],
+      suspects: [['rafa', '라파', '택배 기사', 'n'], ['sol', '솔', '손자, 12살', 'm'], ['dana', '다나', '옆집', 'f']],
       facts: [
         ['📷', '복도 CCTV: 라파 18:02, 택배 문 앞에 둠 · 솔 18:30, 들어감 · 다나 19:15, 노크 후 19:17에 돌아감.'],
         ['🔐', '7B 스마트 도어락: 18:30 솔의 비밀번호로 열림 · 18:31 잠김 · 19:40 로 여사님 비밀번호 전까지 열린 기록 없음.'],
@@ -194,12 +194,12 @@ const CASES = {
         { s: 'sol', t: '19:53', m: '봐, 말이 계속 바뀌잖아' }
       ],
       culprit: 'sol',
-      solve: '다나는 안 왔다고 거짓말했고 — 도어락이 열리지 않았다는 맞는 말 뒤에 숨었다 — 카메라는 19:15에 문 앞의 다나를 잡아낸다. 하지만 같은 카메라에 노크하고 돌아가는 모습이 찍혀 있고, 도어락은 다나에게 열린 적이 없다. 거짓말을 깨는 바로 그 증거가 다나가 안에 들어간 적 없다는 걸 증명한다. 솔의 비밀번호로 18:30에 문이 열렸고, 수업은 18:00에 끝났고, 비가 왔고, 작은 젖은 발자국이 현관에서 화병까지 이어진다. 다나는 돈을 빌리러 왔다가 창피해서 거짓말했을 뿐이다.'
+      solve: '다나는 안 왔다고 거짓말했고 — 도어락이 열리지 않았다는 맞는 말 뒤에 숨었다 — 카메라는 19:15에 문 앞의 다나를 잡아낸다. 하지만 같은 카메라에 노크하고 돌아가는 모습이 찍혀 있고, 도어락은 다나에게 열린 적이 없다. 거짓말을 깨는 바로 그 증거가 다나가 안에 들어간 적 없다는 걸 증명한다. 솔의 비밀번호로 18:30에 문이 열렸고, 수업은 18:00에 끝났고, 비가 왔고, 작은 젖은 발자국이 현관에서 화병까지 이어진다. 다나는 문 앞에 왔다는 사실 하나를 숨겼을 뿐이고, 그 이상은 증거가 말해주지 않는다.'
     },
     {
       id: 'draft', title: '유출된 초안', place: '스타트업 사무실 · 오후 11:40', difficulty: 2,
       intro: '초안을 끝낸 지 한 시간 만에 경쟁사가 우리 미공개 제품 페이지를 올렸다. 접근 권한이 있던 사람은 넷.',
-      suspects: [['ava', '아바', '디자인 리드'], ['ben', '벤', '엔지니어'], ['cleo', '클레오', 'PM'], ['dev', '데브', '인턴']],
+      suspects: [['ava', '아바', '디자인 리드', 'f'], ['ben', '벤', '엔지니어', 'm'], ['cleo', '클레오', 'PM', 'f'], ['dev', '데브', '인턴', 'n']],
       facts: [
         ['📄', '문서 기록: 벤 22:10 열람(사무실) · 데브 22:31 열람(외부 IP) · 클레오 20:15 열람(사무실).'],
         ['📶', 'IT 티켓: 사무실 와이파이 21:30–23:30 먹통.'],
@@ -221,7 +221,7 @@ const CASES = {
     {
       id: 'festival', title: '축제 현금함', place: '학교 축제 · 오후 5:50', difficulty: 2,
       intro: '5시에 가득 찼던 티켓 부스 현금함이 5시 45분에 비어 있었다. 당번 학생은 셋. 그중 하나가 하필 그 순간에 셀카를 찍었다.',
-      suspects: [['hana', '하나', '먹거리 부스'], ['ian', '이안', '밴드'], ['jae', '재', '티켓 부스']],
+      suspects: [['hana', '하나', '먹거리 부스', 'f'], ['ian', '이안', '밴드', 'm'], ['jae', '재', '티켓 부스', 'n']],
       facts: [
         ['🤳', '하나의 셀카, 17:20, 먹거리 부스. 반 단톡방에 올림.', ['체육관 시계', '티켓 부스 의자', '현금함', '의자에 걸린 점퍼', '무대']],
         ['💰', '김 선생님이 17:00에 현금함 확인: 가득 참, 뚜껑 닫힘.'],
@@ -244,7 +244,7 @@ const CASES = {
     {
       id: 'hotel', title: '1204호', place: '호텔 마린 · 오후 2:30', difficulty: 3,
       intro: '투숙객이 1204호로 돌아오니 문이 열려 있고 시계가 사라졌다. 오늘 12층에 있던 직원과 손님은 셋.',
-      suspects: [['lee', '이 주임', '객실 청소'], ['oren', '오렌', '1206호 손님'], ['pat', '팻', '벨 직원']],
+      suspects: [['lee', '이 주임', '객실 청소', 'n'], ['oren', '오렌', '1206호 손님', 'm'], ['pat', '팻', '벨 직원', 'n']],
       facts: [
         ['🔑', '1204호 카드키 기록: 청소 10:05 · 투숙객 14:20. 다른 출입 없음.'],
         ['🛠️', '시설 티켓 13:30: 1204호 도어 클로저 고장, 문이 저절로 닫히지 않음.'],
@@ -266,7 +266,7 @@ const CASES = {
     {
       id: 'guild', title: '길드 금고', place: '온라인 · 새벽 2:14', difficulty: 3,
       intro: '한밤중에 길드 금고에서 골드 1만이 빠져나갔다. 기록은 한 계정을 가리킨다. 채팅은 다른 이야기를 한다.',
-      suspects: [['nyx', '닉스', '길드장'], ['oak', '오크', '금고 담당'], ['pix', '픽스', '모집 담당'], ['quill', '퀼', '레이드 리더']],
+      suspects: [['nyx', '닉스', '길드장', 'n'], ['oak', '오크', '금고 담당', 'm'], ['pix', '픽스', '모집 담당', 'n'], ['quill', '퀼', '레이드 리더', 'n']],
       facts: [
         ['🏦', '금고 기록: 02:14, 오크 계정이 골드 10,000 인출.'],
         ['💻', '로그인 기록: 오크, 02:10 새 기기에서 로그인. 오크의 평소 기기는 23:00부터 오프라인.'],

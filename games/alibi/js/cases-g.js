@@ -4,7 +4,7 @@ CASES.en.push(
   {
     id: 'karaoke', title: 'Room 7', place: 'Star Karaoke · 11:30 pm', difficulty: 2,
     intro: 'Dani\'s phone vanished from karaoke room 7 at the end of her birthday party. The whole chat is sure it was the staff. Be careful who you believe.',
-    suspects: [['yuri', 'Yuri', 'Booked the room'], ['sol', 'Sol', 'Staff'], ['teo', 'Teo', 'Latecomer']],
+    suspects: [['yuri', 'Yuri', 'Booked the room', 'f'], ['sol', 'Sol', 'Staff', 'm'], ['teo', 'Teo', 'Latecomer', 'm']],
     facts: [
       ['🚪', 'Room 7 door log: Yuri in 20:00 · Sol (staff card) in 21:40, out 21:44 · Teo in 22:35. Party checked out 23:10. No staff entries after 21:44.'],
       ['🎤', 'Song queue: 22:41 "Dynamite" queued by Teo · 22:52 "Bad Guy" queued by Yuri · 23:05 "Hype Boy" queued by Teo.'],
@@ -30,7 +30,7 @@ CASES.en.push(
   {
     id: 'server', title: 'DROP DATABASE', place: 'Engineering chat · 8:10 am', difficulty: 3,
     intro: 'The production database was deleted at 03:12 and restored from backup an hour later. The audit log blames a shared service account. Four people could have been behind it.',
-    suspects: [['ona', 'Ona', 'On-call engineer'], ['rex', 'Rex', 'Contractor'], ['vale', 'Vale', 'CTO'], ['pip', 'Pip', 'New hire']],
+    suspects: [['ona', 'Ona', 'On-call engineer', 'f'], ['rex', 'Rex', 'Contractor', 'm'], ['vale', 'Vale', 'CTO', 'n'], ['pip', 'Pip', 'New hire', 'n']],
     facts: [
       ['🔐', 'VPN login log: Ona 02:50–03:30 · Rex 03:02–03:20 · Vale 08:10. Pip: no login after 18:00 yesterday.'],
       ['🧾', 'Command audit log: 03:12 "DROP DATABASE prod" by account svc-deploy, via the bastion host. The bastion does not record client IPs.'],
@@ -57,7 +57,7 @@ CASES.ko.push(
   {
     id: 'karaoke', title: '7번 방', place: '스타 노래방 · 오후 11:30', difficulty: 2,
     intro: '다니의 생일 파티가 끝날 무렵, 노래방 7번 방에서 다니의 휴대폰이 사라졌다. 채팅방 모두가 직원 짓이라고 확신한다. 누구 말을 믿을지 조심하라.',
-    suspects: [['yuri', '유리', '방 예약자'], ['sol', '솔', '직원'], ['teo', '태오', '늦게 온 친구']],
+    suspects: [['yuri', '유리', '방 예약자', 'f'], ['sol', '솔', '직원', 'm'], ['teo', '태오', '늦게 온 친구', 'm']],
     facts: [
       ['🚪', '7번 방 출입 기록: 유리 20:00 입장 · 솔(직원 카드) 21:40 입장, 21:44 퇴장 · 태오 22:35 입장. 파티 체크아웃 23:10. 21:44 이후 직원 출입 없음.'],
       ['🎤', '선곡 기록: 22:41 "Dynamite" 태오 예약 · 22:52 "Bad Guy" 유리 예약 · 23:05 "Hype Boy" 태오 예약.'],
@@ -83,7 +83,7 @@ CASES.ko.push(
   {
     id: 'server', title: 'DROP DATABASE', place: '엔지니어링 채팅 · 오전 8:10', difficulty: 3,
     intro: '새벽 3시 12분에 운영 데이터베이스가 삭제됐고 한 시간 뒤 백업으로 복구됐다. 감사 기록은 공용 서비스 계정을 가리킨다. 뒤에 있을 수 있는 사람은 넷.',
-    suspects: [['ona', '온아', '당직 엔지니어'], ['rex', '렉스', '외주 개발자'], ['vale', '베일', 'CTO'], ['pip', '핍', '신입']],
+    suspects: [['ona', '온아', '당직 엔지니어', 'f'], ['rex', '렉스', '외주 개발자', 'm'], ['vale', '베일', 'CTO', 'n'], ['pip', '핍', '신입', 'n']],
     facts: [
       ['🔐', 'VPN 접속 기록: 온아 02:50–03:30 · 렉스 03:02–03:20 · 베일 08:10. 핍: 어제 18:00 이후 접속 없음.'],
       ['🧾', '명령 감사 기록: 03:12 "DROP DATABASE prod", 계정 svc-deploy, 배스천 호스트 경유. 배스천은 접속 IP를 남기지 않음.'],

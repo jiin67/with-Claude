@@ -4,7 +4,7 @@ CASES.en.push(
   {
     id: 'library', title: 'The Rare Book', place: 'University library · 8:00 am', difficulty: 2,
     intro: 'A 1702 botanical folio vanished from the rare reading room overnight. The room was locked and alarmed. Three people had reasons to be in the building.',
-    suspects: [['nora', 'Nora', 'Night librarian'], ['sam', 'Sam', 'Grad student'], ['gus', 'Gus', 'Security guard']],
+    suspects: [['nora', 'Nora', 'Night librarian', 'f'], ['sam', 'Sam', 'Grad student', 'm'], ['gus', 'Gus', 'Security guard', 'm']],
     facts: [
       ['📚', 'Book scanner log: Hortus Botanicus scanned back into the rare room by Nora at 21:30. No checkout after that.'],
       ['🚨', 'Alarm panel, rare room: armed 22:05 · disarmed 23:10 · armed again 23:18. The disarm code belongs to security.'],
@@ -29,7 +29,7 @@ CASES.en.push(
   {
     id: 'wedding', title: 'The Ring Box', place: 'Hotel Aster, suite 1801 · 1:05 pm', difficulty: 3,
     intro: 'The ceremony is in an hour and the ring box is gone from the groom\'s desk. It was photographed there at five past twelve. Four people were around the suite since.',
-    suspects: [['max', 'Max', 'Best man'], ['fern', 'Fern', 'Florist'], ['remy', 'Remy', 'Groom\'s cousin'], ['ivy', 'Ivy', 'Room service']],
+    suspects: [['max', 'Max', 'Best man', 'm'], ['fern', 'Fern', 'Florist', 'f'], ['remy', 'Remy', 'Groom\'s cousin', 'm'], ['ivy', 'Ivy', 'Room service', 'f']],
     facts: [
       ['📸', 'Photographer\'s shot list: 12:05 rings on the desk, groom and best man in frame · 12:15–12:45 groomsmen on the terrace, Max in every frame · 12:50 family arrivals in the lobby, Remy with his parents.'],
       ['🔑', 'Keycard log, suite 1801: groom 11:20 · staff card (Ivy) 12:20 · groom 12:55. No other entries.'],
@@ -55,7 +55,7 @@ CASES.ko.push(
   {
     id: 'library', title: '희귀본 실종', place: '대학 도서관 · 오전 8:00', difficulty: 2,
     intro: '1702년 식물 도감이 밤사이 희귀본 열람실에서 사라졌다. 열람실은 잠겨 있었고 경보도 켜져 있었다. 건물에 있을 이유가 있던 사람은 셋.',
-    suspects: [['nora', '나래', '야간 사서'], ['sam', '상우', '대학원생'], ['gus', '길수', '경비']],
+    suspects: [['nora', '나래', '야간 사서', 'f'], ['sam', '상우', '대학원생', 'm'], ['gus', '길수', '경비', 'm']],
     facts: [
       ['📚', '도서 스캐너 기록: 호르투스 보타니쿠스, 21:30 나래가 희귀본실에 반납 스캔. 이후 대출 없음.'],
       ['🚨', '희귀본실 경보 패널: 22:05 설정 · 23:10 해제 · 23:18 다시 설정. 해제 코드는 경비용.'],
@@ -80,7 +80,7 @@ CASES.ko.push(
   {
     id: 'wedding', title: '사라진 반지 상자', place: '호텔 아스터 1801호 · 오후 1:05', difficulty: 3,
     intro: '예식까지 한 시간. 신랑 방 책상 위에 있던 반지 상자가 사라졌다. 12시 5분에 사진까지 찍어 둔 상자다. 그 뒤로 방 근처에 있던 사람은 넷.',
-    suspects: [['max', '민재', '신랑 들러리'], ['fern', '다정', '플로리스트'], ['remy', '재민', '신랑 사촌'], ['ivy', '아영', '룸서비스']],
+    suspects: [['max', '민재', '신랑 들러리', 'm'], ['fern', '다정', '플로리스트', 'f'], ['remy', '재민', '신랑 사촌', 'm'], ['ivy', '아영', '룸서비스', 'f']],
     facts: [
       ['📸', '사진사 촬영 목록: 12:05 책상 위 반지, 신랑과 들러리 함께 · 12:15–12:45 테라스 들러리 촬영, 민재는 모든 컷에 있음 · 12:50 로비 가족 도착, 재민이 부모님과 함께.'],
       ['🔑', '1801호 카드키 기록: 신랑 11:20 · 직원 카드(아영) 12:20 · 신랑 12:55. 다른 출입 없음.'],

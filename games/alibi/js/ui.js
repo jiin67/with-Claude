@@ -6,37 +6,75 @@ const $ = id => document.getElementById(id);
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
 const AV = ['#ff6a3d', '#5b8cff', '#3ddc97', '#c66bff', '#ffcf5a', '#ff4d6d'];
 const avColor = (c, id) => AV[c.suspects.findIndex(s => s[0] === id) % AV.length];
-/* a flat vector face, chosen deterministically from the suspect id so the same person always looks the same */
-function faceSVG(id) {
+/* A flat vector face, chosen deterministically from the suspect id so the
+   same person always looks the same. `g` is the gender hint from the
+   suspect's data ('f' / 'm' / 'n'): it gates beards, long hair, earrings
+   and brow/mouth styling, so a woman never grows a moustache by chance.
+   Everything else (skin, hair colour, glasses, coat) still comes from the
+   id hash, so the face stays stable across the chat, the suspects tab,
+   the case photo and the result screen. */
+function faceSVG(id, g) {
+  g = g === 'f' || g === 'm' ? g : 'n';
   let h = 2166136261; for (const ch of id) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
   const pick = (n, k) => ((h >>> k) ^ (h >>> (k + 11))) % n;
   const skin = ['#f6d0b5', '#e9b48f', '#d19a6b', '#b57b4e', '#8d5a36', '#6a3f24', '#f9dccb'][pick(7, 1)];
   const hairC = ['#1b1a1f', '#3a2a22', '#6a3f22', '#a86a2e', '#d9b36a', '#8d93a3', '#b43a3a', '#2b4aa0', '#4d8c57', '#e6e1d6'][pick(10, 4)];
   const bg = ['#ffd3c2', '#cfe0ff', '#cff5e6', '#ead9ff', '#fff0b8', '#ffd0da', '#d7f3ff', '#e8ffd1'][pick(8, 7)];
-  const shape = pick(3, 10), hair = pick(9, 13), hat = pick(6, 16) === 0, glasses = pick(4, 19), beard = pick(5, 22), mouth = pick(5, 25), eyes = pick(3, 28), brow = pick(3, 30), extra = pick(5, 12);
-  const F = ['<ellipse cx="32" cy="33" rx="15" ry="16"/>', '<ellipse cx="32" cy="33" rx="14" ry="18"/>', '<rect x="17" y="16" width="30" height="34" rx="11"/>'][shape].replace('/>', ` fill="${skin}"/>`);
-  const H = [
-    `<path d="M15 28c0-13 8-19 17-19s17 6 17 19v5c-5-6-11-8-17-8s-12 2-17 8z" fill="${hairC}"/>`,
-    `<path d="M13 31c0-14 9-22 19-22s19 8 19 22v16c-4 0-6-9-6-15-4 3-8 4-13 4s-9-1-13-4c0 6-2 15-6 15z" fill="${hairC}"/>`,
-    `<path d="M15 27c1-11 8-17 17-17s16 6 17 17c-4-4-10-6-17-6s-13 2-17 6z" fill="${hairC}"/><path d="M30 9l4-4 2 5z" fill="${hairC}"/>`,
-    `<path d="M12 31c0-15 9-24 20-24s20 9 20 24v12l-6-3v-9c-4 3-9 4-14 4s-10-1-14-4v9l-6 3z" fill="${hairC}"/>`,
-    `<path d="M15 25c3-10 10-14 17-14s14 4 17 14c-5-2-11-3-17-3s-12 1-17 3z" fill="${hairC}"/><circle cx="21" cy="27" r="5" fill="${hairC}"/><circle cx="43" cy="27" r="5" fill="${hairC}"/>`,
-    `<path d="M16 26c0-10 7-16 16-16s16 6 16 16c-3-3-6-4-9-4-2 3-5 4-7 4s-5-1-7-4c-3 0-6 1-9 4z" fill="${hairC}"/>`,
-    `<path d="M14 30c0-14 8-21 18-21s18 7 18 21c0 6-2 10-4 12 1-5 0-10-2-14-3 3-7 4-12 4s-9-1-12-4c-2 4-3 9-2 14-2-2-4-6-4-12z" fill="${hairC}"/>`,
-    `<path d="M17 24c2-8 8-12 15-12s13 4 15 12c-4-2-9-3-15-3s-11 1-15 3z" fill="${hairC}"/>`,
-    ''
-  ][hair];
+  /* face shape: women and neutral faces stay round/oval, men may be square */
+  const shapes = ['<ellipse cx="32" cy="33" rx="15" ry="16"/>', '<ellipse cx="32" cy="33" rx="14" ry="18"/>', '<rect x="17" y="16" width="30" height="34" rx="11"/>'];
+  const F = shapes[g === 'm' ? pick(3, 10) : pick(2, 10)].replace('/>', ` fill="${skin}"/>`);
+  /* ears, neck and a soft shadow under the chin, so the head sits on the body */
+  const EARS = `<circle cx="17" cy="35" r="2.6" fill="${skin}"/><circle cx="47" cy="35" r="2.6" fill="${skin}"/>`;
+  const NECK = `<rect x="28.5" y="44" width="7" height="7" fill="${skin}"/><ellipse cx="32" cy="47.5" rx="7" ry="2" fill="#3a1e0e" opacity="0.08"/>`;
+  /* hair: long styles and buns only for 'f', short crops only for 'm' */
+  const HF = [
+    `<path d="M14 34c0-16 8-24 18-24s18 8 18 24v14c-1.5 1.5-4 1.5-5 0V30c-3 3-8 4-13 4s-10-1-13-4v18c-1 1.5-3.5 1.5-5 0z" fill="${hairC}"/>`,
+    `<path d="M14 33c0-15 8-23 18-23s18 8 18 23v12c-1.5 2-4 2-5 .5-1-4-1-8-2-11-3 3-7 4-11 4s-8-1-11-4c-1 3-1 7-2 11-1 1.5-3.5 1.5-5-.5z" fill="${hairC}"/>`,
+    `<path d="M14 32c0-14 8-22 18-22s18 8 18 22v9c-1.5 2-4.5 2-6 .5V30c-3 3-7 4-12 4s-9-1-12-4v11.5c-1.5 1.5-4.5 1.5-6-.5z" fill="${hairC}"/>`,
+    `<path d="M15 28c0-13 8-19 17-19s17 6 17 19c-4-5-10-7-17-7s-13 2-17 7z" fill="${hairC}"/><circle cx="32" cy="9" r="6" fill="${hairC}"/>`,
+    `<path d="M15 28c0-13 8-19 17-19s17 6 17 19c-4-5-10-7-17-7s-13 2-17 7z" fill="${hairC}"/><path d="M46 22c6 2 8 8 6 16-1 4-4 5-5 2 1-6 0-12-3-15z" fill="${hairC}"/>`,
+    `<path d="M15 28c0-12 8-18 17-18s17 6 17 18c-4-5-10-7-17-7s-13 2-17 7z" fill="${hairC}"/>`
+  ];
+  const HM = [
+    `<path d="M15 29c0-13 8-20 17-20s17 7 17 20c-4-6-10-8-17-8s-13 2-17 8z" fill="${hairC}"/>`,
+    `<path d="M14 30c0-14 8-21 18-21s18 7 18 21v2c-6-4-12-6-18-6s-12 2-18 6z" fill="${hairC}"/>`,
+    `<path d="M16 26c0-10 7-15 16-15s16 5 16 15c-4-3-9-4-16-4s-12 1-16 4z" fill="${hairC}"/>`,
+    `<path d="M15 28c0-12 7-19 17-19s17 7 17 19c-2-2-4-3-6-2-1-2-3-3-5-2-1-1-3-1-5 0-2-1-4 0-5 2-2-1-4 0-6 2-2-1-4-0-7 2z" fill="${hairC}"/>`,
+    `<path d="M15 30l3-8 3 5 4-9 4 6 3-7 4 8 3-4 4 7 3-5 2 8c-5-4-11-6-17-6s-12 2-16 5z" fill="${hairC}"/>`,
+    `<path d="M15 28c0-12 8-19 17-19s17 7 17 19c-6-4-11-6-17-6s-11 2-17 6z" fill="${hairC}"/>`
+  ];
+  const HN = [
+    `<path d="M14 31c0-14 8-21 18-21s18 7 18 21v8c-1.5 2-4 2-5 .5V30c-3 3-8 4-13 4s-10-1-13-4v9.5c-1 1.5-3.5 1.5-5-.5z" fill="${hairC}"/>`,
+    `<path d="M14 32c0-14 8-22 18-22s18 8 18 22v9c-1.5 2-4.5 2-6 .5V30c-3 3-7 4-12 4s-9-1-12-4v11.5c-1.5 1.5-4.5 1.5-6-.5z" fill="${hairC}"/>`,
+    `<path d="M15 29c0-13 8-20 17-20s17 7 17 20c-4-6-10-8-17-8s-13 2-17 8z" fill="${hairC}"/>`,
+    `<path d="M15 28c0-12 7-19 17-19s17 7 17 19c-2-2-4-3-6-2-1-2-3-3-5-2-1-1-3-1-5 0-2-1-4 0-5 2-2-1-4 0-6 2-2-1-4-0-7 2z" fill="${hairC}"/>`,
+    `<path d="M14 30c0-14 8-21 18-21s18 7 18 21v2c-6-4-12-6-18-6s-12 2-18 6z" fill="${hairC}"/>`
+  ];
+  const H = (g === 'f' ? HF : g === 'm' ? HM : HN)[pick(g === 'n' ? 5 : 6, 13)];
+  const hat = pick(6, 16) === 0;
   const HAT = hat ? `<path d="M12 27h40v4H12z" fill="#2a2d3a"/><path d="M18 27c0-10 6-14 14-14s14 4 14 14z" fill="#2a2d3a"/>` : '';
-  const E = ['<circle cx="26" cy="35" r="2.2" fill="#23170f"/><circle cx="38" cy="35" r="2.2" fill="#23170f"/>', '<path d="M23 35q3-3 6 0M35 35q3-3 6 0" stroke="#23170f" stroke-width="2" fill="none" stroke-linecap="round"/>', '<rect x="23.5" y="33.5" width="5" height="3" rx="1.5" fill="#23170f"/><rect x="35.5" y="33.5" width="5" height="3" rx="1.5" fill="#23170f"/>'][eyes];
-  const B = ['<path d="M22 30l8 1M34 31l8-1" stroke="#3a2a22" stroke-width="2" stroke-linecap="round"/>', '<path d="M22 31l8-1M34 30l8 1" stroke="#3a2a22" stroke-width="2.6" stroke-linecap="round"/>', '<path d="M22 30q4-3 8 0M34 30q4-3 8 0" stroke="#3a2a22" stroke-width="1.8" fill="none" stroke-linecap="round"/>'][brow];
-  const M = ['<path d="M26 44q6 4 12 0" stroke="#5a2a1a" stroke-width="2" fill="none" stroke-linecap="round"/>', '<path d="M27 44h10" stroke="#5a2a1a" stroke-width="2" stroke-linecap="round"/>', '<path d="M26 45q6-3 12 0" stroke="#5a2a1a" stroke-width="2" fill="none" stroke-linecap="round"/>', '<path d="M27 43q5 5 10 0z" fill="#5a2a1a"/>', '<path d="M28 44q4 2 8 0" stroke="#5a2a1a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M36 43l2-1" stroke="#5a2a1a" stroke-width="2" stroke-linecap="round"/>'][mouth];
+  /* eyes: round eyes get a white highlight so they look alive */
+  const E = ['<circle cx="26" cy="35" r="2.2" fill="#23170f"/><circle cx="38" cy="35" r="2.2" fill="#23170f"/><circle cx="25.2" cy="34.2" r="0.8" fill="#fff"/><circle cx="37.2" cy="34.2" r="0.8" fill="#fff"/>', '<path d="M23 35q3-3 6 0M35 35q3-3 6 0" stroke="#23170f" stroke-width="2" fill="none" stroke-linecap="round"/>', '<rect x="23.5" y="33.5" width="5" height="3" rx="1.5" fill="#23170f"/><rect x="35.5" y="33.5" width="5" height="3" rx="1.5" fill="#23170f"/>'][pick(3, 28)];
+  /* brows: thin and arched for 'f', straight and heavier for 'm' */
+  const bw = g === 'f' ? 1.6 : g === 'm' ? 2.6 : 2;
+  const B = [`<path d="M22 30q4-2.5 8 0M34 30q4-2.5 8 0" stroke="#3a2a22" stroke-width="${bw}" fill="none" stroke-linecap="round"/>`, `<path d="M22 30l8 1M34 31l8-1" stroke="#3a2a22" stroke-width="${bw}" fill="none" stroke-linecap="round"/>`, `<path d="M22 31l8-1M34 30l8 1" stroke="#3a2a22" stroke-width="${bw}" fill="none" stroke-linecap="round"/>`][pick(3, 30)];
+  const mc = g === 'f' ? '#8e3b2f' : '#5a2a1a';
+  const M = [`<path d="M26 44q6 4 12 0" stroke="${mc}" stroke-width="2" fill="none" stroke-linecap="round"/>`, `<path d="M27 44h10" stroke="${mc}" stroke-width="2" fill="none" stroke-linecap="round"/>`, `<path d="M26 45q6-3 12 0" stroke="${mc}" stroke-width="2" fill="none" stroke-linecap="round"/>`, `<path d="M27 43q5 5 10 0z" fill="${mc}"/>`, `<path d="M28 44q4 2 8 0" stroke="${mc}" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M36 43l2-1" stroke="${mc}" stroke-width="2" stroke-linecap="round"/>`][pick(5, 25)];
+  const glasses = pick(4, 19);
   const G = ['', '<g fill="none" stroke="#1d1b1f" stroke-width="1.6"><circle cx="26" cy="35" r="5"/><circle cx="38" cy="35" r="5"/><path d="M31 35h2"/></g>', '<g fill="none" stroke="#1d1b1f" stroke-width="1.6"><rect x="20.5" y="30.5" width="11" height="8" rx="2"/><rect x="32.5" y="30.5" width="11" height="8" rx="2"/><path d="M31.5 34h1"/></g>', ''][glasses];
-  const BD = ['', `<path d="M19 38c2 10 7 13 13 13s11-3 13-13c-3 6-8 8-13 8s-10-2-13-8z" fill="${hairC}"/>`, `<path d="M26 40q6 3 12 0v3q-6 3-12 0z" fill="${hairC}"/>`, '', ''][beard];
-  const X = ['', '<circle cx="17.5" cy="38" r="1.6" fill="#f2c94c"/>', '<g fill="#c9775f" opacity=".6"><circle cx="22" cy="40" r="1"/><circle cx="25" cy="41.5" r="1"/><circle cx="40" cy="41.5" r="1"/><circle cx="43" cy="40" r="1"/></g>', '<g fill="#ff9aa2" opacity=".5"><ellipse cx="23" cy="40" rx="3" ry="1.6"/><ellipse cx="41" cy="40" rx="3" ry="1.6"/></g>', `<path d="M44 30l3 7" stroke="${hairC}" stroke-width="2.4" stroke-linecap="round"/>`][extra];
+  /* beards: men only — women and neutral faces never get one */
+  const BD = g !== 'm' ? '' : ['', `<path d="M19 38c2 10 7 13 13 13s11-3 13-13c-3 6-8 8-13 8s-10-2-13-8z" fill="${hairC}"/>`, `<path d="M26 40q6 3 12 0v3q-6 3-12 0z" fill="${hairC}"/>`, `<path d="M27 41q5 3 10 0v4q-5 3-10 0z" fill="${hairC}"/>`, ''][pick(5, 22)];
+  /* small extras: earrings and blush only for 'f', a mole for 'm'/'n' */
+  const XF = ['', '<circle cx="15.5" cy="39" r="1.5" fill="#f2c94c"/><circle cx="48.5" cy="39" r="1.5" fill="#f2c94c"/>', '<g fill="#ff9aa2" opacity=".5"><ellipse cx="23" cy="40" rx="3" ry="1.6"/><ellipse cx="41" cy="40" rx="3" ry="1.6"/></g>', '<g fill="#c9775f" opacity=".6"><circle cx="22" cy="40" r="1"/><circle cx="25" cy="41.5" r="1"/><circle cx="40" cy="41.5" r="1"/><circle cx="43" cy="40" r="1"/></g>', `<path d="M44 30l3 7" stroke="${hairC}" stroke-width="2.4" stroke-linecap="round"/>`];
+  const XM = ['', '<circle cx="40" cy="42" r="1.1" fill="#4a2c1a"/>', '<g fill="#c9775f" opacity=".6"><circle cx="22" cy="40" r="1"/><circle cx="25" cy="41.5" r="1"/><circle cx="40" cy="41.5" r="1"/><circle cx="43" cy="40" r="1"/></g>', `<path d="M44 30l3 7" stroke="${hairC}" stroke-width="2.4" stroke-linecap="round"/>`, ''];
+  const XN = ['', '<g fill="#c9775f" opacity=".6"><circle cx="22" cy="40" r="1"/><circle cx="25" cy="41.5" r="1"/><circle cx="40" cy="41.5" r="1"/><circle cx="43" cy="40" r="1"/></g>', '<g fill="#ff9aa2" opacity=".5"><ellipse cx="23" cy="40" rx="3" ry="1.6"/><ellipse cx="41" cy="40" rx="3" ry="1.6"/></g>', '<circle cx="40" cy="42" r="1.1" fill="#4a2c1a"/>', `<path d="M44 30l3 7" stroke="${hairC}" stroke-width="2.4" stroke-linecap="round"/>`];
+  const X = (g === 'f' ? XF : g === 'm' ? XM : XN)[pick(5, 12)];
   const coat = ['#3d4a6b', '#4b5b8f', '#5e3b6b', '#2f6b5a', '#7a3b3b', '#6b5a2f'][pick(6, 2)];
-  return `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="${bg}"/><path d="M11 64c0-13 9-19 21-19s21 6 21 19z" fill="${coat}"/><path d="M28 46l4 6 4-6" fill="${bg}" opacity=".5"/>${F}${BD}${H}${HAT}${B}${E}${M}${G}${X}</svg>`;
+  return `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="${bg}"/><path d="M11 64c0-13 9-19 21-19s21 6 21 19z" fill="${coat}"/><path d="M28 46l4 6 4-6" fill="${bg}" opacity=".5"/>${F}${EARS}${NECK}${BD}${H}${HAT}${B}${E}${M}${G}${X}</svg>`;
 }
-const face = (e, id) => { e.innerHTML = faceSVG((R ? R.c.id + ':' : '') + id); return e; };
+/* the gender hint for a suspect of a case ('f' / 'm' / 'n', default 'n') */
+const genderOf = (c, id) => ((c && c.suspects.find(s => s[0] === id)) || [])[3] || 'n';
+const face = (e, id) => { e.innerHTML = faceSVG((R ? R.c.id + ':' : '') + id, R ? genderOf(R.c, id) : 'n'); return e; };
 
 /* ---- sounds ---- */
 const A = {
@@ -73,7 +111,11 @@ const A = {
   stopMusic() { if (!this.m) return; const m = this.m; this.m = null; clearTimeout(m.timer); m.g.gain.setTargetAtTime(0, this.c.currentTime, .6); setTimeout(() => { m.pads.forEach(o => o.stop()); m.lfo.stop(); }, 2500); },
   setMusic(on) { this.musicOn = on; if (on) this.startMusic(); else this.stopMusic(); }
 };
-function toast(text, cls) { const t = el('div', 'toast ' + (cls || ''), text); const box = $('toasts'); box.appendChild(t); while (box.children.length > 2) box.firstChild.remove(); setTimeout(() => t.remove(), 2600); }
+/* one toast at a time: a new toast replaces the one still showing, so two
+   toasts never stack and cover the suspect cards below the message list.
+   pointer-events:none (see #toasts) means a toast can never block a tap
+   on the button underneath it. */
+function toast(text, cls) { const t = el('div', 'toast ' + (cls || ''), text); const box = $('toasts'); box.innerHTML = ''; box.appendChild(t); setTimeout(() => t.remove(), 2600); }
 
 const isWide = () => matchMedia('(min-width:760px) and (min-aspect-ratio:1/1)').matches;
 const SCREENS = ['title', 'list', 'case', 'result'];
@@ -105,9 +147,9 @@ function renderList() {
 function openIntro(i, daily) { beginCase(i, daily); }
 
 /* ---- the case ---- */
-let tab = 'chat', sel = null, recoverAnnounced = false;
+let tab = 'chat', sel = null, recoverAnnounced = false, recoverUsedAnnounced = false;
 function beginCase(i, daily) {
-  startCase(i, daily); tab = 'chat'; sel = null; recoverAnnounced = false;
+  startCase(i, daily); tab = 'chat'; sel = null; recoverAnnounced = false; recoverUsedAnnounced = false;
   coach = !S.coachDone && i === 0 ? (isWide() ? 2 : 0) : -1;
   S.tutorialSeen = true;
   A.startMusic();
@@ -129,15 +171,25 @@ function renderMeters() {
      rather than hidden, so it can never be tapped in the wrong mode. */
   const rb = $('btnRecoverStrike');
   if (rb) {
-    const show = !!(R && R.state === 'play' && canRecoverStrike());
-    rb.hidden = !show;
-    if (show) {
+    const usable = !!(R && R.state === 'play' && canRecoverStrike());
+    /* recovery is once per case: after it is spent, reaching 2 strikes again
+       used to hide the button with no trace of why. Now the button stays,
+       disabled, saying it was already used, so the limit is visible where
+       the player would look for the button. */
+    const used = !!(R && R.state === 'play' && R.strikes === 2 && R.strikeRecovered);
+    rb.hidden = !(usable || used);
+    if (usable) {
       rb.textContent = PORTAL.rewarded ? tr('recoverStrike') : tr('recoverStrikeFree');
       rb.disabled = PORTAL.settled === false;
       rb.classList.add('pulse');
       /* announce once, but only once the portal has answered: the free/ad
          wording depends on whether this build can show rewarded ads */
       if (!recoverAnnounced && PORTAL.settled !== false) { recoverAnnounced = true; toast(PORTAL.rewarded ? tr('recoverHint') : tr('recoverHintFree')); }
+    } else if (used) {
+      rb.textContent = tr('recoverUsed');
+      rb.disabled = true;
+      rb.classList.remove('pulse');
+      if (!recoverUsedAnnounced) { recoverUsedAnnounced = true; toast(tr('recoverUsed')); }
     } else {
       rb.classList.remove('pulse');
       rb.disabled = false;
@@ -190,15 +242,25 @@ function renderCase() {
 function sceneSVG(c) {
   const sc = typeof SCENES !== 'undefined' && SCENES[c.id]; if (!sc) return null;
   const face = (id, x, y, size, hood) => {
-    const inner = faceSVG(c.id + ':' + id).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '').replace(/<rect width="64" height="64"[^>]*\/>/, '');
+    const inner = faceSVG(c.id + ':' + id, genderOf(c, id)).replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '').replace(/<rect width="64" height="64"[^>]*\/>/, '');
     return `<svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="0 0 64 64">${inner}${hood ? '<path d="M8 36c0-20 10-30 24-30s24 10 24 30c-6-8-14-12-24-12S14 28 8 36z" fill="#f5c400"/>' : ''}</svg>`;
   };
   return `<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">${sc(face)}</svg>`;
 }
+/* the photo, big: a close button, Esc, or a tap on the backdrop closes it.
+   Tapping the photo itself no longer closes it — that was the only way out
+   before, and it closed the picture by accident while looking at it. */
 function openPhoto(c) {
   const d = el('div', 'modal photo-modal'), card = el('div', 'photo-big'); card.innerHTML = sceneSVG(c);
-  d.appendChild(card); d.onclick = () => d.remove(); document.body.appendChild(d);
+  const x = el('button', 'photo-close', '×'); x.type = 'button'; x.setAttribute('aria-label', tr('close'));
+  x.onclick = e => { e.stopPropagation(); closePhoto(); };
+  card.appendChild(x);
+  d.appendChild(card);
+  d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', tr('close'));
+  d.onclick = e => { if (e.target === d) closePhoto(); };
+  document.body.appendChild(d);
 }
+function closePhoto() { const m = document.querySelector('.photo-modal'); if (m) m.remove(); }
 /* the guide for the very first case: five steps, each pointing at the next thing to press */
 let coach = -1;
 function renderCoach() {
@@ -215,7 +277,9 @@ function renderCoach() {
   box.hidden = false;
   if (coach === 0) document.querySelector('.tabs button[data-tab=evidence]').classList.add('pulse');
   if (coach === 1) document.querySelector('.tabs button[data-tab=chat]').classList.add('pulse');
-  if (coach === 2) { const row = document.querySelector(`.msg[data-k="${firstLie}"]`); if (row) { row.classList.add('pulse'); row.scrollIntoView({ block: 'center' }); } }
+  /* step 2 used to name the liar and pulse their exact message — the first
+     deduction, handed over. Now the guide only says a message contradicts
+     the evidence; the player has to find which one. */
   if (coach === 4) $('btnAccuse').classList.add('pulse');
 }
 function openMarkSheet(k) {
@@ -229,10 +293,12 @@ function openMarkSheet(k) {
 function openEvidenceSheet(k) {
   const m = R.c.chat[k], card = $('sheetCard'); card.innerHTML = '';
   card.append(el('h3', null, tr('pickEv')), el('div', 'quote', m.m));
-  const list = el('div', 'list'), guide = coach === 2 && m.lie ? evOf(m)[0] : -1;
+  const list = el('div', 'list');
   R.c.facts.forEach(([ic, t, photo], i) => {
     const tried = R.triedEv[k] && R.triedEv[k].has(i);
-    const b = el('button', 'evpick' + (i === guide ? ' pulse' : '') + (tried ? ' tried' : '')); b.type = 'button'; b.disabled = !!tried;
+    /* no guide pulse on the right answer: the tutorial used to highlight
+       the contradicting fact, which gave away the first lie outright */
+    const b = el('button', 'evpick' + (tried ? ' tried' : '')); b.type = 'button'; b.disabled = !!tried;
     const tx = el('span', null, t); if (photo) { const z = el('div', 'zoom small'); for (const d of photo) z.appendChild(el('span', null, d)); tx.appendChild(z); }
     if (tried) tx.appendChild(el('span', 'tried-tag', ' · ' + tr('triedEv')));
     b.append(el('span', 'ic', ic), tx);
@@ -251,21 +317,39 @@ function doMark(k, ev) {
   else if (r === 'strike' || r === 'wrongEv') {
     A.bad(); toast(tr(r === 'wrongEv' ? 'wrongEv' : 'notLie'), 'bad'); renderCase();
     const row = document.querySelector(`.msg[data-k="${k}"]`); if (row) row.classList.add('wrong');
-    if (R.state === 'failed') setTimeout(showFailed, 700);
+    /* the failed screen used to wait 700 ms; the only timer on this path,
+       and the wait read as the game hanging. 300 ms still lets the shake
+       and the toast register before the screen swaps. */
+    if (R.state === 'failed') setTimeout(showFailed, 300);
   }
 }
-$('btnAccuse').addEventListener('click', () => {
-  if (!allLiesFound() || R.state !== 'play') return; A.click();
+/* picking a suspect used to accuse on the spot — the tap that chose the
+   name was also the verdict, and the detective's "It was you" line with
+   its 🔎 avatar read as the confirm button. Now choosing a suspect opens
+   a confirmation step with an explicit button, so the choice and the
+   verdict are two separate taps. */
+function openAccuseSheet() {
   const card = $('sheetCard'); card.innerHTML = ''; card.appendChild(el('h3', null, tr('accuseWho')));
   for (const [id, name, role] of R.c.suspects) {
     const p = el('button', 'pick'); p.type = 'button';
     const av = face(el('div', 'av'), id);
     const info = el('div'); info.append(el('b', null, name), el('span', null, role)); p.append(av, info);
-    p.onclick = () => { closeSheet(); const stars = accuse(id); if (stars) playOutro(id, stars); else { A.bad(); toast(tr('wrongAccuse'), 'bad'); renderMeters(); if (R.state === 'failed') setTimeout(showFailed, 700); } };
+    p.onclick = () => { A.click(); openAccuseConfirm(id, name); };
     card.appendChild(p);
   }
   const no = el('button', 'btn ghost', tr('close')); no.onclick = closeSheet; card.appendChild(no);
   $('sheet').hidden = false;
+}
+function openAccuseConfirm(id, name) {
+  const card = $('sheetCard'); card.innerHTML = '';
+  card.append(el('h3', null, tr('accuseConfirm', name)), el('div', 'quote', tr('accuseConfirmSub')));
+  const yes = el('button', 'btn primary', tr('confirmAccuse'));
+  yes.onclick = () => { closeSheet(); const stars = accuse(id); if (stars) playOutro(id, stars); else { A.bad(); toast(tr('wrongAccuse'), 'bad'); renderMeters(); if (R.state === 'failed') setTimeout(showFailed, 300); } };
+  const no = el('button', 'btn ghost', tr('back')); no.onclick = openAccuseSheet;
+  card.append(yes, no); $('sheet').hidden = false;
+}
+$('btnAccuse').addEventListener('click', () => {
+  if (!allLiesFound() || R.state !== 'play') return; A.click(); openAccuseSheet();
 });
 
 /* the payoff: the detective names the culprit in the chat, the room reacts, the culprit cracks */
@@ -292,6 +376,7 @@ function playOutro(id, stars) {
 /* ---- results ---- */
 function showSolved(stars) {
   A.win(); PORTAL.happy(); PORTAL.stop();
+  $('result').classList.remove('failed');
   /* the one interstitial for a solved case: on entering the result screen.
      The Next button no longer shows one, so a solved case costs exactly one
      midgame slot at most (and the cap/cooldown in portal.js may skip it). */
@@ -299,7 +384,7 @@ function showSolved(stars) {
   $('btnResResumeAd').hidden = true;
   if (coach >= 0) { S.coachDone = true; persist(); } coach = -1; $('coach').hidden = true;
   $('resBadge').textContent = tr('solved'); $('resTitle').textContent = R.c.title;
-  const rf = $('resFace'); rf.hidden = false; rf.innerHTML = faceSVG(R.c.id + ':' + R.c.culprit); rf.dataset.stamp = tr('confessed'); $('resName').textContent = nameOf(R.c, R.c.culprit) + ' · ' + (R.c.suspects.find(s => s[0] === R.c.culprit) || [])[2];
+  const rf = $('resFace'); rf.hidden = false; rf.innerHTML = faceSVG(R.c.id + ':' + R.c.culprit, genderOf(R.c, R.c.culprit)); rf.dataset.stamp = tr('confessed'); $('resName').textContent = nameOf(R.c, R.c.culprit) + ' · ' + (R.c.suspects.find(s => s[0] === R.c.culprit) || [])[2];
   const st = $('resStars'); st.innerHTML = ''; for (let k = 0; k < 3; k++) st.appendChild(el('span', k < stars ? '' : 'off', '★'));
   $('resBody').textContent = R.c.solve;
   const meta = $('resMeta'); meta.innerHTML = '';
@@ -312,8 +397,12 @@ function showSolved(stars) {
   show('result');
 }
 function showFailed() {
-  A.lose(); PORTAL.stop(); $('coach').hidden = true;
-  $('resBadge').textContent = tr('failed'); $('resTitle').textContent = R.c.title; $('resStars').innerHTML = ''; $('resFace').hidden = true; $('resName').textContent = ''; $('resBody').textContent = tr('failedSub'); $('resMeta').innerHTML = ''; $('btnResShare').hidden = true;
+  A.lose(); PORTAL.stop(); $('coach').hidden = true; closeSheet();
+  /* no culprit face on this screen, so drop the two-column result grid —
+     with the face hidden the wide layout put the title in the empty right
+     column and the text and buttons in the left one, scattered. */
+  $('result').classList.add('failed');
+  $('resBadge').textContent = tr('failed'); $('resTitle').textContent = R.c.title; $('resStars').innerHTML = ''; $('resFace').hidden = true; $('resName').textContent = ''; $('resBody').textContent = PORTAL.rewarded ? tr('failedSub') : tr('failedSubFree'); $('resMeta').innerHTML = ''; $('btnResShare').hidden = true;
   /* free resume: one interstitial (the failure slot), then back in at 1 strike.
      Ad resume: a rewarded ad instead of the interstitial, then back in at 0.
      Restart: the same interstitial slot as before. At most one ad per choice. */
@@ -383,7 +472,7 @@ $('optMusic').addEventListener('change', e => { S.settings.music = e.target.chec
 $('optLang').addEventListener('change', e => { persist(); setLang(e.target.value); });
 $('btnReset').addEventListener('click', () => { $('btnResetConfirm').hidden = false; });
 $('btnResetConfirm').addEventListener('click', () => { const st = S.settings; S = freshSave(); S.settings = st; persist(); $('settings').hidden = true; renderTitle(); });
-addEventListener('keydown', e => { if (e.key === 'Escape') { $('settings').hidden = true; if (!$('hintModal').hidden) closeHint(); closeSheet(); } });
+addEventListener('keydown', e => { if (e.key === 'Escape') { closePhoto(); $('settings').hidden = true; if (!$('hintModal').hidden) closeHint(); closeSheet(); } });
 addEventListener('resize', () => { if (screen === 'case') setTab(tab); });
 
 /* ---- clock, start ---- */
@@ -406,3 +495,4 @@ PORTAL.ready.then(() => {
 });
 renderTitle();
 window.__al = { fast: false, get S() { return S; }, get R() { return R; }, beginCase, renderList };
+

@@ -58,6 +58,14 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .tabs button{padding:9px 0;border-radius:10px;font-size:13px;font-weight:600;color:var(--dim);background:rgba(255,255,255,.04)}
 .tabs button[aria-selected=true]{background:var(--card-2);color:var(--ink)}
 .pane{flex:1;overflow:auto;padding:12px 12px 90px;overscroll-behavior:contain}
+/* the chat pane must have no top padding: the coach banner is sticky
+   (top:0) and sticks at the content-box top, but the pane clips scrolled
+   content only at its border-box top — with 12–14px of top padding there
+   was a strip where scrolled messages showed through above the banner
+   (seen after resuming case 1, coach step 4, wide layout). With no top
+   padding the banner sticks flush at the pane's top edge and covers the
+   strip. The spacing the padding gave is now the brief's top margin. */
+#paneChat{padding-top:0}
 .msg{display:grid;grid-template-columns:34px 1fr;gap:8px;margin:0 0 10px;text-align:left;width:100%}
 .msg .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;color:#fff;margin-top:14px}
 .msg .b{position:relative}
@@ -103,7 +111,12 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .opt input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent)}
 .opt select{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
 .danger-zone{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:10px}
-#toasts{position:fixed;top:52px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;z-index:30;pointer-events:none;width:min(380px,92vw)}
+/* toasts sit above the bottom bar, never over the case title — they used to
+   cover the case header for the 2.6 s they were up. They are positioned
+   inside the phone frame (absolute), not the viewport (fixed): on a wide
+   screen the frame floats centered, so a viewport-fixed toast sat lower
+   than intended and covered the right side of the Accuse button. */
+#toasts{position:absolute;bottom:calc(86px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;z-index:30;pointer-events:none;width:min(360px,calc(100% - 28px))}
 .toast{padding:10px 14px;border-radius:14px;background:var(--card-2);border:1px solid var(--line);font-size:13px;text-align:center;animation:up .2s}
 .toast.ok{border-color:rgba(61,220,151,.5)}.toast.bad{border-color:rgba(255,77,109,.5)}
 
@@ -141,7 +154,7 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .coach b{font-weight:800}
 
 /* case brief pinned at the top of the chat; evidence pick in the sheet */
-.brief{padding:12px 14px;border-radius:14px;background:rgba(255,106,61,.1);border:1px solid rgba(255,106,61,.35);font-size:13px;line-height:1.5;margin:0 0 12px}
+.brief{padding:12px 14px;border-radius:14px;background:rgba(255,106,61,.1);border:1px solid rgba(255,106,61,.35);font-size:13px;line-height:1.5;margin:12px 0 12px}
 .brief b{display:block;color:var(--accent);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
 .brief.closed{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
 .brief.closed b{display:inline;margin-right:6px}
@@ -168,7 +181,7 @@ button{cursor:pointer;border:0;background:none;padding:0}
   #case .top{grid-column:1/-1}
   #case .meter{grid-column:1/-1;padding-top:10px}
   #case .tabs{display:none}
-  #paneChat{grid-column:1;grid-row:3/5;padding:14px 16px 90px;border-right:1px solid var(--line)}
+  #paneChat{grid-column:1;grid-row:3/5;padding:0 16px 90px;border-right:1px solid var(--line)}
   #paneEvidence{grid-column:2;grid-row:3;padding:14px 16px 8px}
   #paneSuspects{grid-column:2;grid-row:4;padding:8px 16px 90px;border-top:1px solid var(--line)}
   .pane.side[hidden]{display:block!important}
@@ -234,11 +247,22 @@ button{cursor:pointer;border:0;background:none;padding:0}
   #result .res-face::after{font-size:13px;padding:5px 12px;bottom:12px}
   #result .stars,#result .lede,#result .res-meta,#result .btn,#result .row{grid-column:1}
 }
+/* failed result: no culprit face, so drop the two-column grid — with the
+   face hidden the wide layout scattered the title, text and buttons */
+@media (min-width:760px) and (min-aspect-ratio:1/1){
+  #result.failed .hero{display:flex;flex-direction:column;max-width:640px;align-items:stretch;gap:14px}
+  #result.failed .res-head{align-items:flex-start}
+  #result.failed .res-head>div{text-align:left}
+}
 
 /* the photo itself */
 .photo-img{margin-top:8px;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:zoom-in}
 .photo-img svg{display:block;width:100%;height:auto}
 .photo-modal{cursor:zoom-out}
-.photo-big{width:min(900px,96vw);border-radius:12px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
-.photo-big svg{display:block;width:100%;height:auto}
+/* the scene is 320:200, so cap the width by the viewport height too —
+   on a tall phone the old 96vw box could run past the top and bottom */
+.photo-big{position:relative;width:min(900px,96vw,calc(92vh * 1.6));max-height:92vh;border-radius:12px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.photo-big svg{display:block;width:100%;height:auto;max-height:92vh}
+.photo-close{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:22px;line-height:1;display:grid;place-items:center;z-index:2}
+.photo-close:active{transform:scale(.94)}
 .evpick .zoom.small{display:none}
