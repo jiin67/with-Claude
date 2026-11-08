@@ -35,10 +35,10 @@ const STR = {
     hintLie: n => `아직 못 찾은 거짓말이 있어요. ${n} 쪽의 말을 증거와 하나씩 대조해 보세요.`,
     hintMsg: (n, t) => `${n}의 ${t} 메시지를 다시 읽어보세요. 그 말이 증거와 어긋나는 지점이 있어요.`,
     hintEv: f => `이 증거와 어긋나요: ${f}`,
-    recoverStrike: '광고 보고 실수 1회 되돌리기', recoverDone: '실수 1회를 되돌렸어요. 실수 1회로 계속합니다.',
+    recoverStrike: '광고 보고 실수 1회 되돌리기', recoverDone: n => n === 0 ? '실수 1회를 되돌렸어요. 실수가 없어요.' : '실수 1회를 되돌렸어요. 실수 1회로 계속합니다.',
     recoverStrikeFree: '실수 1회 되돌리기 (힌트 1회)', recoverDoneFree: '실수 1회를 되돌렸어요. 힌트 1회를 사용했어요.',
     recoverUsed: '복구 이미 사용했어요',
-    recoverHint: '실수 2회예요. 복구 버튼으로 1회를 되돌릴 수 있어요.', recoverHintFree: '실수 2회예요. 힌트 1회를 사용해 1회를 되돌릴 수 있어요.',
+    recoverHint: '복구 버튼으로 실수 1회를 되돌릴 수 있어요.', recoverHintFree: '힌트 1회를 사용해 실수 1회를 되돌릴 수 있어요.',
     hintAccuse: '거짓말을 한 사람 중, 사건 현장에 있을 수 있었던 사람은 누구인가요?',
     adFail: '지금은 광고를 불러올 수 없어요', adPlaying: '광고 재생 중…', locked: '이전 사건을 해결하면 열려요', stars: '별', diff: ['쉬움', '보통', '어려움'],
     tutorial: '채팅에서 수상한 말을 누르고 <b>거짓말로 표시</b>하세요. 증거 탭과 어긋나는 말이 거짓말이에요. 다 찾으면 범인을 지목합니다.',
@@ -47,7 +47,7 @@ const STR = {
     result: (s, m) => `알리바이 ALIBI · 별 ${s}/${m} · 모든 사건 해결`,
     daily: '오늘의 사건', dailyDone: (st, t) => `오늘 해결 · ${'★'.repeat(st)} · ${t}`, dailySub: '매일 새 사건. 시간은 기록돼요.', time: '시간', claims: '이 사람의 주장', noClaims: '아직 한 말이 없어요',
     shareCase: (title, st, t) => `알리바이 ALIBI · ${title} · ${'★'.repeat(st)}${'☆'.repeat(3 - st)} · ${t}`, streak: n => `${n}일 연속`,
-    music: '배경 음악', confessed: '자백', brief: '사건 개요', accuseLine: n => `${n}, 범인은 당신이에요.`, me: '탐정', pickEv: '어느 증거와 어긋나나요?', wrongEv: '수상한 말은 맞아요. 하지만 어긋나는 증거는 그게 아니에요.', wrongEvFree: '거짓말은 맞아요. 다른 증거를 골라보세요 — 이번만 실수가 아니에요.', triedEv: '시도함', evidenceFirst: '증거', chatFirst: '채팅',
+    music: '배경 음악', confessed: '자백', brief: '사건 개요', accuseLine: n => `${n}, 범인은 당신이에요.`, me: '탐정', pickEv: '어느 증거와 어긋나나요?', triedEv: '시도함', evidenceFirst: '증거', chatFirst: '채팅',
     coach: ['먼저 <b>증거</b> 탭을 열어 사실을 읽어 보세요.', '다시 <b>채팅</b>으로 돌아오세요.', '증거와 어긋나는 말이 있어요. 그 말을 누르고, <b>어긋나는 증거</b>를 고르세요.', '잘했어요. 남은 거짓말 하나는 직접 찾아보세요.', '거짓말을 다 찾았어요. <b>범인 지목</b>을 누르세요.']
   },
   en: {
@@ -60,10 +60,10 @@ const STR = {
     hintLie: n => `There is still a lie you haven't found. Check what ${n} says against the evidence, one claim at a time.`,
     hintMsg: (n, t) => `Re-read ${n}'s ${t} message. Something in it doesn't match the evidence.`,
     hintEv: f => `This fact contradicts it: ${f}`,
-    recoverStrike: 'Watch an ad to undo 1 mistake', recoverDone: 'Undid 1 mistake — back to 1 mistake.',
+    recoverStrike: 'Watch an ad to undo 1 mistake', recoverDone: n => n === 0 ? 'Undid 1 mistake — back to 0 mistakes.' : 'Undid 1 mistake — back to 1 mistake.',
     recoverStrikeFree: 'Undo 1 mistake (1 hint)', recoverDoneFree: 'Undid 1 mistake — it cost 1 hint.',
     recoverUsed: 'Recovery already used',
-    recoverHint: '2 mistakes. The recovery button can undo one.', recoverHintFree: '2 mistakes. The recovery button can undo one — it costs 1 hint.',
+    recoverHint: 'The recovery button can undo 1 mistake.', recoverHintFree: 'The recovery button can undo 1 mistake — it costs 1 hint.',
     hintAccuse: 'Of the people who lied, who could actually have been at the scene?',
     adFail: 'No ad available right now', adPlaying: 'Ad playing…', locked: 'Solve the previous case to unlock', stars: 'stars', diff: ['Easy', 'Medium', 'Hard'],
     tutorial: 'Tap a suspicious message and <b>mark it as a lie</b>. A lie is a claim the Evidence tab contradicts. Find them all, then accuse.',
@@ -72,7 +72,7 @@ const STR = {
     result: (s, m) => `ALIBI · ${s}/${m} stars · all cases closed`,
     daily: 'Today\'s case', dailyDone: (st, t) => `Solved today · ${'★'.repeat(st)} · ${t}`, dailySub: 'A new case every day. Your time counts.', time: 'Time', claims: 'What they claim', noClaims: 'Nothing said yet',
     shareCase: (title, st, t) => `ALIBI · ${title} · ${'★'.repeat(st)}${'☆'.repeat(3 - st)} · ${t}`, streak: n => `${n}-day streak`,
-    music: 'Music', confessed: 'CONFESSED', brief: 'Case brief', accuseLine: n => `It was you, ${n}.`, me: 'Detective', pickEv: 'Which evidence contradicts it?', wrongEv: 'Right message, wrong evidence. Something else contradicts it.', wrongEvFree: 'Right message — try another piece of evidence. No mistake this time.', triedEv: 'tried', evidenceFirst: 'Evidence', chatFirst: 'Chat',
+    music: 'Music', confessed: 'CONFESSED', brief: 'Case brief', accuseLine: n => `It was you, ${n}.`, me: 'Detective', pickEv: 'Which evidence contradicts it?', triedEv: 'tried', evidenceFirst: 'Evidence', chatFirst: 'Chat',
     coach: ['Open the <b>Evidence</b> tab first and read the facts.', 'Now go back to the <b>Chat</b>.', 'One message doesn\'t match the evidence. Tap it, then <b>pick the evidence it contradicts</b>.', 'Nice. Find the remaining lie on your own.', 'All lies found. Press <b>Accuse</b>.']
   }
 };

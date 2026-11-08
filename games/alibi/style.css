@@ -209,6 +209,9 @@ button{cursor:pointer;border:0;background:none;padding:0}
 
 /* result: the culprit's face, large */
 .res-head{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.res-main{display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.res-main>.badge{align-self:flex-start}
+.res-main>h2{margin:0}
 .res-face{width:120px;height:120px;border-radius:50%;overflow:hidden;border:4px solid var(--bad);box-shadow:0 0 0 6px rgba(255,77,109,.18),0 20px 50px rgba(0,0,0,.5);position:relative;animation:starIn .6s cubic-bezier(.2,1.4,.4,1) both}
 .res-face svg{width:100%;height:100%;display:block}
 .res-face::after{content:attr(data-stamp);position:absolute;left:50%;bottom:6px;transform:translateX(-50%) rotate(-8deg);background:var(--bad);color:#fff;font-size:10px;font-weight:900;letter-spacing:.14em;padding:3px 8px;border-radius:6px}
@@ -238,21 +241,27 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .zoom.small{margin-top:6px}
 .zoom.small span{background:rgba(255,255,255,.1);color:var(--ink)}
 
-/* result on a wide screen: text left, the culprit large on the right */
+/* result on a wide screen: text left, the culprit large on the right.
+   The two columns are separate grid items — .res-main holds the whole
+   left block (badge, title, stars, explanation, buttons) in one flex
+   column, and .res-head holds only the face and the name. An earlier
+   version made the face and the text siblings of one grid, so the tall
+   face stretched the grid's shared rows and the stars floated alone
+   ~230px above the explanation. */
 @media (min-width:760px) and (min-aspect-ratio:1/1){
-  #result .hero{max-width:1100px;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:40px}
-  #result .res-head{flex-direction:column;grid-column:2;grid-row:1/6;align-items:center;justify-self:center}
-  #result .res-head>div{text-align:center}
+  #result .hero{max-width:1100px;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:14px 40px;align-content:center}
+  #result .res-main{grid-column:1;grid-row:1;min-width:0}
+  #result .res-head{grid-column:2;grid-row:1;align-items:center;justify-self:center}
+  #result .res-head .res-name{text-align:center}
   #result .res-face{width:220px;height:220px;border-width:6px}
   #result .res-face::after{font-size:13px;padding:5px 12px;bottom:12px}
-  #result .stars,#result .lede,#result .res-meta,#result .btn,#result .row{grid-column:1}
 }
 /* failed result: no culprit face, so drop the two-column grid — with the
-   face hidden the wide layout scattered the title, text and buttons */
+   face hidden the wide layout scattered the title, text and buttons.
+   The face block is empty here, so hide it entirely. */
 @media (min-width:760px) and (min-aspect-ratio:1/1){
   #result.failed .hero{display:flex;flex-direction:column;max-width:640px;align-items:stretch;gap:14px}
-  #result.failed .res-head{align-items:flex-start}
-  #result.failed .res-head>div{text-align:left}
+  #result.failed .res-head{display:none}
 }
 
 /* the photo itself */

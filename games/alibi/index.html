@@ -44,16 +44,23 @@
     <div class="sheet" id="sheet" hidden><div class="sheet-card" id="sheetCard"></div></div>
   </section>
 
-  <!-- result -->
+  <!-- result: the face and the text are separate columns on a wide screen,
+       so the badge/title/stars/explanation/buttons form one block on the
+       left and the culprit's face sits on the right. They used to be
+       siblings in one grid: the tall face stretched the grid's shared
+       rows and the stars floated alone above a 230px gap. -->
   <section id="result" class="screen" hidden>
     <div class="hero">
-      <div class="res-head"><div class="res-face" id="resFace" hidden></div><div><div class="badge" id="resBadge"></div>
-      <h2 id="resTitle"></h2><div class="res-name" id="resName"></div></div></div>
-      <div class="stars" id="resStars"></div>
-      <p class="lede" id="resBody"></p>
-      <div class="res-meta" id="resMeta"></div>
-      <button class="btn primary big" id="btnResNext"></button>
-      <div class="row"><button class="btn ghost" id="btnResShare" data-i18n="share"></button><button class="btn ghost" id="btnResRestart" data-i18n="restart" hidden></button><button class="btn ghost" id="btnResResumeAd" hidden></button><button class="btn ghost" id="btnResList" data-i18n="toList"></button></div>
+      <div class="res-head"><div class="res-face" id="resFace" hidden></div><div class="res-name" id="resName"></div></div>
+      <div class="res-main">
+        <div class="badge" id="resBadge"></div>
+        <h2 id="resTitle"></h2>
+        <div class="stars" id="resStars"></div>
+        <p class="lede" id="resBody"></p>
+        <div class="res-meta" id="resMeta"></div>
+        <button class="btn primary big" id="btnResNext"></button>
+        <div class="row"><button class="btn ghost" id="btnResShare" data-i18n="share"></button><button class="btn ghost" id="btnResRestart" data-i18n="restart" hidden></button><button class="btn ghost" id="btnResResumeAd" hidden></button><button class="btn ghost" id="btnResList" data-i18n="toList"></button></div>
+      </div>
     </div>
   </section>
   <div id="toasts"></div>

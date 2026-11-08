@@ -18,12 +18,12 @@ CASES.en.push({
     { s: 'mara', t: '16:45', m: 'Someone at the window seat took a picture around then. Sending it.' },
     { s: 'noa', t: '16:47', m: 'Okay, fine, my break started at 4:22. But the jar was still full when I walked out.' },
     { s: 'finn', t: '16:48', m: 'Okay, I checked in at 4:18. But lots of people own yellow raincoats, and I left straight after.', ev: [0, 1], lie: 'The photo at 16:20 shows the man in the yellow raincoat still at the door, two minutes after Finn\'s 16:18 check-in. He had not left.' },
-    { s: 'mara', t: '16:50', m: 'Lots of people do not have your name sewn on the chest, Finn.' },
+    { s: 'mara', t: '16:50', m: 'That yellow raincoat in your profile picture — that\'s you, Finn.' },
     { s: 'noa', t: '16:51', m: 'The counter was empty from 4:23. Anyone could have reached over.' },
     { s: 'finn', t: '16:52', m: 'So that is nobody, then.' }
   ],
   culprit: 'finn',
-  solve: 'The photo settles it: at 4:20 the jar is full, Noa is still at the machine, and Finn is at the door in his named raincoat despite "staying home". He then claimed he left right after checking in — but the photo catches him at the door at 16:20, two minutes later. Noa went out back at 16:23 and Mara was at the bank until 16:35, so Finn was alone at the counter for twelve minutes. Noa lied about already being on break at 4:20; the same photo clears him, since the jar is full while he is still there.'
+  solve: 'The photo settles it: at 4:20 the jar is full, Noa is still at the machine, and Finn is at the door in the same yellow raincoat as his profile picture despite "staying home". He then claimed he left right after checking in — but the photo catches him at the door at 16:20, two minutes later. Noa went out back at 16:23 and Mara was at the bank until 16:35, so Finn was alone at the counter for twelve minutes. Noa lied about already being on break at 4:20; the same photo clears him, since the jar is full while he is still there.'
 });
 CASES.ko.push({
   id: 'window', title: '창가 자리', place: '카페 오루 · 오후 4:40', difficulty: 2,
@@ -43,7 +43,7 @@ CASES.ko.push({
     { s: 'mara', t: '16:45', m: '그때쯤 창가 손님이 사진을 찍었대요. 보낼게요.' },
     { s: 'noa', t: '16:47', m: '네, 솔직히 휴식은 16:22부터였어요. 근데 나갈 때 통은 가득했어요.' },
     { s: 'finn', t: '16:48', m: '네, 4시 18분에 체크인은 했어요. 근데 노란 우비 입은 사람이 한둘인가요? 바로 나갔고요.', ev: [0, 1], lie: '16:20 사진에 노란 우비를 입은 남자가 아직 문 앞에 있다. 핀의 16:18 체크인 2분 뒤다. 핀은 나가지 않았다.' },
-    { s: 'mara', t: '16:50', m: '가슴에 자기 이름 박아 놓은 사람은 한둘이 아니라 하나예요, 핀.' },
+    { s: 'mara', t: '16:50', m: '프로필 사진 속 노란 우비, 그게 딱 너예요, 핀.' },
     { s: 'noa', t: '16:51', m: '4시 23분부터 카운터가 비어 있었어요. 누구든 손 뻗을 수 있었죠.' },
     { s: 'finn', t: '16:52', m: '그러니까 아무도 아니라는 거네요.' }
   ],

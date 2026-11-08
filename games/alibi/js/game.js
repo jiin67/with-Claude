@@ -26,10 +26,14 @@ const unlocked = i => i === 0 || !!S.done[CL[i - 1].id];
 let R = null;
 function startCase(i, daily) {
   const c = CL[i];
-  R = { i, c, marked: new Set(), found: new Set(), strikes: 0, hints: 0, accused: null, state: 'play', t0: Date.now(), time: 0, daily: daily || null, failedOnce: false, wrongEvUsed: new Set(), triedEv: {}, hintStage: 0, strikeRecovered: false };
+  R = { i, c, marked: new Set(), found: new Set(), strikes: 0, hints: 0, accused: null, state: 'play', t0: Date.now(), time: 0, daily: daily || null, failedOnce: false, triedEv: {}, hintStage: 0, strikeRecovered: false, accuseFrozen: null };
   return R;
 }
-const elapsed = () => R ? (R.state === 'play' ? (Date.now() - R.t0) / 1000 : R.time) : 0;
+/* while the player is deciding on an accusation the clock is frozen at
+   the moment they tapped Accuse: the result time is the time of the
+   decision, not the time after the accusation sheet and the confession
+   scene have played out (those added ~9 s to the result time). */
+const elapsed = () => R ? (R.state === 'play' ? (R.accuseFrozen != null ? R.accuseFrozen : (Date.now() - R.t0) / 1000) : R.time) : 0;
 
 /* the daily case: one per calendar day, same for everyone */
 const todayKey = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
@@ -38,8 +42,12 @@ function dailyStreak() { let n = 0; const d = new Date(); for (;;) { const k = d
 const lieCount = c => c.chat.filter(m => m.lie).length;
 const nameOf = (c, id) => (c.suspects.find(s => s[0] === id) || [])[1] || id;
 /* mark a chat message together with the fact it contradicts.
-   'lie' | 'wrongEvFree' (right lie, wrong fact — first try on that lie is free) |
-   'wrongEv' (right lie, wrong fact again — counts as a strike) | 'strike' | 'already' */
+   'lie' | 'strike' | 'already'. Any wrong pick costs one strike — a
+   wrong message, or the right message with the wrong fact. The feedback
+   never says which half was wrong: telling the player the message was
+   right would let them probe messages for free and cycle facts until
+   one fits, so a wrong pick only ever says the pair doesn't fit. A
+   fact already tried on a message is disabled in the sheet ('tried'). */
 const evOf = m => Array.isArray(m.ev) ? m.ev : [m.ev];
 function failRun() { R.state = 'failed'; R.failedOnce = true; R.time = (Date.now() - R.t0) / 1000; }
 function mark(k, ev) {
@@ -47,13 +55,7 @@ function mark(k, ev) {
   if (R.found.has(k)) return 'already';
   if (m.lie && evOf(m).includes(ev)) { R.found.add(k); return 'lie'; }
   R.marked.add(k);
-  if (m.lie) {
-    (R.triedEv[k] = R.triedEv[k] || new Set()).add(ev);
-    if (!R.wrongEvUsed.has(k)) { R.wrongEvUsed.add(k); return 'wrongEvFree'; }
-    R.strikes++;
-    if (R.strikes >= MAX_STRIKES) failRun();
-    return 'wrongEv';
-  }
+  if (m.lie) (R.triedEv[k] = R.triedEv[k] || new Set()).add(ev);
   R.strikes++;
   if (R.strikes >= MAX_STRIKES) failRun();
   return 'strike';
@@ -67,19 +69,24 @@ function resumeCase(clean) {
   R.state = 'play'; R.strikes = clean ? 0 : 1; R.t0 = Date.now() - R.time * 1000;
   return true;
 }
-/* undo one strike, once per case, only when 2 strikes are already banked
-   (i.e. one mistake away from failing). Rewarded builds pay with an ad
-   (see ui.js); ad-free builds pay with one hint instead, see below. */
-const canRecoverStrike = () => R && R.state === 'play' && R.strikes === 2 && !R.strikeRecovered;
+/* undo one strike, once per case, from 1 strike up. It used to need 2
+   banked strikes, so a single wrong pick cost ★3 with no way back — the
+   recovery only ever appeared when a second mistake was already made.
+   Rewarded builds pay with an ad (see ui.js); ad-free builds pay with
+   one hint instead, see below. */
+const canRecoverStrike = () => R && R.state === 'play' && R.strikes >= 1 && !R.strikeRecovered;
 function recoverStrike() {
   if (!canRecoverStrike()) return false;
-  R.strikes = 1; R.strikeRecovered = true;
+  R.strikes = Math.max(0, R.strikes - 1); R.strikeRecovered = true;
   return true;
 }
 /* ad-free builds have no rewarded ad to watch, so the same recovery costs
    one hint instead. The hint counts toward the star rating (see accuse()):
-   after a free recovery strikes are 1 and hints are at least 1, so ★3 is
-   impossible and the run caps at ★2 — the recovery is never free in stars. */
+   after a free recovery hints are at least 1, so ★3 is impossible and the
+   run caps at ★2 — the recovery is never free in stars. Note the rewarded
+   build is different: recoverStrike() on its own never touches hints, so
+   recovering at 1 strike there leaves 0 strikes and 0 hints, and ★3 stays
+   possible — the ad is the whole price on that build. */
 function recoverStrikeFree() {
   if (!recoverStrike()) return false;
   R.hints++;
@@ -88,7 +95,11 @@ function recoverStrikeFree() {
 const allLiesFound = () => R.found.size >= lieCount(R.c);
 function accuse(id) {
   if (id === R.c.culprit) {
-    R.state = 'solved'; R.time = (Date.now() - R.t0) / 1000;
+    /* the frozen decision time, if the player came through the accuse
+       sheet — never the time after the confession scene. Capture it
+       before flipping state: elapsed() returns R.time once the run is
+       no longer 'play'. */
+    R.time = elapsed(); R.accuseFrozen = null; R.state = 'solved';
     let stars = R.strikes === 0 && R.hints === 0 ? 3 : R.strikes <= 1 && R.hints <= 1 ? 2 : 1;
     if (R.failedOnce) stars = Math.min(stars, 2); /* a run that failed once can earn at most ★2 */
     /* a daily run is scored on its own: it must not touch the main case's
@@ -105,6 +116,9 @@ function accuse(id) {
     persist();
     return stars;
   }
+  /* a wrong accusation drops the freeze: the clock was only paused while
+     the player was deciding, and the run goes on in real time. */
+  R.accuseFrozen = null;
   R.strikes++; if (R.strikes >= MAX_STRIKES) failRun();
   return 0;
 }

@@ -155,6 +155,17 @@ function beginCase(i, daily) {
   A.startMusic();
   $('caseTitle').textContent = R.c.title; $('casePlace').textContent = R.c.place;
   renderCase(); show('case'); PORTAL.start();
+  /* a fresh case always starts at the top of the chat: the outro of the
+     previous case scrolled the chat pane to the bottom, and that offset
+     survives the result screen — a pane keeps its scrollTop while its
+     screen is hidden, and re-rendering while hidden does not clamp it —
+     so "next case" used to open on the first chat message with the brief
+     scrolled out of view. Resume-after-failure does not come through
+     here (it re-renders in place and keeps the reading position), and
+     neither does tab switching, so only a fresh entry resets the panes.
+     The reset runs after show(): while the screen is hidden the panes
+     have no layout and a scrollTop assignment would not stick. */
+  for (const id of ['paneChat', 'paneEvidence', 'paneSuspects']) { const p = $(id); if (p) p.scrollTop = 0; }
 }
 function setTab(t) { tab = t; const w = isWide(); for (const b of document.querySelectorAll('.tabs button')) b.setAttribute('aria-selected', String(b.dataset.tab === t)); $('paneChat').hidden = !w && t !== 'chat'; $('paneEvidence').hidden = !w && t !== 'evidence'; $('paneSuspects').hidden = !w && t !== 'suspects'; if (coach === 0 && t === 'evidence') coach = 1; if (coach === 1 && t === 'chat') coach = 2; if (w && coach >= 0 && coach < 2) coach = 2; renderCoach(); }
 for (const b of document.querySelectorAll('.tabs button')) b.addEventListener('click', () => { A.click(); setTab(b.dataset.tab); });
@@ -163,12 +174,14 @@ function renderMeters() {
   const sm = $('strikeMeter'); sm.innerHTML = ''; sm.append(tr('strikes') + ' ');
   for (let k = 0; k < MAX_STRIKES; k++) sm.appendChild(k < R.strikes ? el('b', null, '✕') : el('span', null, '·'));
   $('btnAccuse').disabled = !allLiesFound();
-  /* strike recovery: shown whenever 2 strikes are banked, once per case, in
-     every build — the old code also required PORTAL.rewarded, so ad-free
-     builds never saw the button at all. Rewarded builds pay with an ad;
-     ad-free builds pay with one hint (see recoverStrikeFree in game.js).
-     While the portal SDK is still answering, the button shows disabled
-     rather than hidden, so it can never be tapped in the wrong mode. */
+  /* strike recovery: shown from 1 strike up, once per case, in every
+     build — it used to need 2 banked strikes, so a single wrong pick cost
+     ★3 with no way back. The old code also required PORTAL.rewarded, so
+     ad-free builds never saw the button at all. Rewarded builds pay with
+     an ad; ad-free builds pay with one hint (see recoverStrikeFree in
+     game.js). While the portal SDK is still answering, the button shows
+     disabled rather than hidden, so it can never be tapped in the wrong
+     mode. */
   const rb = $('btnRecoverStrike');
   if (rb) {
     const usable = !!(R && R.state === 'play' && canRecoverStrike());
@@ -201,7 +214,11 @@ setInterval(() => { if (R && R.state === 'play' && screen === 'case') $('timeMet
 function renderCase() {
   const c = R.c;
   const chat = $('paneChat'), coachEl = $('coach'); chat.innerHTML = ''; chat.appendChild(coachEl);   /* the guide lives in the pane; keep it across re-renders */
-  const brief = el('div', 'brief' + (S.coachDone ? ' closed' : '')); brief.append(el('b', null, tr('diff')[c.difficulty - 1] + ' · ' + c.place), c.intro); brief.onclick = () => brief.classList.toggle('closed'); chat.appendChild(brief);
+  /* the brief starts open: it used to start collapsed (one-line ellipsis)
+     once the tutorial was done, so returning players never saw the full
+     intro — including facts the case turns on, like the clock case's
+     20:50–21:10 window. Tapping still collapses it. */
+  const brief = el('div', 'brief'); brief.append(el('b', null, tr('diff')[c.difficulty - 1] + ' · ' + c.place), c.intro); brief.onclick = () => brief.classList.toggle('closed'); chat.appendChild(brief);
   c.chat.forEach((m, k) => {
     const row = el('button', 'msg' + (R.found.has(k) ? ' lie' : '') + (sel === k ? ' sel' : '')); row.type = 'button'; row.dataset.k = k;
     const av = face(el('div', 'av'), m.s);
@@ -309,13 +326,14 @@ function openEvidenceSheet(k) {
   card.append(list, no); $('sheet').hidden = false;
 }
 function closeSheet() { $('sheet').hidden = true; }
-$('sheet').addEventListener('click', e => { if (e.target === $('sheet')) { sel = null; closeSheet(); renderCase(); } });
+$('sheet').addEventListener('click', e => { if (e.target === $('sheet')) { sel = null; if (R) R.accuseFrozen = null; closeSheet(); renderCase(); } });
 function doMark(k, ev) {
   const r = mark(k, ev); sel = null;
   if (r === 'lie') { A.ok(); renderCase(); const row = document.querySelector(`.msg[data-k="${k}"]`); if (row) { row.classList.add('just'); setTimeout(() => row.classList.remove('just'), 900); } if (allLiesFound() && coach < 0) setTimeout(() => toast(tr('accuse') + ' →'), 600); }
-  else if (r === 'wrongEvFree') { A.click(); toast(tr('wrongEvFree')); sel = k; openEvidenceSheet(k); }
-  else if (r === 'strike' || r === 'wrongEv') {
-    A.bad(); toast(tr(r === 'wrongEv' ? 'wrongEv' : 'notLie'), 'bad'); renderCase();
+  else if (r === 'strike') {
+    /* one neutral line for every wrong pick, whichever half was wrong:
+       the player must not learn whether the message or the fact failed. */
+    A.bad(); toast(tr('notLie'), 'bad'); renderCase();
     const row = document.querySelector(`.msg[data-k="${k}"]`); if (row) row.classList.add('wrong');
     /* the failed screen used to wait 700 ms; the only timer on this path,
        and the wait read as the game hanging. 300 ms still lets the shake
@@ -337,7 +355,7 @@ function openAccuseSheet() {
     p.onclick = () => { A.click(); openAccuseConfirm(id, name); };
     card.appendChild(p);
   }
-  const no = el('button', 'btn ghost', tr('close')); no.onclick = closeSheet; card.appendChild(no);
+  const no = el('button', 'btn ghost', tr('close')); no.onclick = () => { R.accuseFrozen = null; closeSheet(); }; card.appendChild(no);
   $('sheet').hidden = false;
 }
 function openAccuseConfirm(id, name) {
@@ -349,7 +367,12 @@ function openAccuseConfirm(id, name) {
   card.append(yes, no); $('sheet').hidden = false;
 }
 $('btnAccuse').addEventListener('click', () => {
-  if (!allLiesFound() || R.state !== 'play') return; A.click(); openAccuseSheet();
+  if (!allLiesFound() || R.state !== 'play') return; A.click();
+  /* the clock freezes at this tap — the decision to accuse. If the
+     accusation is right, the result time is this moment; if it is wrong,
+     accuse() drops the freeze and the clock runs on. */
+  R.accuseFrozen = (Date.now() - R.t0) / 1000;
+  openAccuseSheet();
 });
 
 /* the payoff: the detective names the culprit in the chat, the room reacts, the culprit cracks */
@@ -398,6 +421,9 @@ function showSolved(stars) {
 }
 function showFailed() {
   A.lose(); PORTAL.stop(); $('coach').hidden = true; closeSheet();
+  /* the toast from the pick that failed the run (e.g. "nothing
+     contradicts this") must not linger under the failure screen. */
+  $('toasts').innerHTML = '';
   /* no culprit face on this screen, so drop the two-column result grid —
      with the face hidden the wide layout put the title in the empty right
      column and the text and buttons in the left one, scattered. */
@@ -450,7 +476,7 @@ $('btnRecoverStrike').addEventListener('click', () => {
   }
   PORTAL.reward().then(ok => {
     b.disabled = false;
-    if (ok && recoverStrike()) { A.ok(); toast(tr('recoverDone'), 'ok'); renderMeters(); }
+    if (ok && recoverStrike()) { A.ok(); toast(tr('recoverDone', R.strikes), 'ok'); renderMeters(); }
     else toast(tr('adFail'), 'bad');
   });
 });
@@ -472,7 +498,7 @@ $('optMusic').addEventListener('change', e => { S.settings.music = e.target.chec
 $('optLang').addEventListener('change', e => { persist(); setLang(e.target.value); });
 $('btnReset').addEventListener('click', () => { $('btnResetConfirm').hidden = false; });
 $('btnResetConfirm').addEventListener('click', () => { const st = S.settings; S = freshSave(); S.settings = st; persist(); $('settings').hidden = true; renderTitle(); });
-addEventListener('keydown', e => { if (e.key === 'Escape') { closePhoto(); $('settings').hidden = true; if (!$('hintModal').hidden) closeHint(); closeSheet(); } });
+addEventListener('keydown', e => { if (e.key === 'Escape') { closePhoto(); $('settings').hidden = true; if (!$('hintModal').hidden) closeHint(); if (R) R.accuseFrozen = null; closeSheet(); } });
 addEventListener('resize', () => { if (screen === 'case') setTab(tab); });
 
 /* ---- clock, start ---- */
