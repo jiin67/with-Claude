@@ -55,7 +55,10 @@ function mark(k, ev) {
   if (R.found.has(k)) return 'already';
   if (m.lie && evOf(m).includes(ev)) { R.found.add(k); return 'lie'; }
   R.marked.add(k);
-  if (m.lie) (R.triedEv[k] = R.triedEv[k] || new Set()).add(ev);
+  /* record every wrong pair, not only those on real lies: if only lies
+     kept a 'tried' tag, reopening the sheet would reveal which message
+     was the lie after a single strike */
+  (R.triedEv[k] = R.triedEv[k] || new Set()).add(ev);
   R.strikes++;
   if (R.strikes >= MAX_STRIKES) failRun();
   return 'strike';
