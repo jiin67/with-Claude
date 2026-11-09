@@ -7,6 +7,7 @@
 
    Output: games/alibi/dist/<target>/ and dist/alibi-<target>.zip
      web / itch  no ads · crazygames  CrazyGames SDK v3 · poki  Poki SDK v2
+     gamedistribution  GameDistribution SDK (needs GD_GAME_ID, see below)
    The fonts are downloaded into the package (needs curl and
    internet); without internet the Google Fonts link is kept.
    ========================================================================== */
@@ -17,7 +18,10 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, 'dist');
-const TARGETS = { web: 'none', itch: 'none', crazygames: 'crazygames', poki: 'poki' };
+const TARGETS = { web: 'none', itch: 'none', crazygames: 'crazygames', poki: 'poki', gamedistribution: 'gamedistribution' };
+/* GameDistribution needs the game id from its developer portal:
+     GD_GAME_ID=<id> node games/alibi/build.mjs gamedistribution */
+const GD_GAME_ID = (process.env.GD_GAME_ID || '').trim();
 const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap';
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
 
@@ -58,7 +62,12 @@ for (const target of targets) {
     html = html.replace(/<link rel="preconnect"[^>]*>\n/g, '')
       .replace(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com[^>]*>/, '<link rel="stylesheet" href="fonts.css">');
   }
-  html = html.replace('<script src="js/cases.js"></script>', `<script>window.GAME_PORTAL = '${TARGETS[target]}';</script>\n<script src="js/cases.js"></script>`);
+  if (target === 'gamedistribution' && !/^[0-9a-f]{32}$/i.test(GD_GAME_ID)) {
+    console.error('! gamedistribution needs GD_GAME_ID (32 hex chars from the GameDistribution portal). Skipped.');
+    continue;
+  }
+  const gd = target === 'gamedistribution' ? ` window.GD_GAME_ID = '${GD_GAME_ID}';` : '';
+  html = html.replace('<script src="js/cases.js"></script>', `<script>window.GAME_PORTAL = '${TARGETS[target]}';${gd}</script>\n<script src="js/cases.js"></script>`);
   writeFileSync(join(out, 'index.html'), html);
   const zip = join(DIST, `alibi-${target}.zip`);
   rmSync(zip, { force: true });
