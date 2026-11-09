@@ -74,7 +74,27 @@ function faceSVG(id, g) {
 }
 /* the gender hint for a suspect of a case ('f' / 'm' / 'n', default 'n') */
 const genderOf = (c, id) => ((c && c.suspects.find(s => s[0] === id)) || [])[3] || 'n';
-const face = (e, id) => { e.innerHTML = faceSVG((R ? R.c.id + ':' : '') + id, R ? genderOf(R.c, id) : 'n'); return e; };
+/* painted portraits (js/art.js) replace the vector face when the case has
+   them. The mood follows the case: 'nervous' once one of this person's lies
+   is found, 'confess' for the culprit after a solve. Missing moods fall back
+   calm → vector face, so a half-finished art set still works. Images load
+   only when a case is on screen, never at boot. */
+const ART_OK = typeof ART !== 'undefined';
+function portraitSrc(c, id, mood) {
+  const moods = ART_OK && c && ART.p[c.id + ':' + id]; if (!moods) return null;
+  const m = moods.includes(mood) ? mood : moods.includes('calm') ? 'calm' : moods[0];
+  return 'assets/p/' + c.id + '-' + id + '-' + m + '.webp';
+}
+function moodOf(c, id) {
+  if (!R || R.c !== c) return 'calm';
+  if (R.state === 'solved' && id === c.culprit) return 'confess';
+  return c.chat.some((m, k) => m.s === id && R.found.has(k)) ? 'nervous' : 'calm';
+}
+function faceHTML(c, id, mood) {
+  const src = portraitSrc(c, id, mood || moodOf(c, id));
+  return src ? `<img class="portrait" src="${src}" alt="" decoding="async" draggable="false">` : faceSVG(c.id + ':' + id, genderOf(c, id));
+}
+const face = (e, id, mood) => { e.innerHTML = R ? faceHTML(R.c, id, mood) : faceSVG(id, 'n'); return e; };
 
 /* ---- sounds ---- */
 const A = {
@@ -218,7 +238,9 @@ function renderCase() {
      once the tutorial was done, so returning players never saw the full
      intro — including facts the case turns on, like the clock case's
      20:50–21:10 window. Tapping still collapses it. */
-  const brief = el('div', 'brief'); brief.append(el('b', null, tr('diff')[c.difficulty - 1] + ' · ' + c.place), c.intro); brief.onclick = () => brief.classList.toggle('closed'); chat.appendChild(brief);
+  const brief = el('div', 'brief');
+  if (ART_OK && ART.s[c.id]) { const sc = el('img', 'brief-scene'); sc.src = 'assets/s/' + c.id + '.webp'; sc.alt = ''; sc.decoding = 'async'; brief.classList.add('has-scene'); brief.appendChild(sc); }
+  brief.append(el('b', null, tr('diff')[c.difficulty - 1] + ' · ' + c.place), c.intro); brief.onclick = () => brief.classList.toggle('closed'); chat.appendChild(brief);
   c.chat.forEach((m, k) => {
     const row = el('button', 'msg' + (R.found.has(k) ? ' lie' : '') + (sel === k ? ' sel' : '')); row.type = 'button'; row.dataset.k = k;
     const av = face(el('div', 'av'), m.s);
@@ -386,14 +408,40 @@ function playOutro(id, stars) {
     b.append(w, el('div', 'bub', text)); row.append(av, b); chat.appendChild(row); chat.scrollTop = chat.scrollHeight; return row;
   };
   add('me', tr('accuseLine', nameOf(c, id)), 'me'); A.ok();
-  let i = 0;
+  /* the culprit's last line in the outro is where they break */
+  let i = 0, videoShown = false, breakAt = -1;
+  lines.forEach((l, k) => { if (l.s === c.culprit) breakAt = k; });
   const step = () => {
     if (i >= lines.length) { setTimeout(() => showSolved(stars), 900); return; }
     const l = lines[i++], last = i === lines.length, confess = l.s === c.culprit && i >= lines.length - 1;
+    /* the culprit's breaking line plays as a video first, when there is one */
+    if (i - 1 === breakAt && !videoShown) { videoShown = true; const go = () => { i--; step(); }; playConfession(c, l.m).then(go); return; }
     const ty = add(l.s, '…', 'typing');
     setTimeout(() => { ty.remove(); add(l.s, l.m, l.s === c.culprit ? (confess ? 'confess' : 'accused') : ''); A.msg ? A.msg() : A.click(); if (last) A.win(); step(); }, window.__al && window.__al.fast ? 20 : 500 + Math.min(1500, l.m.length * 22));
   };
   setTimeout(step, window.__al && window.__al.fast ? 20 : 600);
+}
+
+/* The culprit confessing on camera, in the player's language. Resolves when
+   the clip ends, is skipped, or fails to load — a missing or blocked video
+   must never hold up the result. Plays with sound only when sound is on. */
+function playConfession(c, line) {
+  const langs = ART_OK && ART.v[c.id];
+  if (!langs || !langs.includes(LANG) || (window.__al && window.__al.fast)) return Promise.resolve();
+  return new Promise(res => {
+    const wrap = el('div', 'confess-vid'), card = el('div', 'cv-card'), v = document.createElement('video');
+    v.src = 'assets/v/' + c.id + '-' + LANG + '.mp4'; v.playsInline = true; v.preload = 'auto'; v.muted = !S.settings.sound;
+    const poster = portraitSrc(c, c.culprit, 'confess'); if (poster) v.poster = poster;
+    const name = el('div', 'cv-name', nameOf(c, c.culprit)), sub = el('div', 'cv-sub', (typeof CONFESS !== 'undefined' && CONFESS[LANG] && CONFESS[LANG][c.id]) || line), skip = el('button', 'btn ghost cv-skip', tr('skip'));
+    card.append(v, name, sub, skip); wrap.appendChild(card); document.body.appendChild(wrap);
+    let done = false;
+    const end = () => { if (done) return; done = true; A.setMuted(!S.settings.sound); wrap.classList.add('out'); setTimeout(() => wrap.remove(), 250); res(); };
+    skip.onclick = () => { A.click(); end(); };
+    v.onended = end; v.onerror = end;
+    setTimeout(end, 15000);
+    A.setMuted(true);   /* the game's own sounds and music step aside for the voice */
+    const p = v.play(); if (p && p.catch) p.catch(() => { v.muted = true; v.play().catch(end); });
+  });
 }
 
 /* ---- results ---- */
@@ -407,7 +455,7 @@ function showSolved(stars) {
   $('btnResResumeAd').hidden = true;
   if (coach >= 0) { S.coachDone = true; persist(); } coach = -1; $('coach').hidden = true;
   $('resBadge').textContent = tr('solved'); $('resTitle').textContent = R.c.title;
-  const rf = $('resFace'); rf.hidden = false; rf.innerHTML = faceSVG(R.c.id + ':' + R.c.culprit, genderOf(R.c, R.c.culprit)); rf.dataset.stamp = tr('confessed'); $('resName').textContent = nameOf(R.c, R.c.culprit) + ' · ' + (R.c.suspects.find(s => s[0] === R.c.culprit) || [])[2];
+  const rf = $('resFace'); rf.hidden = false; rf.innerHTML = faceHTML(R.c, R.c.culprit, 'confess'); rf.dataset.stamp = tr('confessed'); $('resName').textContent = nameOf(R.c, R.c.culprit) + ' · ' + (R.c.suspects.find(s => s[0] === R.c.culprit) || [])[2];
   const st = $('resStars'); st.innerHTML = ''; for (let k = 0; k < 3; k++) st.appendChild(el('span', k < stars ? '' : 'off', '★'));
   $('resBody').textContent = R.c.solve;
   const meta = $('resMeta'); meta.innerHTML = '';

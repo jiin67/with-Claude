@@ -55,6 +55,8 @@ for (const target of targets) {
   rmSync(out, { recursive: true, force: true }); mkdirSync(out, { recursive: true });
   cpSync(join(ROOT, 'js'), join(out, 'js'), { recursive: true });
   cpSync(join(ROOT, 'style.css'), join(out, 'style.css'));
+  /* painted art (portraits, scenes, confession videos); loaded per case, never at boot */
+  if (existsSync(join(ROOT, 'assets'))) cpSync(join(ROOT, 'assets'), join(out, 'assets'), { recursive: true });
   let html = page;
   if (fonts) {
     cpSync(join(fonts, 'files'), join(out, 'fonts'), { recursive: true });

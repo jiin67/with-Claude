@@ -59,3 +59,9 @@
 ## 작업 요령
 - 사건 구조와 공정성 규칙은 `README.md` "사건 추가하기"
 - 테스트 훅: 콘솔의 `__al` (`__al.R`이 진행 중 사건, `__al.beginCase(i)`)
+
+## 그림 파이프라인 (2026-11-09)
+- 제작 지시서: `art/ART_BRIEF.md` (1차: 사건 1~5, 16명, 장면 5, 자백 영상 10)
+- 받은 원본 → `node games/alibi/tools/art-import.mjs <원본폴더>` → `assets/{p,s,v}` 웹용 파일 + `js/art.js` 매니페스트 자동 갱신. 원본 PNG는 커밋하지 않음.
+- 게임: 초상화(calm/nervous/confess, 사건 열 때만 로드, 없으면 SVG 얼굴), 사건 개요 위 장면 그림, 범인의 마지막 대사 직전 자백 영상(현재 언어, 건너뛰기, 15초 안전장치). 자막은 `js/confess.js`.
+- `build.mjs`가 `assets/`를 모든 빌드에 복사. CrazyGames 기준: 첫 로딩 ≤50MB(모바일 ≤20MB), 전체 ≤250MB.
