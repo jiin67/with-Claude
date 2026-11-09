@@ -59,7 +59,8 @@ Object.assign(OUTRO.en, {
     { s: 'suki', m: 'That camera has been fifteen minutes slow since Monday. IT taped a note on it. 8:48 on that screen is 9:03.' },
     { s: 'ira', m: 'Fine. Three months behind on this desk and my client bailed. The laptop was going on a resale site tonight. I\'d have been gone by morning.' },
     { s: 'ben', m: 'For the record, I did step out. Three minutes for a coffee at ten to nine. I didn\'t want it on my review.' },
-    { s: 'suki', m: 'It\'s in your bag, Ira. Put it on the desk and Ben calls the owner, not the police. Your call.' }
+    { s: 'suki', m: 'It\'s in your bag, Ira. Put it on the desk and Ben calls the owner, not the police. Your call.' },
+    { s: 'ben', m: 'Fair warning, the owner\'s on edge. That Larkfield rent notice came this week. I\'ll pick my words.' }
   ]
 });
 Object.assign(OUTRO.ko, {
@@ -68,6 +69,7 @@ Object.assign(OUTRO.ko, {
     { s: 'suki', m: '그 카메라 월요일부터 15분 느려요. IT가 메모까지 붙여 놨어요. 그 화면의 8시 48분이 9시 3분이에요.' },
     { s: 'ira', m: '알았어요. 자리 월세 석 달 밀렸는데 클라이언트가 날랐어요. 노트북은 오늘 밤 중고 사이트에 올릴 생각이었어요. 아침이면 떠났을 거고요.' },
     { s: 'ben', m: '참고로 저 잠깐 나갔다 온 건 맞아요. 8시 50분에 커피 사러 3분. 평가에 남을까 봐 말 안 했어요.' },
-    { s: 'suki', m: '가방 안에 있죠, 이라 씨. 데스크에 올려놓으면 벤이 경찰 말고 주인한테 전화할 거예요. 선택하세요.' }
+    { s: 'suki', m: '가방 안에 있죠, 이라 씨. 데스크에 올려놓으면 벤이 경찰 말고 주인한테 전화할 거예요. 선택하세요.' },
+    { s: 'ben', m: '참고로 주인분 요즘 예민해요. 이번 주에 라크필드 임대 안내문이 왔거든요. 말은 제가 잘 골라 볼게요.' }
   ]
 });

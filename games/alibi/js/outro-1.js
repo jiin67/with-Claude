@@ -20,7 +20,7 @@ Object.assign(OUTRO.en, {
     { s: 'cleo', m: 'Because the log says you opened it at 22:31 from outside the office, and their page went up at 23:00.' },
     { s: 'dev', m: 'They offered me a real job. A salary. All I had to do was "show them what we were working on". I didn\'t think they\'d post it word for word.' },
     { s: 'ben', m: 'And the wifi thing — I hotspotted off my phone. I said office wifi because I\'m not supposed to use personal devices for drafts. Not my proudest night.' },
-    { s: 'cleo', m: 'Dev, HR at nine. Ben, you and I are talking about hotspots at nine-fifteen.' }
+    { s: 'cleo', m: 'Dev, HR at nine. Dylan, you and I are talking about hotspots at nine-fifteen.' }
   ],
   festival: [
     { s: 'jae', m: 'This is insane. I had the desk the WHOLE time. Ask literally anyone.' },
@@ -64,7 +64,8 @@ Object.assign(OUTRO.en, {
     { s: 'yun', m: 'The fob log has you at 23:40. Nobody else opened that door.' },
     { s: 'gus', m: 'The vote got pushed to next month. Again. The vines were dripping onto my balcony for three summers. I went up to "trim" and I didn\'t stop. I\'m not sorry about the vines. I\'m sorry about you, kid.' },
     { s: 'mo', m: 'I blamed the wind because I\'d left the shed unlocked and didn\'t want that on me. Should\'ve said so this morning.' },
-    { s: 'yun', m: 'Seedlings are 3,000 won a tray. You\'re buying ten. And you\'re watering them.' }
+    { s: 'yun', m: 'Seedlings are 3,000 won a tray. You\'re buying ten. And you\'re watering them.' },
+    { s: 'mo', m: 'One more thing. Larkfield, the new management firm, sent a letter. The garden is on its "to clear" list.' }
   ],
   podcast: [
     { s: 'vi', m: 'I was a GUEST. I came on your show for free and now I\'m the leak? Unbelievable.' },
@@ -94,7 +95,7 @@ Object.assign(OUTRO.ko, {
     { s: 'cleo', m: '기록에 네가 22:31에 사무실 밖에서 열었고, 23:00에 그쪽 페이지가 올라갔으니까.' },
     { s: 'dev', m: '정규직 준다고 했어요. 월급이요. "뭐 만드는지만 보여 달라"고 했어요. 토씨 하나 안 틀리고 올릴 줄은 몰랐어요.' },
     { s: 'ben', m: '와이파이는… 폰 핫스팟 썼어요. 개인 기기로 초안 보면 안 되니까 사무실 와이파이라고 했어요. 자랑스러운 밤은 아니네요.' },
-    { s: 'cleo', m: '데브, 9시에 인사팀. 벤, 9시 15분에 나랑 핫스팟 얘기.' }
+    { s: 'cleo', m: '데브, 9시에 인사팀. 딜런, 9시 15분에 나랑 핫스팟 얘기.' }
   ],
   festival: [
     { s: 'jae', m: '말도 안 돼. 나 부스에 계속 있었어. 아무한테나 물어봐.' },
@@ -138,7 +139,8 @@ Object.assign(OUTRO.ko, {
     { s: 'yun', m: '출입 기록에 23:40, 구 씨예요. 그 문 연 사람은 구 씨밖에 없어요.' },
     { s: 'gus', m: '표결이 또 다음 달로 밀렸잖아요. 그 덩굴에서 세 여름 내내 우리 베란다로 물이 떨어졌어요. "다듬으러" 올라갔다가 멈추질 못했어요. 덩굴한테는 안 미안해요. 학생한테는 미안하고요.' },
     { s: 'mo', m: '바람 탓한 건 창고 안 잠근 게 내 책임 될까 봐요. 아침에 바로 말했어야 했는데.' },
-    { s: 'yun', m: '모종 한 판에 3천 원이에요. 열 판 사세요. 물도 직접 주시고요.' }
+    { s: 'yun', m: '모종 한 판에 3천 원이에요. 열 판 사세요. 물도 직접 주시고요.' },
+    { s: 'mo', m: '하나 더요. 새 관리회사 라크필드에서 공문이 왔는데, 텃밭이 "정리 대상"에 들어가 있어요.' }
   ],
   podcast: [
     { s: 'vi', m: '저 게스트였어요. 공짜로 나와 줬는데 이제 제가 유출범이에요? 기가 막히네요.' },

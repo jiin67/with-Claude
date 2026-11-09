@@ -60,16 +60,16 @@ const CASES = {
     {
       id: 'draft', title: 'The Leaked Draft', place: 'Startup office · 11:40 pm', difficulty: 2,
       intro: 'A competitor posted your unreleased product page an hour after the draft was finished. Four people had access.',
-      suspects: [['ava', 'Ava', 'Design lead', 'f'], ['ben', 'Ben', 'Engineer', 'm'], ['cleo', 'Cleo', 'Product manager', 'f'], ['dev', 'Dev', 'Intern', 'n']],
+      suspects: [['ava', 'Ava', 'Design lead', 'f'], ['ben', 'Dylan', 'Engineer', 'm'], ['cleo', 'Cleo', 'Product manager', 'f'], ['dev', 'Dev', 'Intern', 'n']],
       facts: [
-        ['📄', 'Document log: opened by Ben 22:10 (office) · Dev 22:31 (external IP) · Cleo 20:15 (office).'],
+        ['📄', 'Document log: opened by Dylan 22:10 (office) · Dev 22:31 (external IP) · Cleo 20:15 (office).'],
         ['📶', 'IT ticket: office Wi-Fi was down from 21:30 to 23:30.'],
         ['🌐', 'Competitor page went live at 23:00.'],
-        ['🔑', 'Access list: Ben, Cleo, Dev. Ava was never added.']
+        ['🔑', 'Access list: Dylan, Cleo, Dev. Ava was never added.']
       ],
       chat: [
         { s: 'cleo', t: '23:41', m: 'It\'s on their site. Word for word. Who opened the draft tonight?' },
-        { s: 'ben', t: '23:43', m: 'I did, around 10, on the office wifi. Just proofreading, then I left.', ev: 1, lie: 'The office Wi-Fi was down from 21:30. Ben opened it at 22:10 from the office, so he used another connection and is hiding something about how.' },
+        { s: 'ben', t: '23:43', m: 'I did, around 10, on the office wifi. Just proofreading, then I left.', ev: 1, lie: 'The office Wi-Fi was down from 21:30. Dylan opened it at 22:10 from the office, so he used another connection and is hiding something about how.' },
         { s: 'dev', t: '23:44', m: 'I never opened the draft. I don\'t even think I have access?', ev: [0, 3], lie: 'The log shows Dev opened it at 22:31 from an external IP, and the access list includes Dev.' },
         { s: 'ava', t: '23:45', m: 'I couldn\'t have. Nobody ever added me to that doc.' },
         { s: 'cleo', t: '23:46', m: 'I opened it at quarter past eight to add the pricing table, then went home.' },
@@ -77,7 +77,7 @@ const CASES = {
         { s: 'dev', t: '23:48', m: 'I was packing up!!' }
       ],
       culprit: 'dev',
-      solve: 'Dev opened the draft at 22:31 from outside the office network, half an hour before the competitor published. Ben\'s story about the Wi-Fi was sloppy, but his access was earlier and from inside.'
+      solve: 'Dev opened the draft at 22:31 from outside the office network, half an hour before the competitor published. Dylan\'s story about the Wi-Fi was sloppy, but his access was earlier and from inside.'
     },
     {
       id: 'festival', title: 'The Festival Cash Box', place: 'School festival · 5:50 pm', difficulty: 2,
@@ -199,16 +199,16 @@ const CASES = {
     {
       id: 'draft', title: '유출된 초안', place: '스타트업 사무실 · 오후 11:40', difficulty: 2,
       intro: '초안을 끝낸 지 한 시간 만에 경쟁사가 우리 미공개 제품 페이지를 올렸다. 접근 권한이 있던 사람은 넷.',
-      suspects: [['ava', '아바', '디자인 리드', 'f'], ['ben', '벤', '엔지니어', 'm'], ['cleo', '클레오', 'PM', 'f'], ['dev', '데브', '인턴', 'n']],
+      suspects: [['ava', '아바', '디자인 리드', 'f'], ['ben', '딜런', '엔지니어', 'm'], ['cleo', '클레오', 'PM', 'f'], ['dev', '데브', '인턴', 'n']],
       facts: [
-        ['📄', '문서 기록: 벤 22:10 열람(사무실) · 데브 22:31 열람(외부 IP) · 클레오 20:15 열람(사무실).'],
+        ['📄', '문서 기록: 딜런 22:10 열람(사무실) · 데브 22:31 열람(외부 IP) · 클레오 20:15 열람(사무실).'],
         ['📶', 'IT 티켓: 사무실 와이파이 21:30–23:30 먹통.'],
         ['🌐', '경쟁사 페이지 게시: 23:00.'],
-        ['🔑', '접근 권한: 벤, 클레오, 데브. 아바는 추가된 적 없음.']
+        ['🔑', '접근 권한: 딜런, 클레오, 데브. 아바는 추가된 적 없음.']
       ],
       chat: [
         { s: 'cleo', t: '23:41', m: '경쟁사 사이트에 떴어요. 토씨 하나 안 틀리고. 오늘 밤 초안 연 사람?' },
-        { s: 'ben', t: '23:43', m: '저요, 10시쯤 사무실 와이파이로요. 오타만 보고 퇴근했어요.', ev: 1, lie: '사무실 와이파이는 21:30부터 끊겨 있었다. 벤은 22:10에 사무실에서 열었으니 다른 연결을 썼고, 그걸 숨기고 있다.' },
+        { s: 'ben', t: '23:43', m: '저요, 10시쯤 사무실 와이파이로요. 오타만 보고 퇴근했어요.', ev: 1, lie: '사무실 와이파이는 21:30부터 끊겨 있었다. 딜런은 22:10에 사무실에서 열었으니 다른 연결을 썼고, 그걸 숨기고 있다.' },
         { s: 'dev', t: '23:44', m: '저는 초안 연 적 없어요. 저한테 권한이 있긴 한가요?', ev: [0, 3], lie: '기록에 데브가 22:31에 외부 IP로 열었다고 남아 있고, 권한 목록에도 데브가 있다.' },
         { s: 'ava', t: '23:45', m: '저는 못 열어요. 그 문서에 저 추가된 적이 없잖아요.' },
         { s: 'cleo', t: '23:46', m: '저는 8시 15분에 가격표 넣으려고 열었다가 바로 퇴근했어요.' },
@@ -216,7 +216,7 @@ const CASES = {
         { s: 'dev', t: '23:48', m: '짐 싸고 있었어요!!' }
       ],
       culprit: 'dev',
-      solve: '데브는 22:31에 사무실 밖 네트워크에서 초안을 열었다. 경쟁사가 게시하기 30분 전이다. 벤의 와이파이 이야기는 허술했지만, 벤의 열람은 더 이른 시각에 사무실 안에서였다.'
+      solve: '데브는 22:31에 사무실 밖 네트워크에서 초안을 열었다. 경쟁사가 게시하기 30분 전이다. 딜런의 와이파이 이야기는 허술했지만, 딜런의 열람은 더 이른 시각에 사무실 안에서였다.'
     },
     {
       id: 'festival', title: '축제 현금함', place: '학교 축제 · 오후 5:50', difficulty: 2,

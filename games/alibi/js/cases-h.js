@@ -56,7 +56,8 @@ Object.assign(OUTRO.en, {
     { s: 'mara', m: 'The same yellow raincoat as your profile picture, at 4:20, two minutes after your app check-in. Not blurry.' },
     { s: 'finn', m: "Rent went up and I was forty short. It's a jar of coins, I figured nobody counts it. I'll bring it back tomorrow, all of it." },
     { s: 'noa', m: 'And I said I was out back because I had claimed I was already on break at 4:20. Sorry.' },
-    { s: 'mara', m: 'Tomorrow, Finn. In the jar, not in my hand. And Noa, go on break when the schedule says.' }
+    { s: 'mara', m: 'Tomorrow, Finn. In the jar, not in my hand. And Noa, go on break when the schedule says.' },
+    { s: 'mara', m: 'And you should both know: Larkfield is raising the shop\'s rent again.' }
   ]
 });
 Object.assign(OUTRO.ko, {
@@ -65,6 +66,7 @@ Object.assign(OUTRO.ko, {
     { s: 'mara', m: '프로필 사진이랑 똑같은 노란 우비요. 4시 20분, 앱 체크인 2분 뒤. 흐릿하지 않아요.' },
     { s: 'finn', m: '월세가 올랐는데 4만 원이 모자랐어요. 동전 통이잖아요, 아무도 안 셀 줄 알았어요. 내일 다 돌려놓을게요.' },
     { s: 'noa', m: '저는 4시 20분에 이미 쉬고 있다고 한 게 걸릴까 봐 뒷문에 있었다고 했어요. 죄송해요.' },
-    { s: 'mara', m: '내일이에요, 핀. 제 손이 아니라 통에요. 노아는 근무표대로 쉬고요.' }
+    { s: 'mara', m: '내일이에요, 핀. 제 손이 아니라 통에요. 노아는 근무표대로 쉬고요.' },
+    { s: 'mara', m: '그리고 둘 다 알아 두세요. 라크필드에서 가게 임대료를 또 올린대요.' }
   ]
 });

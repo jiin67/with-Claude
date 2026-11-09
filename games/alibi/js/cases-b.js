@@ -4,25 +4,25 @@ CASES.en.push(
   {
     id: 'rooftop', title: 'The Rooftop Garden', place: 'Apartment rooftop · 7:10 am', difficulty: 2,
     intro: 'Every tomato plant in the shared rooftop garden was cut down overnight. The roof door needs a key fob. Three people have one.',
-    suspects: [['gus', 'Gus', 'Neighbor, 5th floor', 'm'], ['mo', 'Mo', 'Building manager', 'n'], ['yun', 'Yun', 'Student, waters the plants', 'n']],
+    suspects: [['gus', 'Mr. Koo', 'Neighbor, 5th floor', 'm'], ['mo', 'Mo', 'Building manager', 'n'], ['yun', 'Yun', 'Student, waters the plants', 'n']],
     facts: [
-      ['🔐', 'Roof door fob log: Yun 20:10 · Gus 23:40. No other entries until morning.'],
+      ['🔐', 'Roof door fob log: Yun 20:10 · Mr. Koo 23:40. No other entries until morning.'],
       ['🌧️', 'Weather report: rain 22:00–01:00, wind calm all night (under 10 km/h).'],
       ['✂️', 'Photo: every stem cut clean at an angle. Marks match the pruning shears from the garden shed.'],
-      ['📋', 'Residents\' meeting, Tuesday 19:00: Gus asked for the garden to be removed. Vote postponed to next month.']
+      ['📋', 'Residents\' meeting, Tuesday 19:00: Mr. Koo asked for the garden to be removed. Vote postponed to next month.']
     ],
     chat: [
       { s: 'yun', t: '07:12', m: 'The tomatoes are all gone?? Who did this' },
       { s: 'mo', t: '07:15', m: 'Calm down, it was the wind. It was blowing hard all night, snapped them right off.', ev: [1, 2], lie: 'The weather report says the wind was calm all night, and the photo shows clean angled cuts, not snapped stems.' },
       { s: 'yun', t: '07:16', m: 'I watered them at 8 last night and they were fine.' },
-      { s: 'gus', t: '07:20', m: 'Don\'t look at me. I haven\'t been up on that roof in weeks.', ev: 0, lie: 'The fob log shows Gus opening the roof door at 23:40.' },
+      { s: 'gus', t: '07:20', m: 'Don\'t look at me. I haven\'t been up on that roof in weeks.', ev: 0, lie: 'The fob log shows Mr. Koo opening the roof door at 23:40.' },
       { s: 'gus', t: '07:21', m: 'And for the record, I said at the meeting the garden should go. Legally. With a vote.' },
       { s: 'mo', t: '07:24', m: 'The shed was open this morning, I\'ll admit I may have left it unlocked.' },
       { s: 'yun', t: '07:25', m: 'So someone took the shears from the shed. In the rain.' },
       { s: 'gus', t: '07:27', m: 'Or a raccoon.' }
     ],
     culprit: 'gus',
-    solve: 'Gus went up to the roof at 23:40, in the rain, weeks after demanding the garden be removed, and lied about it. Mo lied about the wind to cover for leaving the shed unlocked, but Mo never went through the roof door.'
+    solve: 'Mr. Koo went up to the roof at 23:40, in the rain, weeks after demanding the garden be removed, and lied about it. Mo lied about the wind to cover for leaving the shed unlocked, but Mo never went through the roof door.'
   },
   {
     id: 'podcast', title: 'The Leaked Episode', place: 'Studio Nine · 9:30 am', difficulty: 3,

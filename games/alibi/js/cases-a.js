@@ -4,19 +4,19 @@ CASES.en.push(
   {
     id: 'library', title: 'The Rare Book', place: 'University library · 8:00 am', difficulty: 2,
     intro: 'A 1702 botanical folio vanished from the rare reading room overnight. The room was locked and alarmed. Three people had reasons to be in the building.',
-    suspects: [['nora', 'Nora', 'Night librarian', 'f'], ['sam', 'Sam', 'Grad student', 'm'], ['gus', 'Gus', 'Security guard', 'm']],
+    suspects: [['nora', 'Nora', 'Night librarian', 'f'], ['sam', 'Milo', 'Grad student', 'm'], ['gus', 'Gus', 'Security guard', 'm']],
     facts: [
       ['📚', 'Book scanner log: Hortus Botanicus scanned back into the rare room by Nora at 21:30. No checkout after that.'],
       ['🚨', 'Alarm panel, rare room: armed 22:05 · disarmed 23:10 · armed again 23:18. The disarm code belongs to security.'],
       ['🥤', 'Vending machine receipt, level 2 (next to the rare room door): 23:12, one can coffee, paid with Gus\'s staff card.'],
-      ['🪪', 'Entrance gate log: Sam in 18:40, out 21:20. Student cards stop working at 22:00.'],
+      ['🪪', 'Entrance gate log: Milo in 18:40, out 21:20. Student cards stop working at 22:00.'],
       ['📋', 'Shift roster: Nora 14:00–22:00 · Gus 22:00–06:00.']
     ],
     chat: [
       { s: 'nora', t: '08:02', m: 'Hortus is gone from the rare room. I shelved it myself at 9:30 and scanned it in.' },
       { s: 'gus', t: '08:05', m: 'Room was armed all night. Nobody went in after you locked up.', ev: 1, lie: 'The alarm panel shows the room disarmed at 23:10 and re-armed at 23:18.' },
-      { s: 'sam', t: '08:06', m: 'I was in the reading room until Nora closed up at ten. Left with everyone else.', ev: 3, lie: 'The gate log shows Sam leaving the building at 21:20, before closing.' },
-      { s: 'nora', t: '08:07', m: 'Sam, your desk was empty by half nine when I did the last round.' },
+      { s: 'sam', t: '08:06', m: 'I was in the reading room until Nora closed up at ten. Left with everyone else.', ev: 3, lie: 'The gate log shows Milo leaving the building at 21:20, before closing.' },
+      { s: 'nora', t: '08:07', m: 'Milo, your desk was empty by half nine when I did the last round.' },
       { s: 'sam', t: '08:08', m: 'Maybe. Point is I didn\'t take anything.' },
       { s: 'gus', t: '08:09', m: 'I was doing rounds on level 4 around eleven, never touched level 2.', ev: 2, lie: 'His staff card bought a coffee at the level 2 vending machine, next to the rare room door, at 23:12.' },
       { s: 'nora', t: '08:10', m: 'The panel says the room was disarmed at ten past eleven. Only security has that code.' },
@@ -24,7 +24,7 @@ CASES.en.push(
       { s: 'sam', t: '08:12', m: 'Who else even has the code?' }
     ],
     culprit: 'gus',
-    solve: 'Gus disarmed the rare room at 23:10 with the security code, bought a coffee at the machine by its door at 23:12 and re-armed it at 23:18. Sam lied about staying until closing to hide that he skipped out early, but his card could not open anything after 22:00.'
+    solve: 'Gus disarmed the rare room at 23:10 with the security code, bought a coffee at the machine by its door at 23:12 and re-armed it at 23:18. Milo lied about staying until closing to hide that he skipped out early, but his card could not open anything after 22:00.'
   },
   {
     id: 'wedding', title: 'The Ring Box', place: 'Hotel Aster, suite 1801 · 1:05 pm', difficulty: 3,

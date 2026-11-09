@@ -6,12 +6,12 @@ CASES.en.push(
   {
     id: 'locker', title: 'Locker 22', place: 'Northside Gym · 7:05 pm', difficulty: 3,
     intro: 'Vic came out of spin class to find locker 22 open and his watch gone. Three people were in the building for that hour. A member\'s selfie by the water fountain shows more than she meant it to.',
-    suspects: [['pam', 'Pam', 'Front desk', 'f'], ['theo', 'Theo', 'Spin instructor', 'm'], ['nell', 'Nell', 'Member, locker 23', 'f']],
+    suspects: [['pam', 'Pam', 'Front desk', 'f'], ['theo', 'Leo', 'Spin instructor', 'm'], ['nell', 'Nell', 'Member, locker 23', 'f']],
     facts: [
       ['📷', 'Member selfie by the water fountain, 18:31. Posted with "halfway through spin 💦".', ['wall clock', 'front desk', 'key hook', 'locker-room door', 'desk surface']],
       ['🚪', 'Locker-room turnstile log (member cards only): Vic in 17:55 · Nell in 18:02, out 18:08 · Vic out 19:05. Staff use the staff door, which keeps no log.'],
       ['🗝️', 'Master-key sign-out sheet: Pam, 18:25–18:40, reason "member locked out, locker 14". The desk log has no locked-out request all evening; locker 14 has been unassigned since May.'],
-      ['🏃', 'Spin studio: attendance scan Vic 18:10, Nell 18:10. Roll call at 18:45: all twelve riders present. Class video shows Theo on the lead bike 18:10–19:00.'],
+      ['🏃', 'Spin studio: attendance scan Vic 18:10, Nell 18:10. Roll call at 18:45: all twelve riders present. Class video shows Leo on the lead bike 18:10–19:00.'],
       ['📝', 'Vic\'s statement: went back for a towel at 18:09, watch still in locker 22, then straight into class.']
     ],
     chat: [
@@ -31,7 +31,7 @@ CASES.en.push(
   {
     id: 'drone', title: 'Through the Glass', place: 'Orchard Lane greenhouse · 11:00 pm', difficulty: 3,
     intro: 'A drone came through the greenhouse roof at twenty past ten. The registration traces to one person. Two records say Vera was in two places at once; a third says which one to believe.',
-    suspects: [['gil', 'Gil', 'Hobbyist, registered owner', 'm'], ['ren', 'Ren', 'Real-estate photographer', 'n'], ['jay', 'Jay', 'Teenager', 'n'], ['vera', 'Vera', 'Greenhouse owner\'s rival', 'f']],
+    suspects: [['gil', 'Gil', 'Hobbyist, registered owner', 'm'], ['ren', 'Robin', 'Real-estate photographer', 'n'], ['jay', 'Jay', 'Teenager', 'n'], ['vera', 'Vera', 'Greenhouse owner\'s rival', 'f']],
     facts: [
       ['🛩️', 'Flight log recovered from the wreck: takeoff 22:14 from the gravel lot on Mill Road, 600 m from the greenhouse · crash 22:21.'],
       ['📍', 'Vera\'s phone location history, which she sent to the group herself: "Home, 21:30–23:00."'],
@@ -52,19 +52,19 @@ CASES.en.push(
       { s: 'vera', t: '23:14', m: '…I don\'t see how that matters.' }
     ],
     culprit: 'vera',
-    solve: 'Two records put Vera in two places: her phone says home, her car says the Mill Road lot from 22:05 to 22:30. The phone\'s own activity log settles it: nobody touched it from 21:40 to 22:52, so the history only proves the phone stayed home while Vera drove to the lot the drone took off from at 22:14, with the drone Gil had lent her on Thursday. Gil lied about the garage to dodge the owner\'s liability, and Ren invented wind on a calm night, but nothing places Ren near Mill Road.'
+    solve: 'Two records put Vera in two places: her phone says home, her car says the Mill Road lot from 22:05 to 22:30. The phone\'s own activity log settles it: nobody touched it from 21:40 to 22:52, so the history only proves the phone stayed home while Vera drove to the lot the drone took off from at 22:14, with the drone Gil had lent her on Thursday. Gil lied about the garage to dodge the owner\'s liability, and Robin invented wind on a calm night, but nothing places Robin near Mill Road.'
   }
 );
 CASES.ko.push(
   {
     id: 'locker', title: '22번 사물함', place: '노스사이드 헬스장 · 오후 7:05', difficulty: 3,
     intro: '빅이 스피닝 수업을 마치고 나오니 22번 사물함이 열려 있고 시계가 사라졌다. 그 한 시간 동안 건물에 있던 사람은 셋. 어느 회원이 정수기 앞에서 찍은 셀카에는 본인이 의도한 것보다 많은 것이 찍혀 있다.',
-    suspects: [['pam', '팸', '프런트 직원', 'f'], ['theo', '테오', '스피닝 강사', 'm'], ['nell', '넬', '회원, 23번 사물함', 'f']],
+    suspects: [['pam', '팸', '프런트 직원', 'f'], ['theo', '리오', '스피닝 강사', 'm'], ['nell', '넬', '회원, 23번 사물함', 'f']],
     facts: [
       ['📷', '회원 셀카, 정수기 앞, 18:31. "스피닝 절반 완료 💦"와 함께 게시.', ['벽시계', '프런트 데스크', '키 걸이', '탈의실 문', '데스크 위']],
       ['🚪', '탈의실 회전문 기록(회원 카드만): 빅 입장 17:55 · 넬 입장 18:02, 퇴장 18:08 · 빅 퇴장 19:05. 직원은 기록이 남지 않는 직원용 문을 쓴다.'],
       ['🗝️', '마스터키 대출 장부: 팸, 18:25–18:40, 사유 "회원 잠김, 14번 사물함". 프런트 일지에 그날 저녁 잠김 신고는 없음. 14번 사물함은 5월부터 배정되지 않은 빈 칸.'],
-      ['🏃', '스피닝 스튜디오: 출석 스캔 빅 18:10, 넬 18:10. 18:45 점호: 12명 전원 자리에 있음. 수업 영상에 테오는 18:10–19:00 내내 앞 자전거에 있다.'],
+      ['🏃', '스피닝 스튜디오: 출석 스캔 빅 18:10, 넬 18:10. 18:45 점호: 12명 전원 자리에 있음. 수업 영상에 리오는 18:10–19:00 내내 앞 자전거에 있다.'],
       ['📝', '빅의 진술: 18:09에 수건 가지러 다시 들어갔을 때 시계는 22번 사물함에 있었고, 바로 수업에 들어감.']
     ],
     chat: [
@@ -84,7 +84,7 @@ CASES.ko.push(
   {
     id: 'drone', title: '유리를 뚫고', place: '오처드 레인 온실 · 오후 11:00', difficulty: 3,
     intro: '10시 20분쯤 드론 하나가 온실 지붕을 뚫고 떨어졌다. 등록 정보는 한 사람을 가리킨다. 두 기록은 베라가 동시에 두 곳에 있었다고 말하고, 세 번째 기록이 어느 쪽을 믿을지 알려 준다.',
-    suspects: [['gil', '길', '취미 비행, 등록 소유자', 'm'], ['ren', '렌', '부동산 사진가', 'n'], ['jay', '제이', '10대', 'n'], ['vera', '베라', '온실 주인의 경쟁자', 'f']],
+    suspects: [['gil', '길', '취미 비행, 등록 소유자', 'm'], ['ren', '로빈', '부동산 사진가', 'n'], ['jay', '제이', '10대', 'n'], ['vera', '베라', '온실 주인의 경쟁자', 'f']],
     facts: [
       ['🛩️', '잔해에서 복구한 비행 기록: 이륙 22:14, 밀 로드 자갈 주차장(온실에서 600m) · 추락 22:21.'],
       ['📍', '베라가 직접 단체방에 보낸 휴대폰 위치 기록: "집, 21:30–23:00."'],
@@ -105,6 +105,6 @@ CASES.ko.push(
       { s: 'vera', t: '23:14', m: '…그게 왜 중요한지 모르겠네요.' }
     ],
     culprit: 'vera',
-    solve: '두 기록이 베라를 두 곳에 둔다. 휴대폰은 집, 차는 22:05부터 22:30까지 밀 로드 주차장. 휴대폰 사용 기록이 결론을 낸다. 21:40부터 22:52까지 아무도 건드리지 않았으니, 위치 기록은 휴대폰이 집에 있었다는 것만 증명한다. 그사이 베라는 목요일에 길에게 빌린 드론을 들고 주차장으로 갔고, 드론은 22:14에 그곳에서 떴다. 길은 소유자 책임을 피하려고 차고 이야기를 지어냈고, 렌은 바람 한 점 없는 밤에 돌풍을 꾸며 냈지만, 렌을 밀 로드 근처에 두는 증거는 없다.'
+    solve: '두 기록이 베라를 두 곳에 둔다. 휴대폰은 집, 차는 22:05부터 22:30까지 밀 로드 주차장. 휴대폰 사용 기록이 결론을 낸다. 21:40부터 22:52까지 아무도 건드리지 않았으니, 위치 기록은 휴대폰이 집에 있었다는 것만 증명한다. 그사이 베라는 목요일에 길에게 빌린 드론을 들고 주차장으로 갔고, 드론은 22:14에 그곳에서 떴다. 길은 소유자 책임을 피하려고 차고 이야기를 지어냈고, 로빈은 바람 한 점 없는 밤에 돌풍을 꾸며 냈지만, 로빈을 밀 로드 근처에 두는 증거는 없다.'
   }
 );

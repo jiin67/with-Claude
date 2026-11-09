@@ -4,11 +4,11 @@ CASES.en.push(
   {
     id: 'karaoke', title: 'Room 7', place: 'Star Karaoke · 11:30 pm', difficulty: 2,
     intro: 'Dani\'s phone vanished from karaoke room 7 at the end of her birthday party. The whole chat is sure it was the staff. Be careful who you believe.',
-    suspects: [['yuri', 'Yuri', 'Booked the room', 'f'], ['sol', 'Sol', 'Staff', 'm'], ['teo', 'Teo', 'Latecomer', 'm']],
+    suspects: [['yuri', 'Yuri', 'Booked the room', 'f'], ['sol', 'Arlo', 'Staff', 'm'], ['teo', 'Teo', 'Latecomer', 'm']],
     facts: [
-      ['🚪', 'Room 7 door log: Yuri in 20:00 · Sol (staff card) in 21:40, out 21:44 · Teo in 22:35. Party checked out 23:10. No staff entries after 21:44.'],
+      ['🚪', 'Room 7 door log: Yuri in 20:00 · Arlo (staff card) in 21:40, out 21:44 · Teo in 22:35. Party checked out 23:10. No staff entries after 21:44.'],
       ['🎤', 'Song queue: 22:41 "Dynamite" queued by Teo · 22:52 "Bad Guy" queued by Yuri · 23:05 "Hype Boy" queued by Teo.'],
-      ['🧾', 'Bar receipt, room 7: 2 lemonades, ordered 21:38, delivered 21:42 by Sol. No other orders.'],
+      ['🧾', 'Bar receipt, room 7: 2 lemonades, ordered 21:38, delivered 21:42 by Arlo. No other orders.'],
       ['📍', 'Find My Phone: 23:08 inside Star Karaoke · 23:14 at the bus stop 50 m from the entrance, moving · then offline.'],
       ['🚌', 'Transit card log: Teo tapped in at that bus stop at 23:15, route 273.'],
       ['📋', 'Staff rulebook at the counter: "Never enter a booked room during a song. Written warning."']
@@ -16,16 +16,16 @@ CASES.en.push(
     chat: [
       { s: 'yuri', t: '23:31', m: 'Dani\'s phone is gone. It was on the table by the mic while we were singing. Who saw it last?' },
       { s: 'teo', t: '23:33', m: 'Staff were in and out all night. Ask the guy with the lemonades.' },
-      { s: 'sol', t: '23:34', m: 'Staff here. I handed the lemonades in at the door around 9:40, never actually stepped into room 7.', ev: 0, lie: 'The door log shows Sol\'s staff card opening room 7 at 21:40 and leaving at 21:44.' },
+      { s: 'sol', t: '23:34', m: 'Staff here. I handed the lemonades in at the door around 9:40, never actually stepped into room 7.', ev: 0, lie: 'The door log shows Arlo\'s staff card opening room 7 at 21:40 and leaving at 21:44.' },
       { s: 'yuri', t: '23:36', m: 'The door log says your card opened our room at 9:40 and you were inside four minutes.' },
       { s: 'sol', t: '23:37', m: 'Logs glitch. I don\'t go into rooms, it\'s against the rules.', ev: 0, lie: 'The same door log has him inside for four minutes; he is repeating the lie to dodge a written warning.' },
       { s: 'teo', t: '23:38', m: 'I got there late, sang two songs, left a bit before you guys. Walked home, it\'s ten minutes.', ev: 4, lie: 'The transit card log shows Teo tapping in at the bus stop at 23:15, a minute after the phone pinged there.' },
       { s: 'yuri', t: '23:40', m: 'Dani\'s Find My Phone says it was still in the building at 11:08. Then the bus stop at 11:14. Moving.' },
       { s: 'sol', t: '23:41', m: 'I clocked out at ten. Check anything you want.' },
-      { s: 'teo', t: '23:42', m: 'Lots of people use that stop. Sol, how many rooms did you "not go into" tonight?' }
+      { s: 'teo', t: '23:42', m: 'Lots of people use that stop. Arlo, how many rooms did you "not go into" tonight?' }
     ],
     culprit: 'teo',
-    solve: 'Everyone points at Sol, and Sol lies twice about never entering the room. But the door log that catches him is the same record that clears him: he was in and out by 21:44, and the phone was still inside at 23:08, an hour and a half later. It left at 23:14 for the bus stop, and Teo, who "walked home", tapped his transit card at that stop at 23:15. Sol lied because staff who enter a booked room during a song get a written warning; the lie was about his job, not the phone.'
+    solve: 'Everyone points at Arlo, and Arlo lies twice about never entering the room. But the door log that catches him is the same record that clears him: he was in and out by 21:44, and the phone was still inside at 23:08, an hour and a half later. It left at 23:14 for the bus stop, and Teo, who "walked home", tapped his transit card at that stop at 23:15. Arlo lied because staff who enter a booked room during a song get a written warning; the lie was about his job, not the phone.'
   },
   {
     id: 'server', title: 'DROP DATABASE', place: 'Engineering chat · 8:10 am', difficulty: 3,
@@ -57,11 +57,11 @@ CASES.ko.push(
   {
     id: 'karaoke', title: '7번 방', place: '스타 노래방 · 오후 11:30', difficulty: 2,
     intro: '다니의 생일 파티가 끝날 무렵, 노래방 7번 방에서 다니의 휴대폰이 사라졌다. 채팅방 모두가 직원 짓이라고 확신한다. 누구 말을 믿을지 조심하라.',
-    suspects: [['yuri', '유리', '방 예약자', 'f'], ['sol', '솔', '직원', 'm'], ['teo', '태오', '늦게 온 친구', 'm']],
+    suspects: [['yuri', '유리', '방 예약자', 'f'], ['sol', '하늘', '직원', 'm'], ['teo', '태오', '늦게 온 친구', 'm']],
     facts: [
-      ['🚪', '7번 방 출입 기록: 유리 20:00 입장 · 솔(직원 카드) 21:40 입장, 21:44 퇴장 · 태오 22:35 입장. 파티 체크아웃 23:10. 21:44 이후 직원 출입 없음.'],
+      ['🚪', '7번 방 출입 기록: 유리 20:00 입장 · 하늘(직원 카드) 21:40 입장, 21:44 퇴장 · 태오 22:35 입장. 파티 체크아웃 23:10. 21:44 이후 직원 출입 없음.'],
       ['🎤', '선곡 기록: 22:41 "Dynamite" 태오 예약 · 22:52 "Bad Guy" 유리 예약 · 23:05 "Hype Boy" 태오 예약.'],
-      ['🧾', '7번 방 영수증: 레모네이드 2잔, 21:38 주문, 21:42 솔이 배달. 다른 주문 없음.'],
+      ['🧾', '7번 방 영수증: 레모네이드 2잔, 21:38 주문, 21:42 하늘이 배달. 다른 주문 없음.'],
       ['📍', '내 휴대폰 찾기: 23:08 스타 노래방 안 · 23:14 입구에서 50m 떨어진 버스 정류장, 이동 중 · 이후 오프라인.'],
       ['🚌', '교통카드 기록: 태오, 23:15 그 정류장에서 273번 버스 승차.'],
       ['📋', '카운터에 붙은 직원 수칙: "노래 중인 방에는 절대 들어가지 말 것. 위반 시 서면 경고."']
@@ -69,16 +69,16 @@ CASES.ko.push(
     chat: [
       { s: 'yuri', t: '23:31', m: '다니 폰 없어졌어. 노래 부를 때 마이크 옆 테이블에 있었는데. 마지막으로 본 사람?' },
       { s: 'teo', t: '23:33', m: '직원들이 밤새 들락거렸잖아. 레모네이드 들고 온 사람한테 물어봐.' },
-      { s: 'sol', t: '23:34', m: '직원입니다. 9시 40분쯤 레모네이드만 문 앞에서 건넸고, 7번 방 안에는 들어간 적 없어요.', ev: 0, lie: '출입 기록에 솔의 직원 카드로 21:40에 7번 방에 들어갔다가 21:44에 나온 것이 남아 있다.' },
+      { s: 'sol', t: '23:34', m: '직원입니다. 9시 40분쯤 레모네이드만 문 앞에서 건넸고, 7번 방 안에는 들어간 적 없어요.', ev: 0, lie: '출입 기록에 하늘의 직원 카드로 21:40에 7번 방에 들어갔다가 21:44에 나온 것이 남아 있다.' },
       { s: 'yuri', t: '23:36', m: '출입 기록엔 9시 40분에 직원분 카드로 우리 방 열고 4분 동안 안에 있었다고 나오는데요.' },
       { s: 'sol', t: '23:37', m: '기록이 가끔 틀려요. 저는 방에 안 들어가요. 규정 위반이거든요.', ev: 0, lie: '같은 출입 기록이 그를 4분 동안 방 안에 두고 있다. 서면 경고를 피하려고 거짓말을 되풀이하는 것이다.' },
       { s: 'teo', t: '23:38', m: '나 늦게 가서 두 곡 부르고 너희보다 좀 먼저 나왔어. 걸어서 집에 갔고, 10분 거리잖아.', ev: 4, lie: '교통카드 기록에 태오가 23:15에 그 정류장에서 버스를 탄 것이 남아 있다. 휴대폰이 거기서 잡히고 1분 뒤다.' },
       { s: 'yuri', t: '23:40', m: '다니 폰 찾기 보니까 11시 8분엔 아직 건물 안이었어. 그다음 11시 14분에 버스 정류장. 이동 중.' },
       { s: 'sol', t: '23:41', m: '저는 10시에 퇴근했어요. 뭐든 확인해 보세요.' },
-      { s: 'teo', t: '23:42', m: '그 정류장 쓰는 사람 많아. 솔 씨, 오늘 밤 "안 들어간" 방이 몇 개예요?' }
+      { s: 'teo', t: '23:42', m: '그 정류장 쓰는 사람 많아. 하늘 씨, 오늘 밤 "안 들어간" 방이 몇 개예요?' }
     ],
     culprit: 'teo',
-    solve: '모두가 솔을 가리키고, 솔은 방에 안 들어갔다고 두 번 거짓말한다. 그러나 그를 잡는 출입 기록이 그를 풀어 주는 기록이기도 하다. 솔은 21:44에 나갔고, 휴대폰은 그로부터 한 시간 반 뒤인 23:08에도 건물 안에 있었다. 휴대폰은 23:14에 버스 정류장으로 갔고, "걸어서 집에 갔다"는 태오가 23:15에 바로 그 정류장에서 교통카드를 찍었다. 솔이 거짓말한 이유는 노래 중인 방에 들어간 직원은 서면 경고를 받기 때문이다. 그의 거짓말은 일자리 때문이지 휴대폰 때문이 아니었다.'
+    solve: '모두가 하늘을 가리키고, 하늘은 방에 안 들어갔다고 두 번 거짓말한다. 그러나 그를 잡는 출입 기록이 그를 풀어 주는 기록이기도 하다. 하늘은 21:44에 나갔고, 휴대폰은 그로부터 한 시간 반 뒤인 23:08에도 건물 안에 있었다. 휴대폰은 23:14에 버스 정류장으로 갔고, "걸어서 집에 갔다"는 태오가 23:15에 바로 그 정류장에서 교통카드를 찍었다. 하늘이 거짓말한 이유는 노래 중인 방에 들어간 직원은 서면 경고를 받기 때문이다. 그의 거짓말은 일자리 때문이지 휴대폰 때문이 아니었다.'
   },
   {
     id: 'server', title: 'DROP DATABASE', place: '엔지니어링 채팅 · 오전 8:10', difficulty: 3,
