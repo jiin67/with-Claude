@@ -90,11 +90,25 @@ function moodOf(c, id) {
   if (R.state === 'solved' && id === c.culprit) return 'confess';
   return c.chat.some((m, k) => m.s === id && R.found.has(k)) ? 'nervous' : 'calm';
 }
-function faceHTML(c, id, mood) {
-  const src = portraitSrc(c, id, mood || moodOf(c, id));
-  return src ? `<img class="portrait" src="${src}" alt="" decoding="async" draggable="false">` : faceSVG(c.id + ':' + id, genderOf(c, id));
+/* `live` asks for the silent looping clip when one exists (suspect cards, the
+   result face); chat avatars stay stills so a long chat never runs dozens of videos */
+function faceHTML(c, id, mood, live) {
+  mood = mood || moodOf(c, id);
+  const src = portraitSrc(c, id, mood);
+  if (!src) return faceSVG(c.id + ':' + id, genderOf(c, id));
+  const clips = live && ART.pv && ART.pv[c.id + ':' + id];
+  const m = src.match(/-(calm|nervous|confess)\.webp$/)[1];
+  if (clips && clips.includes(m)) return `<video class="portrait" src="assets/pv/${c.id}-${id}-${m}.mp4" poster="${src}" autoplay muted loop playsinline disablepictureinpicture></video>`;
+  return `<img class="portrait" src="${src}" alt="" decoding="async" draggable="false">`;
 }
-const face = (e, id, mood) => { e.innerHTML = R ? faceHTML(R.c, id, mood) : faceSVG(id, 'n'); return e; };
+/* a painted portrait gets a ring in the person's colour, so dark artwork
+   still separates from the dark UI and from the other suspects */
+const face = (e, id, mood, live) => {
+  if (!R) { e.innerHTML = faceSVG(id, 'n'); return e; }
+  e.innerHTML = faceHTML(R.c, id, mood, live);
+  if (e.firstElementChild && e.firstElementChild.classList.contains('portrait')) e.style.boxShadow = '0 0 0 2px ' + avColor(R.c, id);
+  return e;
+};
 
 /* ---- sounds ---- */
 const A = {
@@ -264,7 +278,7 @@ function renderCase() {
   }
   const su = $('susList'); su.innerHTML = '';
   for (const [id, name, role] of c.suspects) {
-    const s = el('div', 'sus'), av = face(el('div', 'av'), id);
+    const s = el('div', 'sus'), av = face(el('div', 'av'), id, null, true);
     const info = el('div'); info.append(el('b', null, name), el('span', null, role));
     const n = c.chat.filter((m, k) => m.s === id && R.found.has(k)).length;
     if (n) info.appendChild(el('div', 'lies', tr('foundLie') + ' × ' + n));
@@ -455,7 +469,7 @@ function showSolved(stars) {
   $('btnResResumeAd').hidden = true;
   if (coach >= 0) { S.coachDone = true; persist(); } coach = -1; $('coach').hidden = true;
   $('resBadge').textContent = tr('solved'); $('resTitle').textContent = R.c.title;
-  const rf = $('resFace'); rf.hidden = false; rf.innerHTML = faceHTML(R.c, R.c.culprit, 'confess'); rf.dataset.stamp = tr('confessed'); $('resName').textContent = nameOf(R.c, R.c.culprit) + ' · ' + (R.c.suspects.find(s => s[0] === R.c.culprit) || [])[2];
+  const rf = $('resFace'); rf.hidden = false; rf.innerHTML = faceHTML(R.c, R.c.culprit, 'confess', true); rf.dataset.stamp = tr('confessed'); $('resName').textContent = nameOf(R.c, R.c.culprit) + ' · ' + (R.c.suspects.find(s => s[0] === R.c.culprit) || [])[2];
   const st = $('resStars'); st.innerHTML = ''; for (let k = 0; k < 3; k++) st.appendChild(el('span', k < stars ? '' : 'off', '★'));
   $('resBody').textContent = R.c.solve;
   const meta = $('resMeta'); meta.innerHTML = '';

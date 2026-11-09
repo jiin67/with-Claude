@@ -5,7 +5,9 @@
      node games/alibi/tools/art-import.mjs <raw-folder>
 
    <raw-folder> holds what the art brief (art/ART_BRIEF.md) asks for:
-     portraits/<case>-<id>-<calm|nervous|confess>.(png|jpg|jpeg|webp)
+     portraits/<case>-<id>-<calm|nervous|confess>.(png|jpg|jpeg|webp|mp4|mov)
+       — a portrait may be a short video: it becomes a silent looping clip
+         plus a still taken from it (for the small chat avatars)
      scenes/<case>.(png|jpg|jpeg|webp)
      video/<case>-<en|ko>.(mp4|mov)
    Files may also sit loose in <raw-folder>; they are sorted by name.
@@ -15,6 +17,7 @@
      portraits  2:3 crop (kept near the top, so hair and hats survive) → 400×600 WebP q82
      scenes     16:9 centre crop → 1280×720 WebP q78 (~80–150 KB)
      videos     9:16 → 540×960 H.264 CRF 27, AAC 96k, ≤ 10 s (~0.6–1.5 MB)
+     portrait clips  2:3 → 400×600 H.264 CRF 30, no audio, ≤ 8 s (make loops seamless: end where they start)
    ========================================================================== */
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
@@ -30,7 +33,7 @@ const IMG = /\.(png|jpe?g|webp)$/i, VID = /\.(mp4|mov|webm)$/i;
 const P_RE = /^([a-z]+)-([a-z]+)-(calm|nervous|confess)$/, S_RE = /^([a-z]+)$/, V_RE = /^([a-z]+)-(en|ko)$/;
 const walk = d => readdirSync(d).flatMap(f => { const p = join(d, f); return statSync(p).isDirectory() ? walk(p) : [p]; });
 const ff = args => execFileSync('ffmpeg', ['-y', '-v', 'error', ...args], { stdio: ['ignore', 'inherit', 'inherit'] });
-for (const d of ['p', 's', 'v']) mkdirSync(join(OUT, d), { recursive: true });
+for (const d of ['p', 'pv', 's', 'v']) mkdirSync(join(OUT, d), { recursive: true });
 
 let done = 0; const skipped = [];
 for (const f of walk(src)) {
@@ -38,6 +41,10 @@ for (const f of walk(src)) {
   try {
     if (IMG.test(f) && P_RE.test(stem) && dir !== 'scenes') {
       ff(['-i', f, '-vf', "crop='min(iw,ih*2/3)':'min(ih,iw*3/2)':(iw-ow)/2:(ih-oh)*0.2,scale=400:600:flags=lanczos", '-c:v', 'libwebp', '-quality', '82', '-frames:v', '1', join(OUT, 'p', stem + '.webp')]);
+    } else if (VID.test(f) && P_RE.test(stem)) {
+      /* still from 1 s in (past any fade-in), then the silent loop */
+      ff(['-ss', '1', '-i', f, '-vf', "crop='min(iw,ih*2/3)':'min(ih,iw*3/2)':(iw-ow)/2:(ih-oh)*0.2,scale=400:600:flags=lanczos", '-c:v', 'libwebp', '-quality', '82', '-frames:v', '1', join(OUT, 'p', stem + '.webp')]);
+      ff(['-i', f, '-t', '8', '-an', '-vf', "crop='min(iw,ih*2/3)':'min(ih,iw*3/2)':(iw-ow)/2:(ih-oh)*0.2,scale=400:600:flags=lanczos,fps=24,format=yuv420p", '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '30', '-movflags', '+faststart', join(OUT, 'pv', stem + '.mp4')]);
     } else if (IMG.test(f) && S_RE.test(stem)) {
       ff(['-i', f, '-vf', "crop='min(iw,ih*16/9)':'min(ih,iw*9/16)',scale=1280:720:flags=lanczos", '-c:v', 'libwebp', '-quality', '78', '-frames:v', '1', join(OUT, 's', stem + '.webp')]);
     } else if (VID.test(f) && V_RE.test(stem)) {
@@ -49,8 +56,9 @@ for (const f of walk(src)) {
 }
 
 /* the manifest lists what is actually in assets/, including earlier imports */
-const ART = { p: {}, s: {}, v: {} };
+const ART = { p: {}, pv: {}, s: {}, v: {} };
 for (const f of readdirSync(join(OUT, 'p'))) { const m = basename(f, '.webp').match(P_RE); if (m) (ART.p[m[1] + ':' + m[2]] = ART.p[m[1] + ':' + m[2]] || []).push(m[3]); }
+for (const f of readdirSync(join(OUT, 'pv'))) { const m = basename(f, '.mp4').match(P_RE); if (m) (ART.pv[m[1] + ':' + m[2]] = ART.pv[m[1] + ':' + m[2]] || []).push(m[3]); }
 for (const f of readdirSync(join(OUT, 's'))) { const m = basename(f, '.webp').match(S_RE); if (m) ART.s[m[1]] = 1; }
 for (const f of readdirSync(join(OUT, 'v'))) { const m = basename(f, '.mp4').match(V_RE); if (m) (ART.v[m[1]] = ART.v[m[1]] || []).push(m[2]); }
 const head = `'use strict';
@@ -60,6 +68,7 @@ const head = `'use strict';
    a portrait for cake:mia?" without a network round trip. Anything not
    listed falls back to the vector face (faceSVG) or no scene.
      p  portraits  'case:id' -> moods present  (assets/p/<case>-<id>-<mood>.webp)
+     pv portrait clips, same keys, silent loops (assets/pv/<case>-<id>-<mood>.mp4)
      s  scenes     'case'    -> 1              (assets/s/<case>.webp)
      v  videos     'case'    -> langs present  (assets/v/<case>-<lang>.mp4)
    ========================================================================== */

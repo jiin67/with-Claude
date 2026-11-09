@@ -5,11 +5,23 @@
    a portrait for cake:mia?" without a network round trip. Anything not
    listed falls back to the vector face (faceSVG) or no scene.
      p  portraits  'case:id' -> moods present  (assets/p/<case>-<id>-<mood>.webp)
+     pv portrait clips, same keys, silent loops (assets/pv/<case>-<id>-<mood>.mp4)
      s  scenes     'case'    -> 1              (assets/s/<case>.webp)
      v  videos     'case'    -> langs present  (assets/v/<case>-<lang>.mp4)
    ========================================================================== */
 const ART = {
  "p": {
+  "cake:jun": [
+   "calm"
+  ],
+  "cake:mia": [
+   "calm"
+  ],
+  "cake:theo": [
+   "calm"
+  ]
+ },
+ "pv": {
   "cake:jun": [
    "calm"
   ],
