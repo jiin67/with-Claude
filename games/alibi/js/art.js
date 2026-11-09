@@ -8,4 +8,18 @@
      s  scenes     'case'    -> 1              (assets/s/<case>.webp)
      v  videos     'case'    -> langs present  (assets/v/<case>-<lang>.mp4)
    ========================================================================== */
-const ART = { p: {}, s: {}, v: {} };
+const ART = {
+ "p": {
+  "cake:jun": [
+   "calm"
+  ],
+  "cake:mia": [
+   "calm"
+  ],
+  "cake:theo": [
+   "calm"
+  ]
+ },
+ "s": {},
+ "v": {}
+};

@@ -15,7 +15,7 @@
 ```
 Beautiful stylized portrait in the look of a modern Korean web-drama, semi-realistic,
 flawless soft skin, large expressive eyes, delicate features, soft cinematic key light,
-gentle rim light, shallow depth of field, softly blurred background, head and shoulders,
+gentle rim light, plain soft [대표색] background, head and shoulders,
 centered, facing camera, vertical 2:3, highly detailed, clean, no text, no watermark
 ```
 
@@ -23,11 +23,13 @@ centered, facing camera, vertical 2:3, highly detailed, clean, no text, no water
 
 ```
 Friendly stylized portrait of an ordinary 12-year-old child, age-appropriate, natural
-childlike proportions, casual clothes, soft warm lighting, wholesome family-show look,
+childlike proportions, casual clothes, soft warm lighting, plain soft [대표색] background, wholesome family-show look,
 head and shoulders, centered, vertical 2:3, no makeup, no text, no watermark
 ```
 
-**피해야 할 것**: 글자·로고·브랜드, 실제 연예인 닮은꼴, 노출, 무기, 피.
+**배경색 규칙**: `[대표색]` 자리에 아래 표의 캐릭터 대표색을 밝은 파스텔로 넣습니다 (예: `plain soft pastel pink background`). 검은·어두운 배경은 쓰지 않습니다. 게임 화면이 어두워서 작은 아바타가 묻히고, 캐릭터끼리 구분이 안 됩니다.
+
+**피해야 할 것**: 글자·로고·브랜드, 실제 연예인 닮은꼴, 노출, 무기, 피, 검은 배경, 전원 검은 옷.
 
 ---
 
@@ -150,3 +152,10 @@ video/<사건>-<언어>.mp4             예) video/bike-ko.mp4, video/bike-en.mp
 
 일부만 먼저 줘도 됩니다. 들어온 것부터 게임에 넣고, 없는 캐릭터는 기존 얼굴 아이콘이 그대로 나옵니다.
 **추천 시작**: 사건 1(케이크) 3명의 calm 3장 → 그림체 확인 후 나머지 진행.
+
+---
+
+## 7. 1차 시안 피드백 (11/9)
+- 사건 1 시안 3장: 얼굴과 그림체는 채택. 이 3장을 참조 이미지(페이스락)로 다시 생성.
+- 바꿀 것: ① 배경을 대표색 파스텔 단색으로 ② 옷·머리를 3장 고정 요소대로 (미아 분홍 단발·크림 가디건, 테오 후드티·헤드폰(비니 유지 가능), 준 네이비 정장)
+- 이유: 셋 다 검은 배경·검은 옷이라 채팅 아바타 크기에서 구분이 안 되고 어두운 화면에 묻힘.

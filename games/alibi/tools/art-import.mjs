@@ -12,7 +12,7 @@
    Output (committed): games/alibi/assets/{p,s,v}/  — raw files never are.
    Needs ffmpeg with libwebp and libx264.
 
-     portraits  2:3 centre crop → 400×600 WebP q82  (~30–60 KB)
+     portraits  2:3 crop (kept near the top, so hair and hats survive) → 400×600 WebP q82
      scenes     16:9 centre crop → 1280×720 WebP q78 (~80–150 KB)
      videos     9:16 → 540×960 H.264 CRF 27, AAC 96k, ≤ 10 s (~0.6–1.5 MB)
    ========================================================================== */
@@ -37,7 +37,7 @@ for (const f of walk(src)) {
   const stem = basename(f, extname(f)).toLowerCase(), dir = basename(dirname(f)).toLowerCase();
   try {
     if (IMG.test(f) && P_RE.test(stem) && dir !== 'scenes') {
-      ff(['-i', f, '-vf', "crop='min(iw,ih*2/3)':'min(ih,iw*3/2)',scale=400:600:flags=lanczos", '-c:v', 'libwebp', '-quality', '82', '-frames:v', '1', join(OUT, 'p', stem + '.webp')]);
+      ff(['-i', f, '-vf', "crop='min(iw,ih*2/3)':'min(ih,iw*3/2)':(iw-ow)/2:(ih-oh)*0.2,scale=400:600:flags=lanczos", '-c:v', 'libwebp', '-quality', '82', '-frames:v', '1', join(OUT, 'p', stem + '.webp')]);
     } else if (IMG.test(f) && S_RE.test(stem)) {
       ff(['-i', f, '-vf', "crop='min(iw,ih*16/9)':'min(ih,iw*9/16)',scale=1280:720:flags=lanczos", '-c:v', 'libwebp', '-quality', '78', '-frames:v', '1', join(OUT, 's', stem + '.webp')]);
     } else if (VID.test(f) && V_RE.test(stem)) {
