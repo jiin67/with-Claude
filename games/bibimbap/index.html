@@ -45,6 +45,20 @@
   #card li b{flex:none;width:24px;height:24px;border-radius:50%;background:#e5432f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px}
   #ovBtns{display:flex;flex-direction:column;gap:9px}
   #card button.alt{background:#eadbc4;color:#4a3526;box-shadow:0 4px 0 #cdb99b}
+  #map{position:fixed;inset:0;display:none;overflow-y:auto;background:#f4ead8;z-index:20;-webkit-overflow-scrolling:touch}
+  #mapIn{max-width:460px;margin:0 auto;padding:22px 16px 40px;text-align:center}
+  #map h1{font-size:26px;margin:6px 0 2px} #map .sub{font-size:13px;color:#8a705c;margin:0 0 16px}
+  .stage{border-radius:20px;padding:14px 14px 16px;margin-bottom:14px;text-align:left;box-shadow:0 3px 10px #5a3a2022}
+  .stage h2{margin:0 0 10px;font-size:17px}
+  .stage.lock{opacity:.5}
+  .lvrow{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .lv{border:0;border-radius:16px;background:#fffaf0;padding:10px 4px 8px;font-family:inherit;color:#4a3526;box-shadow:0 3px 0 #0000001f}
+  .lv b{display:block;font-size:20px} .lv span{font-size:14px;color:#f0a400;letter-spacing:1px}
+  .lv:disabled{background:#ffffff66;color:#4a352688;box-shadow:none}
+  .lv.cur{outline:3px solid #e5432f}
+  #mapBtns{display:flex;gap:9px;margin-top:6px} #mapBtns button{flex:1;border:0;border-radius:999px;background:#eadbc4;color:#4a3526;font-family:inherit;font-size:14px;font-weight:800;padding:11px 6px}
+  .bigstars{font-size:40px;color:#f0a400;letter-spacing:4px;margin:2px 0 8px} .bigstars i{color:#e3d6c0;font-style:normal}
+  #overlay{z-index:30}
   #overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#4a352688}
   #card{background:#fffaf0;border-radius:22px;padding:24px 22px;width:min(78vw,300px);text-align:center;box-shadow:0 10px 30px #0004}
   #card h1{margin:0 0 6px;font-size:22px}
@@ -65,6 +79,7 @@
 <div id="orders"></div>
 <div id="hint"><span class="pill"></span></div>
 <div id="lists"></div>
+<div id="map"><div id="mapIn"></div></div>
 <button id="trash" class="pill"></button>
 <div id="toast"></div>
 <div id="overlay"><div id="card"><h1 id="ovTitle"></h1><div id="ovBody"></div><div id="ovBtns"></div></div></div>
@@ -79,6 +94,8 @@ const KO=(navigator.language||'ko').toLowerCase().startsWith('ko');
 const T=KO?{
   level:n=>'레벨 '+n, goal:(a,b,s)=>'주문 '+a+' / '+b+' · '+s+'점', restart:'다시',
   tutT:'랜덤 비빔밥', tut:['아래 접시를 끌어서 빈 칸에 놓아요. 접시를 누른 뒤 칸을 눌러도 돼요.','그릇 둘레 칸에 재료를 놓으면 그릇이 필요한 재료를 가져가요.','재료가 다 모이면 비빔밥 완성! 주문을 모두 내면 다음 레벨이에요.'], startBtn:'시작하기',
+  mapT:'랜덤 비빔밥', mapSub:'레벨을 골라 주세요', howto:'놀이 방법', toMap:'지도로 나가기', retryLvP:'이 레벨을 다시 할까요? 지금 판은 사라져요.', resetYes:'처음부터 하기',
+  movesTxt:(m,p)=>m+'수 만에 완료 · 별 셋 기준 '+p+'수', endless:n=>'무한 주문 · 레벨 '+n, mapBtn:'지도',
   used:'이미 사용 중인 칸이에요', retryT:'다시 할까요?', retryP:'처음부터 다시 하시겠어요? 진행 상황이 사라져요.', retryLevel:'레벨만 다시 하기', retryAll:'처음부터 하기', cancel:'계속하기',
   trash:n=>'🗑 버리기 '+n, trashNone:'이번 레벨 휴지통을 다 썼어요', trashBowl:'그릇은 버릴 수 없어요', trashPick:'버릴 접시를 먼저 누르거나 끌어다 놓으세요',
   hint:'그릇을 놓고, 그 둘레에 반찬을 놓으세요', hintFire:'소고기는 불을 만나야 익어요 · 육회는 생고기 그대로', hintLid:'옆에서 비빔밥을 완성하면 뚜껑이 열려요',
@@ -91,6 +108,8 @@ const T=KO?{
 }:{
   level:n=>'Level '+n, goal:(a,b,s)=>'Orders '+a+' / '+b+' · '+s+' pts', restart:'Retry',
   tutT:'Random Bibimbap', tut:['Drag a plate from the tray onto an empty spot. You can also tap a plate, then tap a spot.','Put toppings on the spots around a bowl and the bowl takes what it needs.','When every topping is in, the bibimbap is done! Serve all orders to clear the level.'], startBtn:'Start',
+  mapT:'Random Bibimbap', mapSub:'Pick a level', howto:'How to play', toMap:'Back to map', retryLvP:'Retry this level? The current board will be lost.', resetYes:'Start over',
+  movesTxt:(m,p)=>'Cleared in '+m+' moves · 3 stars at '+p, endless:n=>'Endless · level '+n, mapBtn:'Map',
   used:'That spot is taken', retryT:'Start over?', retryP:'Restart from the beginning? Your progress will be lost.', retryLevel:'Retry this level', retryAll:'Start from level 1', cancel:'Keep playing',
   trash:n=>'🗑 Discard '+n, trashNone:'No discards left this level', trashBowl:'Bowls cannot be discarded', trashPick:'Tap a plate first, or drag one here',
   hint:'Place a bowl, then put side dishes around it', hintFire:'Beef needs fire to cook · yukhoe takes it raw', hintLid:'Finish a bowl next to a lid to open it',
@@ -157,6 +176,15 @@ let level=1, P=LV[0], left={}, total=0, done=0, score=0, levelScore=0, trashLeft
 let board=new Array(N).fill(null);    // {kind:'bowl',menu,has:[]} | {kind:'plate',items:[]}
 let blocked=new Array(N).fill(null);
 let pending=[null,null,null];
+// 저장: 열린 레벨과 레벨별 별. 저장소를 못 쓰는 환경에서는 그냥 기억하지 않는다.
+let save={unlocked:1,stars:{},tut:false};
+try{ const j=JSON.parse(localStorage.getItem('bibim_save')||'null'); if(j&&j.unlocked) save=Object.assign(save,j); }catch(e){}
+function store(){ try{ localStorage.setItem('bibim_save',JSON.stringify(save)); }catch(e){} }
+// 별 셋 기준이 되는 놓은 수(휴지통 포함). 시뮬레이션에서 한 수 앞을 보는 봇의 평균에 맞췄다.
+const PAR=[16,20,28,19,27,30,12,16,20,18,23,31,40];
+const parOf=n=>PAR[Math.min(n,PAR.length)-1]+2;
+const starsFor=(n,m)=>m<=parOf(n)?3:(m<=Math.ceil(parOf(n)*1.35)?2:1);
+let lvMoves=0;
 let busy=false, drag=null, over=false, moves=0, lidHint=false, fireHint=false, fireHint2=false, theme='';
 const seen=new Set();
 
@@ -620,9 +648,16 @@ async function resolve(){
   for(let guard=0;guard<400;guard++){ const m=findMove(); if(!m) break; await doMove(m); }
   busy=false;
   if(done-before>=2) popup(new THREE.Vector3(0,0,0),T.combo(done-before),'big');
-  if(done>=total){ confetti(); const nx=themeOf(level+1); return show(T.clearT(level),T.clearP(total)+(nx!==theme?T.nextStage(THEMES[nx].name):''),[{label:T.next,fn:()=>{level++;start();}}]); }
+  if(done>=total){ confetti();
+    const st=starsFor(level,lvMoves), nx=themeOf(level+1);
+    save.stars[level]=Math.max(save.stars[level]||0,st); save.unlocked=Math.max(save.unlocked,level+1); store();
+    const box=document.createElement('div'), big=document.createElement('div'), p1=document.createElement('p'), p2=document.createElement('p');
+    big.className='bigstars'; big.append('★'.repeat(st)); const dim=document.createElement('i'); dim.textContent='★'.repeat(3-st); big.appendChild(dim);
+    p1.textContent=T.clearP(total)+(nx!==theme?T.nextStage(THEMES[nx].name):''); p2.textContent=T.movesTxt(lvMoves,parOf(level));
+    box.appendChild(big); box.appendChild(p1); box.appendChild(p2);
+    return show(T.clearT(level),box,[{label:T.next,fn:()=>{level++;start();}},{label:T.toMap,alt:true,fn:openMap}]); }
   if(pending.every(p=>!p)) refill();
-  if(board.every((p,i)=>p||blocked[i])){ beep(196,.4,'sawtooth'); return show(T.overT,T.overP(level),[{label:T.retryLevel,fn:()=>{score=levelScore;start();}},{label:T.retryAll,alt:true,fn:()=>{level=1;score=0;start();}}]); }
+  if(board.every((p,i)=>p||blocked[i])){ beep(196,.4,'sawtooth'); return show(T.overT,T.overP(level),[{label:T.retryLevel,fn:()=>{score=levelScore;start();}},{label:T.toMap,alt:true,fn:openMap}]); }
 }
 
 /* ---------- 조각 만들기 ---------- */
@@ -660,7 +695,7 @@ function setHint(text,ms){ const h=document.getElementById('hint'); h.firstEleme
 function start(){
   tweens.length=0; busy=false; over=false; drag=null; ring.visible=false;
   board.concat(pending).forEach(p=>{ if(p){ dropList(p); scene.remove(p.group); } }); blocked.forEach(m=>m&&scene.remove(m));
-  sel=-1; trashLeft=3; levelScore=score; updateTrash();
+  sel=-1; trashLeft=3; levelScore=score; lvMoves=0; updateTrash();
   board=new Array(N).fill(null); pending=[null,null,null]; blocked=new Array(N).fill(null);
   P=levelDef(level); left=Object.assign({},P.orders);
   const th=themeOf(level); if(th!==theme){ applyTheme(th); setTimeout(()=>popup(new THREE.Vector3(0,0,-1.2),THEMES[th].name,'stage'),250); }
@@ -675,7 +710,7 @@ function start(){
 
 /* ---------- HUD ---------- */
 function updateHud(){
-  document.getElementById('level').textContent=T.level(level);
+  { const n=starsFor(level,lvMoves); document.getElementById('level').textContent=T.level(level)+' '+'★'.repeat(n)+'☆'.repeat(3-n); }
   document.getElementById('goalText').textContent=T.goal(Math.min(done,total),total,score);
   document.getElementById('fill').style.width=(100*Math.min(1,done/Math.max(1,total)))+'%';
   const o=document.getElementById('orders'); o.textContent='';
@@ -697,7 +732,7 @@ document.getElementById('restart').textContent=T.restart;
 document.getElementById('restart').onclick=()=>{
   if(!started||document.getElementById('overlay').style.display==='flex') return;
   initAudio(); sfx.click();
-  show(T.retryT,T.retryP,[{label:T.retryLevel,fn:()=>{score=levelScore;start();}},{label:T.retryAll,alt:true,fn:()=>{level=1;score=0;start();}},{label:T.cancel,alt:true,fn:closeOverlay}]);
+  show(T.retryT,T.retryLvP,[{label:T.retryLevel,fn:()=>{score=levelScore;start();}},{label:T.toMap,alt:true,fn:openMap},{label:T.cancel,alt:true,fn:closeOverlay}]);
 };
 const toastEl=document.getElementById('toast'); let toastT=0;
 function toast(msg){ toastEl.textContent=msg; toastEl.style.opacity=1; clearTimeout(toastT); toastT=setTimeout(()=>{toastEl.style.opacity=0;},1600); }
@@ -733,13 +768,14 @@ function placeAt(i,cell){
   p.group.scale.setScalar(1); p.group.position.copy(to); squash(p.group,.22,.3); dust(to);
   board[cell]=p; pending[i]=null; sfx.place();
   if(++moves===3) document.getElementById('hint').style.opacity=0;
+  lvMoves++; updateHud();
   resolve();
 }
 function discard(i){ // 필요 없는 반찬 접시 버리기. 레벨마다 세 번.
   const p=pending[i]; if(!p) return false;
   if(p.kind==='bowl'){ toast(T.trashBowl); sfx.error(); return false; }
   if(trashLeft<=0){ toast(T.trashNone); sfx.error(); return false; }
-  trashLeft--; updateTrash(); if(sel===i){ p.sel=false; sel=-1; }
+  trashLeft--; updateTrash(); lvMoves++; updateHud(); if(sel===i){ p.sel=false; sel=-1; }
   pending[i]=null; sfx.trash();
   tween(.2,k=>p.group.scale.setScalar(Math.max(.001,1-k))).then(()=>scene.remove(p.group));
   if(pending.every(x=>!x)) refill();
@@ -800,12 +836,41 @@ canvas.addEventListener('pointercancel',endDrag);
 
 setHint(T.hint);
 start();
-(function(){ // 첫 화면: 규칙 세 줄과 시작하기
+/* ---------- 단계 지도 ---------- */
+const STAGES=[['bunsik',[1,2,3]],['hanok',[4,5,6]],['temple',[7,8,9]],['sea',[10,11,12]]];
+const STAGE_BG={bunsik:'#dfe9e6',hanok:'#ecd2ae',temple:'#c3c9b6',sea:'#bfe0ee'};
+const mapEl=document.getElementById('map'), mapIn=document.getElementById('mapIn');
+function el(tag,cls,text){ const e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+function lvButton(n,label){
+  const b=el('button','lv'+(n===save.unlocked?' cur':'')), st=save.stars[n]||0;
+  b.appendChild(el('b',null,n>save.unlocked?'🔒':(label||n))); b.appendChild(el('span',null,n>save.unlocked?' ':'★'.repeat(st)+'☆'.repeat(3-st)));
+  b.disabled=n>save.unlocked; b.onclick=()=>{ initAudio(); sfx.click(); playLevel(n); }; return b;
+}
+function renderMap(){
+  mapIn.textContent=''; mapIn.appendChild(el('h1',null,T.mapT)); mapIn.appendChild(el('p','sub',T.mapSub));
+  for(const [k,lvs] of STAGES){
+    const card=el('div','stage'+(lvs[0]>save.unlocked?' lock':'')); card.style.background=STAGE_BG[k];
+    card.appendChild(el('h2',null,THEMES[k].name)); const row=el('div','lvrow'); lvs.forEach(n=>row.appendChild(lvButton(n))); card.appendChild(row); mapIn.appendChild(card);
+  }
+  if(save.unlocked>12){ const n=save.unlocked, card=el('div','stage'); card.style.background='#f3d9d2'; card.appendChild(el('h2',null,T.endless(n)));
+    const row=el('div','lvrow'); row.appendChild(lvButton(n)); card.appendChild(row); mapIn.appendChild(card); }
+  const bt=el('div'); bt.id='mapBtns';
+  const h=el('button',null,T.howto); h.onclick=()=>{ initAudio(); sfx.click(); showTutorial(closeOverlay); };
+  const r=el('button',null,T.retryAll); r.onclick=()=>{ initAudio(); sfx.click();
+    show(T.retryT,T.retryP,[{label:T.resetYes,fn:()=>{ save={unlocked:1,stars:{},tut:true}; store(); closeOverlay(); renderMap(); }},{label:T.cancel,alt:true,fn:closeOverlay}]); };
+  bt.appendChild(h); bt.appendChild(r); mapIn.appendChild(bt);
+}
+function openMap(){ started=false; closeOverlay(); setSel(-1); renderMap(); mapEl.style.display='block'; mapEl.scrollTop=0; }
+function playLevel(n){ level=n; score=0; mapEl.style.display='none'; start(); started=true; for(let i=0;i<3;i++) labelPiece(i); }
+function showTutorial(done){ // 규칙 세 줄
   const ol=document.createElement('ol');
   T.tut.forEach((t,i)=>{ const li=document.createElement('li'), b=document.createElement('b'), sp=document.createElement('span'); b.textContent=i+1; sp.textContent=t; li.appendChild(b); li.appendChild(sp); ol.appendChild(li); });
-  show(T.tutT,ol,[{label:T.startBtn,fn:()=>{ started=true; closeOverlay(); for(let i=0;i<3;i++) labelPiece(i); }}]);
-})();
-window.__game={get board(){return board;},get blocked(){return blocked;},get pending(){return pending;},get busy(){return busy;},get left(){return left;},get score(){return score;},get sel(){return sel;},set level(v){level=v;start();},findMove,resolve,toScreen,cellPos,around};
+  show(T.tutT,ol,[{label:T.startBtn,fn:done}]);
+}
+// 처음 온 사람은 규칙을 보고 바로 레벨 1, 다시 온 사람은 지도부터
+if(!save.tut) showTutorial(()=>{ save.tut=true; store(); started=true; closeOverlay(); for(let i=0;i<3;i++) labelPiece(i); });
+else openMap();
+window.__game={get board(){return board;},get blocked(){return blocked;},get pending(){return pending;},get busy(){return busy;},get left(){return left;},get score(){return score;},get save(){return save;},debugClear(){ for(const k in left) left[k]=0; done=total; return resolve(); },get sel(){return sel;},set level(v){level=v;start();},findMove,resolve,toScreen,cellPos,around};
 })();
 </script>
 </body>
