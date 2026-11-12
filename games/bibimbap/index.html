@@ -111,7 +111,7 @@ if(!window.THREE){document.getElementById('err').style.display='block';return;}
 const KO=(navigator.language||'ko').toLowerCase().startsWith('ko');
 const T=KO?{
   level:n=>'레벨 '+n, goal:(a,b,s)=>'주문 '+a+' / '+b+' · '+s+'점', restart:'다시',
-  tutT:'랜덤 비빔밥', tut:['아래 접시를 끌어서 빈 칸에 놓아요. 접시를 누른 뒤 칸을 눌러도 돼요.','그릇 둘레 칸에 재료를 놓으면 그릇이 필요한 재료를 가져가요.','재료가 다 모이면 비빔밥 완성! 주문을 모두 내면 다음 레벨이에요.'], startBtn:'시작하기',
+  tutT:'랜덤 비빔밥', tut:['아래 접시를 끌어서 빈 칸에 놓아요. 접시를 누른 뒤 칸을 눌러도 돼요.','그릇의 위·아래·왼쪽·오른쪽 칸에 재료를 놓으면 그릇이 필요한 재료를 가져가요. 대각선은 닿지 않아요.','재료가 다 모이면 비빔밥 완성! 주문을 모두 내면 다음 레벨이에요.'], startBtn:'시작하기',
   shop:'가게', dex:'메뉴 도감', close:'닫기', maxed:'완료', more:n=>'+'+n, coinPop:n=>'🪙 +'+n,
   up:{trash:['휴지통 한 번 더','레벨마다 버릴 수 있는 횟수가 늘어요'],patience:['느긋한 손님','주문서가 더 오래 기다려요'],tip:['후한 팁','빨리 내면 받는 팁이 늘어요'],tray:['넉넉한 쟁반','대기 접시가 네 개로 늘어요']},
   dexCount:n=>n+'그릇', dexLock:'아직 못 만든 메뉴',
@@ -121,7 +121,7 @@ const T=KO?{
   movesTxt:(m,p)=>m+'수 만에 완료 · 별 셋 기준 '+p+'수', endless:n=>'무한 주문 · 레벨 '+n, mapBtn:'지도',
   used:'이미 사용 중인 칸이에요', retryT:'다시 할까요?', retryP:'처음부터 다시 하시겠어요? 진행 상황이 사라져요.', retryLevel:'레벨만 다시 하기', retryAll:'처음부터 하기', cancel:'계속하기',
   trash:n=>'🗑 버리기 '+n, trashNone:'이번 레벨 휴지통을 다 썼어요', trashBowl:'그릇은 버릴 수 없어요', trashPick:'버릴 접시를 먼저 누르거나 끌어다 놓으세요',
-  hint:'그릇을 놓고, 그 둘레에 반찬을 놓으세요', hintFire:'소고기는 불을 만나야 익어요 · 육회는 생고기 그대로', hintLid:'옆에서 비빔밥을 완성하면 뚜껑이 열려요',
+  hint:'그릇을 놓고, 그 위·아래·양옆에 반찬을 놓으세요', hintFire:'소고기는 불을 만나야 익어요 · 육회는 생고기 그대로', hintLid:'옆에서 비빔밥을 완성하면 뚜껑이 열려요',
   plus:m=>m+' +1  ·  +100', combo:n=>'콤보 ×'+n+'!', open:'열림!',
   clearT:n=>'레벨 '+n+' 완료!', clearP:n=>'주문 '+n+'그릇을 모두 냈어요.', next:'다음 레벨',
   overT:'자리가 없어요', overP:n=>'상이 가득 찼어요. 레벨 '+n+'에서 끝났어요.', again:'다시 하기',
@@ -130,7 +130,7 @@ const T=KO?{
   nextStage:n=>' 다음은 '+n+'!', hintFire2:'낙지도 불을 만나야 볶아져요'
 }:{
   level:n=>'Level '+n, goal:(a,b,s)=>'Orders '+a+' / '+b+' · '+s+' pts', restart:'Retry',
-  tutT:'Random Bibimbap', tut:['Drag a plate from the tray onto an empty spot. You can also tap a plate, then tap a spot.','Put toppings on the spots around a bowl and the bowl takes what it needs.','When every topping is in, the bibimbap is done! Serve all orders to clear the level.'], startBtn:'Start',
+  tutT:'Random Bibimbap', tut:['Drag a plate from the tray onto an empty spot. You can also tap a plate, then tap a spot.','Put toppings directly above, below, left or right of a bowl and it takes what it needs. Diagonals do not count.','When every topping is in, the bibimbap is done! Serve all orders to clear the level.'], startBtn:'Start',
   shop:'Shop', dex:'Menu book', close:'Close', maxed:'Max', more:n=>'+'+n, coinPop:n=>'🪙 +'+n,
   up:{trash:['Extra discard','One more discard every level'],patience:['Patient guests','Order tickets wait longer'],tip:['Bigger tips','Fast service pays more'],tray:['Wider tray','Four pieces on the tray']},
   dexCount:n=>n+' served', dexLock:'Not made yet',
@@ -140,7 +140,7 @@ const T=KO?{
   movesTxt:(m,p)=>'Cleared in '+m+' moves · 3 stars at '+p, endless:n=>'Endless · level '+n, mapBtn:'Map',
   used:'That spot is taken', retryT:'Start over?', retryP:'Restart from the beginning? Your progress will be lost.', retryLevel:'Retry this level', retryAll:'Start from level 1', cancel:'Keep playing',
   trash:n=>'🗑 Discard '+n, trashNone:'No discards left this level', trashBowl:'Bowls cannot be discarded', trashPick:'Tap a plate first, or drag one here',
-  hint:'Place a bowl, then put side dishes around it', hintFire:'Beef needs fire to cook · yukhoe takes it raw', hintLid:'Finish a bowl next to a lid to open it',
+  hint:'Place a bowl, then put side dishes right next to it', hintFire:'Beef needs fire to cook · yukhoe takes it raw', hintLid:'Finish a bowl next to a lid to open it',
   plus:m=>m+' +1  ·  +100', combo:n=>'Combo ×'+n+'!', open:'Open!',
   clearT:n=>'Level '+n+' clear!', clearP:n=>'All '+n+' orders served.', next:'Next level',
   overT:'No space left', overP:n=>'The table is full. You reached level '+n+'.', again:'Play again',
@@ -181,19 +181,19 @@ const THEMES={
 };
 // trash 는 그 레벨에서 버릴 수 있는 횟수. 시뮬레이션으로 맞춘 값이다.
 const LV=[
-  {theme:'bunsik',orders:{B:3},             bias:.78,minN:1,maxN:2,blocked:0,trash:3},
-  {theme:'bunsik',orders:{B:2,T:2},         bias:.72,minN:1,maxN:3,blocked:0,trash:3},
-  {theme:'bunsik',orders:{B:2,T:2,D:2},     bias:.68,minN:1,maxN:3,blocked:0,trash:3},
-  {theme:'hanok', orders:{B:1,Y:3},         bias:.66,minN:1,maxN:3,blocked:1,trash:2},
-  {theme:'hanok', orders:{D:1,Y:2,J:2},     bias:.64,minN:1,maxN:3,blocked:2,trash:2},
-  {theme:'hanok', orders:{B:1,D:1,Y:2,J:2}, bias:.62,minN:2,maxN:3,blocked:2,trash:2},
-  {theme:'temple',orders:{S:3},             bias:.5, minN:2,maxN:3,blocked:4,trash:1},
-  {theme:'temple',orders:{S:4},             bias:.38,minN:2,maxN:3,blocked:5,trash:1},
-  {theme:'temple',orders:{S:5},             bias:.32,minN:2,maxN:3,blocked:6,trash:1},
-  {theme:'sea',   orders:{K:2,N:2},         bias:.6, minN:2,maxN:3,blocked:3,trash:1},
-  {theme:'sea',   orders:{K:2,N:2,M:2},     bias:.58,minN:2,maxN:3,blocked:3,trash:1},
-  {theme:'sea',   orders:{K:2,N:2,M:2,T:2}, bias:.56,minN:2,maxN:3,blocked:3,trash:1},
-  {theme:'hanok', orders:{B:2,J:2,S:2,N:2,M:2},bias:.6,minN:2,maxN:3,blocked:3,trash:1}
+  {theme:'bunsik',orders:{B:3},             bias:.92,minN:1,maxN:2,blocked:0,trash:3},
+  {theme:'bunsik',orders:{B:2,T:2},         bias:.9, minN:1,maxN:2,blocked:0,trash:3},
+  {theme:'bunsik',orders:{B:2,T:2,D:2},     bias:.88,minN:1,maxN:2,blocked:0,trash:3},
+  {theme:'hanok', orders:{B:1,Y:3},         bias:.88,minN:1,maxN:2,blocked:0,trash:3},
+  {theme:'hanok', orders:{D:1,Y:2,J:2},     bias:.86,minN:1,maxN:2,blocked:1,trash:3},
+  {theme:'hanok', orders:{B:1,D:1,Y:2,J:2}, bias:.86,minN:1,maxN:2,blocked:1,trash:3},
+  {theme:'temple',orders:{S:3},             bias:.8, minN:1,maxN:2,blocked:2,trash:2},
+  {theme:'temple',orders:{S:4},             bias:.76,minN:1,maxN:2,blocked:3,trash:2},
+  {theme:'temple',orders:{S:5},             bias:.72,minN:1,maxN:3,blocked:3,trash:2},
+  {theme:'sea',   orders:{K:2,N:2},         bias:.86,minN:1,maxN:2,blocked:2,trash:2},
+  {theme:'sea',   orders:{K:2,N:2,M:2},     bias:.86,minN:1,maxN:2,blocked:2,trash:2},
+  {theme:'sea',   orders:{K:2,N:2,M:2,T:2}, bias:.86,minN:1,maxN:2,blocked:2,trash:2},
+  {theme:'hanok', orders:{B:2,J:2,S:2,N:2,M:2},bias:.88,minN:1,maxN:2,blocked:2,trash:2}
 ];
 // 오늘의 주문: 날짜로 씨앗을 만들어 누구에게나 같은 판이 나온다 (레벨 번호 0)
 function todayKey(){ const d=new Date(); return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); }
@@ -202,7 +202,7 @@ function dailyDef(){
   const r=mulberry32(todayKey()), ks=Object.keys(MENUS), pick=[];
   while(pick.length<3){ const m=ks[Math.floor(r()*ks.length)]; if(!pick.includes(m)) pick.push(m); }
   const orders={}; pick.forEach(m=>orders[m]=2);
-  return {theme:['bunsik','hanok','temple','sea'][Math.floor(r()*4)],orders,bias:.64,minN:1,maxN:3,blocked:2,trash:2};
+  return {theme:['bunsik','hanok','temple','sea'][Math.floor(r()*4)],orders,bias:.86,minN:1,maxN:2,blocked:2,trash:2};
 }
 const levelDef=n=>n===0?dailyDef():LV[Math.min(n,LV.length)-1];
 const themeOf=n=>n===0?dailyDef().theme:(n<=LV.length?levelDef(n).theme:['hanok','bunsik','temple','sea'][(n-LV.length)%4]);
@@ -220,8 +220,8 @@ let save=freshSave(false);
 try{ const j=JSON.parse(localStorage.getItem('bibim_save')||'null'); if(j&&j.unlocked){ save=Object.assign(save,j); save.up=Object.assign(freshSave().up,j.up||{}); save.dex=j.dex||{}; save.coins=j.coins||0; } }catch(e){}
 function store(){ try{ localStorage.setItem('bibim_save',JSON.stringify(save)); }catch(e){} }
 // 별 셋 기준이 되는 놓은 수(휴지통 포함). 시뮬레이션에서 한 수 앞을 보는 봇의 평균에 맞췄다.
-const PAR=[16,20,29,20,26,27,13,17,21,16,23,31,40];
-const parOf=n=>n===0?28:PAR[Math.min(n,PAR.length)-1]+2;
+const PAR=[17,24,34,23,31,36,17,23,23,21,30,42,55];
+const parOf=n=>n===0?32:PAR[Math.min(n,PAR.length)-1]+2;
 const starsFor=(n,m)=>m<=parOf(n)?3:(m<=Math.ceil(parOf(n)*1.35)?2:1);
 let lvMoves=0;
 let busy=false, drag=null, over=false, moves=0, lidHint=false, fireHint=false, fireHint2=false, theme='';
@@ -306,6 +306,9 @@ const slotGeo=new THREE.ExtrudeGeometry(rrShape(1.16,1.16,.22),{depth:.012,bevel
 const slotMat=mat(0xa9713f,{roughness:.8});
 for(let i=0;i<N;i++){const m=new THREE.Mesh(slotGeo,slotMat);m.position.copy(cellPos(i));m.position.y=.002;m.receiveShadow=true;scene.add(m);}
 const ringGeo=new THREE.ExtrudeGeometry((()=>{const s=rrShape(1.26,1.26,.26); s.holes.push(rrShape(1.1,1.1,.2)); return s;})(),{depth:.01,bevelEnabled:false,curveSegments:6}); ringGeo.rotateX(-Math.PI/2);
+const markGeo=new THREE.CircleGeometry(.17,24), markMat=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.6,depthWrite:false});
+const marks=[]; for(let i=0;i<N;i++){ const m=new THREE.Mesh(markGeo,markMat); m.rotation.x=-Math.PI/2; m.position.copy(cellPos(i)); m.position.y=.018; m.visible=false; scene.add(m); marks.push(m); }
+function showMarks(on){ for(let i=0;i<N;i++) marks[i].visible=!!on&&!board[i]&&!blocked[i]&&beside(i).some(j=>board[j]&&board[j].kind==='bowl'); }
 const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:C(0xffe08a)})); ring.visible=false; scene.add(ring);
 
 /* ---------- 재료 모형: 크고 상징적인 모양 하나씩 ---------- */
@@ -642,17 +645,22 @@ const Ads={on:false,sdk:null,
 Ads.init();
 
 /* ---------- 규칙 ---------- */
+function beside(i){ // 위·아래·왼쪽·오른쪽 네 칸. 대각선은 닿지 않는다
+  const c=i%COLS,r=(i/COLS)|0,o=[];
+  if(r>0)o.push(i-COLS); if(r<ROWS-1)o.push(i+COLS); if(c>0)o.push(i-1); if(c<COLS-1)o.push(i+1);
+  return o;
+}
 function around(i){ // 둘레 여덟 칸
   const c=i%COLS,r=(i/COLS)|0,o=[];
   for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc) continue; const x=c+dc,y=r+dr; if(x>=0&&x<COLS&&y>=0&&y<ROWS) o.push(y*COLS+x); }
   return o;
 }
-// 접시 위 재료 가운데, 둘레의 그릇이 아직 못 채운 재료 하나를 찾는다. 완성에 가까운 그릇이 먼저 받는다.
+// 접시 위 재료 가운데, 바로 옆(상하좌우) 그릇이 아직 못 채운 재료 하나를 찾는다. 완성에 가까운 그릇이 먼저 받는다.
 function findMove(){
   let best=null;
   for(let i=0;i<N;i++){
     const pl=board[i]; if(!pl||pl.kind!=='plate') continue;
-    for(const j of around(i)){
+    for(const j of beside(i)){
       const bw=board[j]; if(!bw||bw.kind!=='bowl') continue;
       for(const t of pl.items){
         if(!bw.needs.includes(t)||bw.has.includes(t)) continue;
@@ -730,7 +738,7 @@ async function completeBowl(i){
   const isArt=!!B.group.userData.art;
   await tween(.45,(e,k)=>{h.rotation.y=e*Math.PI*4; B.group.position.y=.02+Math.sin(Math.PI*k)*.5; B.group.scale.setScalar(1+Math.sin(Math.PI*k)*.25);});
   sparkle(pos); popup(pos,T.plus(T.menu[B.menu]),'win',50);
-  for(const j of around(i)) if(blocked[j]) openLid(j);
+  for(const j of beside(i)) if(blocked[j]) openLid(j);
   const from=B.group.position.clone(), to=hudPoint();
   await tween(.34,k=>{B.group.position.lerpVectors(from,to,k); B.group.scale.setScalar(1-.75*k); if(!isArt) B.group.rotation.y=k*5;});
   scene.remove(B.group);
@@ -880,13 +888,14 @@ function setSel(i){ // 눌러서 고른 접시는 살짝 떠 있다
   if(sel>=0&&pending[sel]){ const q=pending[sel]; q.sel=false; q.group.scale.setScalar(1); }
   sel=i;
   if(i>=0){ const p=pending[i]; p.sel=true; p.group.position.set(p.home.x,.42,p.home.z); p.group.scale.setScalar(1.14); }
+  showMarks(i>=0&&pending[i].kind==='plate');
 }
 function goHome(p){ const from=p.group.position.clone(); p.moving=true; tween(.18,k=>p.group.position.lerpVectors(from,p.home,k)).then(()=>{p.moving=false;}); }
 function placeAt(i,cell){
   const p=pending[i]; if(sel===i){ p.sel=false; sel=-1; }
   const to=cellPos(cell); to.y=.02;
   p.group.scale.setScalar(1); p.group.position.copy(to); squash(p.group,.22,.3); dust(to);
-  board[cell]=p; pending[i]=null; sfx.place();
+  board[cell]=p; pending[i]=null; sfx.place(); showMarks(false);
   if(++moves===3) document.getElementById('hint').style.opacity=0;
   lvMoves++; updateHud();
   resolve();
@@ -937,7 +946,7 @@ canvas.addEventListener('pointermove',e=>{
   if(!drag||e.pointerId!==drag.id) return;
   if(!drag.moved){
     if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)<8) return;
-    drag.moved=true; if(sel>=0) setSel(-1); drag.p.group.scale.setScalar(1.12); sfx.pick();
+    drag.moved=true; if(sel>=0) setSel(-1); drag.p.group.scale.setScalar(1.12); sfx.pick(); showMarks(drag.p.kind==='plate');
   }
   const g=groundPoint(e); if(g) moveDrag(g,e);
 });
@@ -947,7 +956,7 @@ function endDrag(e){
   if(!drag.moved&&e.type==='pointerup'&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>=8){ drag.moved=true; if(sel>=0) setSel(-1); }
   if(!drag.moved){ const i=drag.i; drag=null; if(e.type==='pointerup'){ setSel(sel===i?-1:i); sfx.pick(); } return; }
   if(e.type==='pointerup'){ const g=groundPoint(e); if(g) moveDrag(g,e); }
-  const d=drag; drag=null; ring.visible=false; trashEl.classList.remove('hot'); d.p.group.scale.setScalar(1);
+  const d=drag; drag=null; ring.visible=false; showMarks(false); trashEl.classList.remove('hot'); d.p.group.scale.setScalar(1);
   if(e.type==='pointerup'&&overTrash(e)){ if(!discard(d.i)) goHome(d.p); return; }
   if(e.type==='pointerup'&&d.cell>=0){ placeAt(d.i,d.cell); return; }
   if(d.any>=0&&(board[d.any]||blocked[d.any])){ toast(T.used); sfx.error(); }
@@ -1011,7 +1020,7 @@ function showTutorial(done){ // 규칙 세 줄
 // 처음 온 사람은 규칙을 보고 바로 레벨 1, 다시 온 사람은 지도부터
 if(!save.tut) showTutorial(()=>{ save.tut=true; store(); started=true; closeOverlay(); for(let i=0;i<pending.length;i++) labelPiece(i); });
 else openMap();
-window.__game={get board(){return board;},get blocked(){return blocked;},get pending(){return pending;},get busy(){return busy;},get tickets(){return tickets;},get queue(){return queue;},get coins(){return save.coins;},get ads(){return Ads.on;},get score(){return score;},get save(){return save;},debugClear(){ tickets=[]; queue=[]; done=total; return resolve(); },debugBowl(menu,cell,has){ const p=makeBowl(menu); p.has=has; rebuild(p); p.group.position.copy(cellPos(cell)); p.group.position.y=.02; board[cell]=p; },debugFill(){ for(let i=0;i<N;i++) if(!board[i]&&!blocked[i]){ const p=makePlate([0]); p.group.position.copy(cellPos(i)); board[i]=p; } return resolve(); },get sel(){return sel;},set level(v){level=v;start();},findMove,resolve,toScreen,cellPos,around};
+window.__game={get board(){return board;},get blocked(){return blocked;},get pending(){return pending;},get busy(){return busy;},get tickets(){return tickets;},get queue(){return queue;},get coins(){return save.coins;},get ads(){return Ads.on;},get score(){return score;},get save(){return save;},debugClear(){ tickets=[]; queue=[]; done=total; return resolve(); },debugPlate(items,cell){ const p=makePlate(items); p.group.position.copy(cellPos(cell)); p.group.position.y=.02; board[cell]=p; },debugBowl(menu,cell,has){ const p=makeBowl(menu); p.has=has; rebuild(p); p.group.position.copy(cellPos(cell)); p.group.position.y=.02; board[cell]=p; },debugFill(){ for(let i=0;i<N;i++) if(!board[i]&&!blocked[i]){ const p=makePlate([0]); p.group.position.copy(cellPos(i)); board[i]=p; } return resolve(); },get sel(){return sel;},set level(v){level=v;start();},findMove,resolve,toScreen,cellPos,around,beside};
 })();
 </script>
 </body>
